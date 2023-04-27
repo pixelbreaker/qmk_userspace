@@ -76,3 +76,32 @@ void housekeeping_task_user(void) {
 #endif
 	}
 }
+
+
+// Handle keyrecord before quantum processing
+bool pre_process_record_quantum_user(keyrecord_t *record) {
+	uint16_t keycode = get_record_keycode(record, true);
+
+	// Implement instant-tap of mod-tap keys
+	if (IS_HOME_ROW(record) && IS_QK_MOD_TAP(keycode)) {
+		keyrecord_t quick_tap_record;
+		quick_tap_record.keycode = keycode & 0xff;
+
+		// When a mod-tap key is pressed within QUICK_TAP_TERM of a previous key,
+		// send its masked base keycode through process_record and skip processing
+		if (record->event.pressed && (timer_elapsed_fast(tap_timer) < QUICK_TAP_TERM)) {
+			quick_tap_record.event.pressed = true;
+			process_record(&quick_tap_record);
+#if TAP_CODE_DELAY > 0
+			wait_ms(TAP_CODE_DELAY);
+#endif
+			return false; // Skip processing
+		} else {
+			// Handle key up record event
+			quick_tap_record.event.pressed = false;
+			process_record(&quick_tap_record);
+		}
+	}
+
+	return true; // Continue processing record
+}
