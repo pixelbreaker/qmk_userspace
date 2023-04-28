@@ -1,6 +1,6 @@
 {
 	"keyboard": "bastardkb/charybdis/3x5/v2/splinky_3",
-	"keymap": "default",
+	"keymap": "pixelbreaker",
 	"layout": "LAYOUT_cnano_w",
 	"layers": [
 		[ "CNANO(HRM(_BASE))" ],
