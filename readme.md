@@ -39,30 +39,6 @@ Icons used to render keyboard state is stored in `glcdfont.c`. Images in that fi
 
 # Code Snippets
 
-## Light configured layers keys
-
-```c
-bool rgb_matrix_indicators_user(void) {
-
-    if (get_highest_layer(layer_state) > 0) {
-        uint8_t layer = get_highest_layer(layer_state);
-        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
-            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
-                uint_fast8_t  led = g_led_config.matrix_co[row][col];
-                uint_fast16_t key = keymap_key_to_keycode(layer, (keypos_t){col, row});
-                if (led != NO_LED && key!= KC_TRNS) {
-                    rgb_matrix_set_color(g_led_config.matrix_co[row][col], RGB_BLUE);
-                }
-            }
-        }
-    }
-
-    return false;
-}
-```
-
-Code loops through every row and column on a per-key RGB board, scanning for configured keys (not `KC_TRANS`) and lighting that index location. It is configured to activate on non-default layers. This can be further customised using layer `switch` condition inside the last `if` statement.
-
 ## Tap hold macros
 
 ```c
@@ -359,83 +335,6 @@ dfu-util -a 0 -i 0 -s 0x08000000:mass-erase:force
 
 ## ISP Flashing
 
-### Hardware
+## Autocorrect dictionary creation
 
--   [USBasp Programmer](https://www.aliexpress.com/item/1005001658474778.html)
--   [Breadboard](https://www.aliexpress.com/item/1742546890.html)
--   [Jumper wires](https://www.aliexpress.com/item/32996173648.html)
--   [Sockets](https://www.aliexpress.com/item/32852480645.html) and [breadboard](https://www.aliexpress.com/item/1742546890.html)
-
-### USBasp wiring
-
-Connect the USBasp programmer to the target controller in this manner:
-
-```
-USBasp GND  <-> Pro Micro GND
-USBasp RST  <-> Pro Micro RST
-USBasp VCC  <-> Pro Micro VCC
-USBasp SCLK <-> Pro Micro 15/B1 (SCLK)
-USBasp MISO <-> Pro Micro 14/B3 (MISO)
-USBasp MOSI <-> Pro Micro 16/B2 (MOSI)
-```
-
-### Atmel DFU
-
-See the [QMK ISP Flashing Guide](https://docs.qmk.fm/#/isp_flashing_guide). Replace the Pro Micro's default Caterina boot loader with [Atmel-DFU](https://github.com/qmk/qmk_firmware/blob/master/util/bootloader_atmega32u4_1.0.0.hex) using the following command for USBasp and fuses parameter:
-
-```c
-avrdude -c usbasp -P usb -p atmega32u4 \
--U flash:w:bootloader_atmega32u4_1.0.0.hex:i \
--U lfuse:w:0x5E:m -U hfuse:w:0xD9:m -U efuse:w:0xF3:m
-```
-
-## Command Line DFU
-
-Simple `bash` and `zsh` shell function for flashing firmware (and optionally handedness) to Atmel DFU controller on MacOS. It requires `dfu-programmer` from [Homebrew](https://brew.sh/):
-
-```sh
-dfu-flash() {
-  if [ ! -f $1 ] || [ -z $1 ]; then
-    echo "Usage: dfu-flash <firmware.hex> [left|right]"
-    return 1
-  fi
-  until [ -n "$(ioreg -p IOUSB | grep ATm32U4DFU)" ]; do
-    echo "Waiting for ATm32U4DFU bootloader..."; sleep 3
-  done
-  dfu-programmer atmega32u4 erase --force
-  if [ $2 = "left" ]; then
-    echo -e "\nFlashing left EEPROM" && \
-    echo -e ':0F000000000000000000000000000000000001F0\n:00000001FF' | \
-    dfu-programmer atmega32u4 flash --force --suppress-validation --eeprom STDIN
-  elif [ $2 = "right" ]; then
-    echo -e "\nFlashing right EEPROM" && \
-    echo -e ':0F000000000000000000000000000000000000F1\n:00000001FF' | \
-    dfu-programmer atmega32u4 flash --force --suppress-validation --eeprom STDIN
-  fi
-  echo -e "\nFlashing $1" && dfu-programmer atmega32u4 flash --force $1
-  dfu-programmer atmega32u4 reset
-}
-```
-
-# Useful Links
-
--   [Seniply](https://stevep99.github.io/seniply/) 34 key layout
--   [Callum-style](https://github.com/callum-oakley/qmk_firmware/tree/master/users/callum) mods
--   [Paroxysm](https://github.com/davidphilipbarr/paroxysm) PCB
--   [Split Keyboard](https://golem.hu/boards/) database
--   [Sockets](https://github.com/joric/nrfmicro/wiki/Sockets)
--   [Git Purr](https://girliemac.com/blog/2017/12/26/git-purr/)
--   [Data in Program Space](https://www.nongnu.org/avr-libc/user-manual/pgmspace.html)
--   [Autocorrections with QMK](https://getreuer.info/posts/keyboards/autocorrection/index.html)
-
-## Hardware Parts
-
--   [Adafruit KB2040](https://www.adafruit.com/product/5302)
--   [Elite-Pi](https://keeb.io/collections/diy-parts/products/elite-pi-usb-c-pro-micro-replacement-rp2040)
--   Mill-Max [315-43-112-41-003000](https://www.digikey.com/en/products/detail/315-43-112-41-003000/ED4764-12-ND/4455232) low profile sockets
--   Mill-Max [315-43-164-41-001000](https://www.digikey.com/en/products/detail/mill-max-manufacturing-corp/315-43-164-41-001000/1212142) mid profile sockets
--   Mill-Max [connector pins](https://www.digikey.com/product-detail/en/3320-0-00-15-00-00-03-0/ED1134-ND/4147392)
--   [PJ320A](https://www.aliexpress.com/item/1005001928651798.html) jack
--   [TRRS](https://www.aliexpress.com/item/32961128759.html) cable
--   [Silicone bumpers](https://www.aliexpress.com/item/32912066603.html) feet
--   Kailh [gchoc v1](https://www.aliexpress.com/item/4000907409650.html) switches
+`qmk generate-autocorrect-data ./users/pixelbreaker/features/dictionaries/dictionary_huge.txt -o ./users/pixelbreaker/features/autocorrect_data.h`

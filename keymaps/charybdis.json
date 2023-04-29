@@ -1,0 +1,14 @@
+{
+	"keyboard": "bastardkb/charybdis/3x5/v2/splinky_3",
+	"keymap": "pixelbreaker",
+	"layout": "LAYOUT_charybdis_w",
+	"layers": [
+		[ "CHARYBDIS(HRM(_BASE))" ],
+		[ "CHARYBDIS(HRM(_COLE))" ],
+		[ "CHARYBDIS(_NUMB)" ],
+		[ "CHARYBDIS(_SYMB)" ],
+		[ "CHARYBDIS(_FUNC)" ],
+		[ "CHARYBDIS(_MEDIA)" ],
+		[ "CHARYBDIS(_MOUSE)" ]
+	]
+}

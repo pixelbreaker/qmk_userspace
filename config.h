@@ -3,16 +3,22 @@
 
 #pragma once
 
+#include "quantum/keycodes.h"
+
+#ifndef __ASSEMBLER__
+enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH };
+#endif
+
 // Common QMK settings
-#define TAP_CODE_DELAY 5
-#define TAP_HOLD_CAPS_DELAY 35
-#define GRAVE_ESC_SHIFT_OVERRIDE
-#define USB_SUSPEND_WAKEUP_DELAY 2000
+// #define TAP_CODE_DELAY 5
+// #define TAP_HOLD_CAPS_DELAY 35
+// #define GRAVE_ESC_SHIFT_OVERRIDE
+// #define USB_SUSPEND_WAKEUP_DELAY 2000
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 1000U
 // Space saving options
 #define LAYER_STATE_8BIT
-#define NO_ACTION_ONESHOT
-// Tap-hold settings
+// #define NO_ACTION_ONESHOT
+//  Tap-hold settings
 #define TAPPING_TERM 180
 #define TAPPING_TERM_PER_KEY
 #define QUICK_TAP_TERM 100
@@ -24,64 +30,61 @@
 #define ACHORDION_ENABLE
 
 #ifdef POINTING_DEVICE_ENABLE
-#    define MEDIA_TAP_THRESHOLD 85
-#    define MEDIA_TAP_TERM 600
+#  define MEDIA_TAP_THRESHOLD 85
+#  define MEDIA_TAP_TERM 600
 // #    define POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#    ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#        define AUTO_MOUSE_DEFAULT_LAYER 3
-#        define AUTO_MOUSE_TIME 700
-#        define AUTO_MOUSE_DEBOUNCE 10
-#        define AUTO_MOUSE_DELAY 500
-#    endif
+#  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+#    define AUTO_MOUSE_DEFAULT_LAYER 3
+#    define AUTO_MOUSE_TIME 700
+#    define AUTO_MOUSE_DEBOUNCE 10
+#    define AUTO_MOUSE_DELAY 500
+#  endif
 #endif
 
 #ifdef KEYBOARD_charybdis
-#    define CHARYBDIS_DRAGSCROLL_REVERSE_Y
-#    define CHARYBDIS_DRAGSCROLL_BUFFER_SIZE 8
+#  define CHARYBDIS_DRAGSCROLL_REVERSE_Y
+#  define CHARYBDIS_DRAGSCROLL_BUFFER_SIZE 8
+
+// #  ifndef CARRET_TIMEOUT_MS
+// #    define CARRET_TIMEOUT_MS 350
+// #  endif
+#  ifndef MEDIA_TIMEOUT_MS
+#    define MEDIA_TIMEOUT_MS 150
+#  endif
+
+#  ifdef CHARYBDIS_DRAGSCROLL_DPI
+#    undef CHARYBDIS_DRAGSCROLL_DPI
+#  endif
+#  define CHARYBDIS_DRAGSCROLL_DPI 40
 
 /* Trackball angle adjustment. */
-#    ifdef ROTATIONAL_TRANSFORM_ANGLE
-#        undef ROTATIONAL_TRANSFORM_ANGLE
-#    endif
+#  ifdef ROTATIONAL_TRANSFORM_ANGLE
+#    undef ROTATIONAL_TRANSFORM_ANGLE
+#  endif
 
-#    define ROTATIONAL_TRANSFORM_ANGLE -28
+#  define ROTATIONAL_TRANSFORM_ANGLE -28
 #endif
 
 #ifdef COMBO_ENABLE
-#    define COMBO_TERM 50
+#  define COMBO_TERM 80
 // #    define COMBO_MUST_HOLD_PER_COMBO
-#    define COMBO_SHOULD_TRIGGER
-#    define COMBO_ONLY_FROM_LAYER 0
+#  define COMBO_SHOULD_TRIGGER
+#  define COMBO_ONLY_FROM_LAYER 0
 #endif
 
-// #ifdef SPLIT_KEYBOARD
-// #    define EE_HANDS
-// #    ifdef __AVR__
-// #        define SPLIT_USB_DETECT
-// #        define SPLIT_WATCHDOG_ENABLE
-// #        define NO_SUSPEND_POWER_DOWN
-// #    endif
-// #    if (defined OLED_ENABLE || defined RGB_MATRIX_ENABLE)
-// #        define SPLIT_OLED_ENABLE
-// #        define SPLIT_MODS_ENABLE
-// #        define SPLIT_LED_STATE_ENABLE
-// #        define SPLIT_LAYER_STATE_ENABLE
-// #    endif
-// #endif
-
 #ifdef MOUSEKEY_ENABLE
-#    define MOUSEKEY_DELAY 0       // Delay between pressing a key and cursor movement
-#    define MOUSEKEY_INTERVAL 15   // Time between cursor movements in milliseconds
-#    define MOUSEKEY_MOVE_DELTA 10 // Step size for acceleration
-#    define MOUSEKEY_MAX_SPEED 9
-#    define MOUSEKEY_TIME_TO_MAX 80
-#    define MOUSEKEY_WHEEL_DELAY 16
-#    define MOUSEKEY_WHEEL_INTERVAL 30
-#    define MOUSEKEY_WHEEL_MAX_SPEED 10
-#    define MOUSEKEY_WHEEL_TIME_TO_MAX 95
+#  define MOUSEKEY_DELAY 0       // Delay between pressing a key and cursor movement
+#  define MOUSEKEY_INTERVAL 15   // Time between cursor movements in milliseconds
+#  define MOUSEKEY_MOVE_DELTA 10 // Step size for acceleration
+#  define MOUSEKEY_MAX_SPEED 9
+#  define MOUSEKEY_TIME_TO_MAX 80
+#  define MOUSEKEY_WHEEL_DELAY 16
+#  define MOUSEKEY_WHEEL_INTERVAL 30
+#  define MOUSEKEY_WHEEL_MAX_SPEED 10
+#  define MOUSEKEY_WHEEL_TIME_TO_MAX 95
 #endif
 
 // Layout macros
 #ifndef __ASSEMBLER__
-#    include "layout.h"
+#  include "layout.h"
 #endif

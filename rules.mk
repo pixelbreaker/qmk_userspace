@@ -10,7 +10,6 @@ COMBO_ENABLE = yes
 CAPS_WORD_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 AUTOCORRECT_ENABLE = yes
-DEFERRED_EXEC_ENABLE = yes
 EXTRAKEY_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 BOOTMAGIC_ENABLE = yes
@@ -18,8 +17,8 @@ BOOTMAGIC_ENABLE = yes
 VPATH += $(USER_PATH)/features
 SRC += pixelbreaker.c combos.c achordion.c
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/splinky_3))
-	SRC += tracktap.c
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/splinky_3))
+	SRC += scrollspam.c
 	VIA_ENABLE = no
 	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = no
