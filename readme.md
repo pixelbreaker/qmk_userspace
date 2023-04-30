@@ -2,93 +2,27 @@
 
 This is my personal _userspace_ for [QMK Firmware](https://github.com/qmk/qmk_firmware). It is set up as a self-contained repository that avoids `keymap.c` files within keyboard sub-folders. It can by build by placing this repository within QMK's [userspace](https://docs.qmk.fm/#/feature_userspace) folder and compiling with the JSON files. [Actions](https://docs.github.com/en/actions) can also be leveraged to do likewise on a GitHub container with [build.yml](.github/workflows/build.yml) workflow.
 
-![corneplanck](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/corneplanck.png)
+![corneplanck](./images/pixelbreaker.jpg)
 
 # Features
 
 -   Shared [layout](layout.h) wrapper macros
 -   [Combos](#combo-helper-macros) simplified with preprocessors
--   [Tap-hold](#tap-hold-macros) clipboard shortcuts
 -   [Word](features/) processing features
     -   Autocorrection for typos
-    -   Caps Unlock that follows a word
--   [RGB](rgb/) matrix lighting and effects
-    -   Custom "candy" matrix effect
-    -   [Layer indicators](#light-configured-layers-keys) of active keys
+-   No RGB, it's naff.
 
-# Corne (CRKBD) OLED display
+# BastardKB Charybdis nano
 
-Corne keyboard can be build with few OLED display options using `-e OLED=` environment variable to select pet animation on primary display:
+A 3x5_3+2 split ergo keyboard with a trackball. Available from [BastardKB](https://bastardkb.com) pre built or you can self build (I did this).
 
-## Bongocat or Luna and Felix
-
-Bongocat animation is the default pet. Use the following option to select Luna or Felix:
-
-```
-qmk compile -e OLED=LUNA corne.json
-qmk compile -e OLED=FELIX corne.json
-```
-
-## Logo file
-
-Icons used to render keyboard state is stored in `glcdfont.c`. Images in that file can be viewed and edited with:
-
--   [Helix Font Editor](https://helixfonteditor.netlify.app/)
--   [QMK Logo Editor](https://joric.github.io/qle/)
--   [image2cpp](https://javl.github.io/image2cpp/)
+To build run `qmk compile ./users/pixelbreaker/keymaps/charybdis.json` or to flash directly to the board run `qmk flash ./users/pixelbreaker/keymaps/charybdis.json`
 
 # Code Snippets
-
-## Tap hold macros
-
-```c
-#define TH_W LT(0, KC_W)
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-    case TH_W:
-        if (record->event.pressed && record->tap.count == 0) {
-            // Send macro string on hold
-            SEND_STRING(":wq");
-            return false;
-        }
-        break;
-    }
-    return true; // continue with unmatched keycodes
-}
-```
-
-Tap hold shortcuts with layer tap (`LT()`) uses less firmware space than [tap dance](https://docs.qmk.fm/#/feature_tap_dance) (~35 bytes per shortcut). Macro `W_TH` replaces `KC_W` on the key map, and the code will intercept hold function of `LT()` to send the macro string. See QMK's [Intercepting Mod Taps](https://docs.qmk.fm/#/mod_tap?id=intercepting-mod-taps) for details.
 
 ## Combo helper macros
 
 The [QMK combo](https://docs.qmk.fm/#/feature_combo?id=combos) code file `combos.c` is modified from [Jane Bernhardt's helper macros](http://combos.gboards.ca/) to simplify management. Combos are simple one-liners in `combos.inc` and preprocessor macros will generate source codes at compile time.
-
-## Pro Micro RX/TX LEDs
-
-Data LEDs on Pro Micro can be used as indicators with code. They are pins `B0` (RX) and `D5` (TX) on Atmega32u4. To use them with QMK's [LED Indicators](https://docs.qmk.fm/#/feature_led_indicators), flag the pin in `config.h`:
-
-```c
-#define LED_CAPS_LOCK_PIN B0
-#define LED_PIN_ON_STATE 0
-```
-
-For advance usage, setup the following macros to call both pins with GPIO functions:
-
-```c
-// Pro Micro data LED pins
-#define RXLED B0
-#define TXLED D5
-// GPIO control macros
-#define RXLED_INIT setPinOutput(RXLED)
-#define TXLED_INIT setPinOutput(TXLED)
-#define RXLED_ON   writePinLow(RXLED)
-#define TXLED_ON   writePinLow(TXLED)
-#define RXLED_OFF  writePinHigh(RXLED)
-#define TXLED_OFF  writePinHigh(TXLED)
-```
-
-Initialise LEDs with the `*_INIT` macro on startup inside `matrix_init_user(void)`. Subsequently, LEDs can be used as indicators with the `*_ON` and `*_OFF` macros that follows.
 
 # Tap Hold Mod Tweaks
 
@@ -165,10 +99,10 @@ The `split_3x5_2` layout is used as the base layout and defined in `layout.h` fi
 
 ```c
 #define _BASE \
-    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    \
-    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT, \
-    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, \
-                  LT(SYM,KC_TAB), LCA_T(KC_ENT),     RSFT_T(KC_SPC), LT(NUM,KC_BSPC)
+	KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
+	KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT,    \
+	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
+	                           SPC_NAV, TAB_SYM,     BSP_NUM, ENT_FUN
 ```
 
 Next, a wrapper alias to the layout used by the keyboard is also defined in `layout.h` file, e.g. for Cradio:
@@ -266,69 +200,6 @@ The JSON file for 42-key Corne uses the `C_42()` macro in the following format:
         [ "C_42(_FUNC)" ]
     ]
 }
-```
-
-# KB2040 Neopixel
-
-The neopixel LEDs can be enabled for RGB Matrix with the following:
-
-```c
-rules.mk:
-RGB_MATRIX_ENABLE = yes
-RGB_MATRIX_DRIVER = WS2812
-
-config.h:
-#define RGBW
-#define WS2812_DI_PIN 17U
-#define WS2812_PIO_USE_PIO1
-```
-
-Additional directives for a pair on split:
-
-```c
-config.h
-#define RGB_MATRIX_LED_COUNT 2
-#define RGB_MATRIX_SPLIT {1, 1}
-#define SPLIT_TRANSPORT_MIRROR
-
-keymap.c (or userspace source file):
-// Example for 3x5_2
-led_config_t g_led_config = { {
-    { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 },
-    { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 },
-    { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }
-}, {
-    {109, 48}, {115, 48}
-}, {
-    0x0f, 0xf0
-} };
-```
-
-# STeMcell notes
-
-STM32F411 replacement [controller](https://github.com/megamind4089/STeMCell) with Pro micro footprint, [v1.0.1](https://github.com/megamind4089/STeMCell/releases/tag/v1.0.1). Runs on [tinyuf2 bootloader](https://megamind4089.github.io/STeMCell/software/).
-
--   Reset new STMC to `stm-dfu`:
-    -   Connect USB while holding button
-    -   Short `RST` and `GND` while holding button
--   Reset STMC with tinyuf2:
-    -   Double-short `RST` and `GND`
-    -   `QK_BOOT` keycode
-    -   Bootmagic lite
-
-## Bootloaders
-
-To install the STeMcell tinyuf2 bootloader
-
-```
-dfu-util -a 0 -i 0 -s 0x08000000:leave -D tinyuf2-stemcell.bin
-```
-
-To wipe the entire STeMcell flash (wait up to 30s):
-
-```
-dfu-util -a 0 -i 0 -s 0x08000000:mass-erase:force
 ```
 
 # Flashing Notes

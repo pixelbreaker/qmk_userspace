@@ -1,4 +1,5 @@
-// Copyright @filterpaper
+// Copyright 2023 @filterpaper
+// Copyright 2023 @pixelbreaker
 // SPDX-License-Identifier: GPL-2.0+
 
 #include QMK_KEYBOARD_H

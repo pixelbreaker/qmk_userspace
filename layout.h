@@ -80,7 +80,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
 	KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT,    \
 	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
-	                           SPC_NAV, TAB_SYM,     ENT_FUN, BSP_NUM
+	                           SPC_NAV, TAB_SYM,     BSP_NUM, ENT_FUN
 
 #define _COLE \
 	KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
@@ -89,9 +89,9 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           _______, _______,     _______, _______
 
 #define _NAV \
-	___________________________________________,     _______, MV_UP,   KC_UP,    MV_DOWN, KC_COLN,   \
-	______________HOME_ROW_CAGS_L______________,     DELLINE, KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
-	________________COPY_PASTA_________________,     KC_INS,  KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
+	___________________________________________,     DELLINE, MV_UP,   KC_UP,    MV_DOWN, KC_COLN,   \
+	______________HOME_ROW_CAGS_L______________,     KC_EQL,  KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
+	________________COPY_PASTA_________________,     KC_MINS, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
 	                           _______, _______,     _______, _______
 
 #define _NUMB \
@@ -158,7 +158,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 		       ESC_MED, l16, l17,   r16, r17
 
-// Convert 3x5_2 to Charybdis Nano 3x5_3+2
+// Convert 3x5_2 to Sphynx dacman 3x5_3 (with encoders optional)
 #define SPHYNX(k) CONV_SPHYNX(k)
 #define CONV_SPHYNX( \
 	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
@@ -169,6 +169,6 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
-		       ESC_MED,l16, l17,   r16, r17, KC_DEL, KC_MPLY
+		KC_NO, ESC_MED,l16, l17,   r16, r17, KC_DEL, KC_MPLY
 
 // clang-format on
