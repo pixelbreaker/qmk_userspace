@@ -2,12 +2,15 @@
 
 This is my personal _userspace_ for [QMK Firmware](https://github.com/qmk/qmk_firmware). It is set up as a self-contained repository that avoids `keymap.c` files within keyboard sub-folders. It can by build by placing this repository within QMK's [userspace](https://docs.qmk.fm/#/feature_userspace) folder and compiling with the JSON files. [Actions](https://docs.github.com/en/actions) can also be leveraged to do likewise on a GitHub container with [build.yml](.github/workflows/build.yml) workflow.
 
+Big thank you to @filterpaper for his work on the original fork of this repo 🙏🏼
+
 ![corneplanck](./images/pixelbreaker.jpg)
 
 # Features
 
 -   Shared [layout](layout.h) wrapper macros
 -   [Combos](#combo-helper-macros) simplified with preprocessors
+    -   Added Hold only combos for use in application/tab switching code
 -   [Word](features/) processing features
     -   Autocorrection for typos
 -   No RGB, it's naff.

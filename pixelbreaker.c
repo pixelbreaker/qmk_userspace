@@ -122,7 +122,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     // set trackball modes...
     case SPC_NAV:
+#ifdef KEYBOARD_charybdis
       charybdis_set_pointer_dragscroll_enabled(record->event.pressed);
+#endif
       return return_or_achordion(true, keycode, record);
     case ESC_MED:
       if (record->event.pressed) {
