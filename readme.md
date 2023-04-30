@@ -11,6 +11,8 @@ Big thank you to @filterpaper for his work on the original fork of this repo ðŸ™
 -   Shared [layout](layout.h) wrapper macros
 -   [Combos](#combo-helper-macros) simplified with preprocessors
     -   Added Hold only combos for use in application/tab switching code
+-   [Achordion](https://getreuer.info/posts/keyboards/achordion/index.html#tap-hold-configuration) support for a better typing experience with Home Row Mods
+-   Scrollspam for quick tapping keys with the pointing device. Used for carret movement and media controls.
 -   [Word](features/) processing features
     -   Autocorrection for typos
 -   No RGB, it's naff.

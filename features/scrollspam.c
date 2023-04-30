@@ -25,6 +25,11 @@ void tap_code_fast(uint8_t code) {
   unregister_code(code);
 }
 
+void tap_reset() {
+  cum_x = 0;
+  cum_y = 0;
+}
+
 // update cumulative mouse travel
 void tap_report(report_mouse_t mouse_report) {
   cum_x += mouse_report.x;

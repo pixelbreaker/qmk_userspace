@@ -76,11 +76,13 @@ uint16_t last_mouse_press = 0; // for click tracking pause
 static deferred_token activate_track_mode_token = INVALID_DEFERRED_TOKEN;
 
 uint32_t activate_media_mode(uint32_t trigger_time, void *cb_arg) {
+  tap_reset();
   track_mode = MEDIA;
   return 0;
 }
 
 uint32_t activate_carret_mode(uint32_t trigger_time, void *cb_arg) {
+  tap_reset();
   track_mode = CARRET;
   return 0;
 }
