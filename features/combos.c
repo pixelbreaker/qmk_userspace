@@ -32,55 +32,92 @@ SRC += combos.c
 #define C_DATA(name, val, ...) uint16_t const name##_combo[] PROGMEM = {__VA_ARGS__, COMBO_END};
 #define C_TYPE(name, val, ...) [name] = COMBO(name##_combo, val),
 #define A_TYPE(name, val, ...) [name] = COMBO_ACTION(name##_combo),
-#define P_SSTR(name, val, ...) case name: if (pressed) { SEND_STRING(val); } break;
-#define P_ACTN(name, val, ...) case name: if (pressed) { val; } break;
+#define P_SSTR(name, val, ...) \
+  case name:                   \
+    if (pressed) {             \
+      SEND_STRING(val);        \
+    }                          \
+    break;
+#define P_ACTN(name, val, ...) \
+  case name:                   \
+    if (pressed) {             \
+      val;                     \
+    }                          \
+    break;
+#define C_HOLD(name, val, ...) \
+  case name:                   \
+    return true;
 #define UNUSED(...)
 
 // Create an enumerated combo name list
 #define COMB C_ENUM
+#define HOLD C_ENUM
 #define SUBS C_ENUM
 #define ACTN C_ENUM
 enum combos {
-	#include COMBOS_DEF
-	COMBO_LENGTH
+#include COMBOS_DEF
+  COMBO_LENGTH
 };
 uint16_t COMBO_LEN = COMBO_LENGTH;
 
 // Create name arrays with key sequences
 #undef COMB
+#undef HOLD
 #undef SUBS
 #undef ACTN
 #define COMB C_DATA
+#define HOLD C_DATA
 #define SUBS C_DATA
 #define ACTN C_DATA
 #include COMBOS_DEF
 
 // Fill key array with combo type and shortcuts
 #undef COMB
+#undef HOLD
 #undef SUBS
 #undef ACTN
 #define COMB C_TYPE
+#define HOLD C_TYPE
 #define SUBS A_TYPE
 #define ACTN A_TYPE
 combo_t key_combos[] = {
-	#include COMBOS_DEF
+#include COMBOS_DEF
 };
 
 // Add send string or callbacks to event function
 #undef COMB
+#undef HOLD
 #undef SUBS
 #undef ACTN
 #define COMB UNUSED
+#define HOLD UNUSED
 #define SUBS P_SSTR
 #define ACTN P_ACTN
 void process_combo_event(uint16_t combo_index, bool pressed) {
-	switch (combo_index) {
-		#include COMBOS_DEF
-	}
+  switch (combo_index) {
+#include COMBOS_DEF
+  }
 }
 
 #ifdef COMBO_SHOULD_TRIGGER
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-	return get_highest_layer(layer_state) <= CMK;
+  return get_highest_layer(layer_state) <= CMK;
+}
+#endif
+
+#ifdef COMBO_MUST_HOLD_PER_COMBO
+#  undef COMB
+#  undef HOLD
+#  undef SUBS
+#  undef ACTN
+#  define COMB UNUSED
+#  define HOLD C_HOLD
+#  define SUBS UNUSED
+#  define ACTN UNUSED
+bool get_combo_must_hold(uint16_t combo_index, bool pressed) {
+  switch (combo_index) {
+#  include COMBOS_DEF
+  }
+  return false;
 }
 #endif

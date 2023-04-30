@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 #include QMK_KEYBOARD_H
-#if defined(TRACKBALL_ENABLE) || defined(ENCODER_ENABLE)
+
+#if defined(POINTING_DEVICE_ENABLE)
 #  include "features/scrollspam.h"
 #endif
 #ifdef ACHORDION_ENABLE
@@ -17,7 +18,13 @@ static fast_timer_t tap_timer = 0;
 
 // Increase tapping term while typing
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-  return TAPPING_TERM; // IS_HOME_ROW(record) && !IS_MT_SHIFT(keycode) && IS_TYPING() ? TYPING_TERM : TAPPING_TERM;
+  switch (keycode) {
+    case SPC_NAV:
+      return TAPPING_TERM + 80;
+    default:
+      return TAPPING_TERM;
+  }
+  //   return TAPPING_TERM; // IS_HOME_ROW(record) && !IS_MT_SHIFT(keycode) && IS_TYPING() ? TYPING_TERM : TAPPING_TERM;
 }
 
 // Select Shift hold immediately with a nested key
@@ -27,6 +34,9 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 
 // Select layer hold immediately with another key
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+  if (keycode == SPC_NAV) {
+    return false;
+  }
   return IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode) > 0;
 }
 
@@ -42,15 +52,15 @@ static inline bool process_tap_hold(uint16_t hold_keycode, keyrecord_t *record) 
 /*
         APP/TAB switchers
 */
-#if defined(TRACKBALL_ENABLE) || defined(ENCODER_ENABLE)
+#if defined(POINTING_DEVICE_ENABLE) || defined(ENCODER_ENABLE)
 bool appswitch_active = false;
 bool tabswitch_active = false;
 #endif
 
 /*
-        TRACKBALL related
+        POINTING device related
 */
-#ifdef TRACKBALL_ENABLE
+#ifdef POINTING_DEVICE_ENABLE
 enum trackball_modes {
   CURSOR = 0,
   CARRET,
@@ -94,7 +104,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   }
   return mouse_report;
 }
-#endif // TRACKBALL_ENABLE
+#endif // POINTING_DEVICE_ENABLE
 
 bool return_or_achordion(bool default_return, uint16_t keycode, keyrecord_t *record) {
 #if !defined(POINTING_DEVICE_AUTO_MOUSE_ENABLE) && defined(ACHORDION_ENABLE)
@@ -106,39 +116,27 @@ bool return_or_achordion(bool default_return, uint16_t keycode, keyrecord_t *rec
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   tap_timer = timer_read_fast();
-  if (record->event.pressed) {
-    // extern bool process_autocorrect(uint16_t keycode, keyrecord_t * record);
-    // if (!process_autocorrect(keycode, record)) {
-    //     return false;
-    // }
-    // extern bool process_caps_unlock(uint16_t keycode, keyrecord_t * record);
-    // if (!process_caps_unlock(keycode, record)) {
-    //     return false;
-    // }
-    switch (keycode) { // Clipboard shortcuts
-      case TH_N:
-        return process_tap_hold(Z_UND, record);
-      case TH_M:
-        return process_tap_hold(Z_CUT, record);
-      case TH_COMM:
-        return process_tap_hold(Z_CPY, record);
-      case TH_DOT:
-        return process_tap_hold(Z_PST, record);
-      case TH_SLSH:
-        return process_tap_hold(Z_RDO, record);
-    }
-  }
 
   // custom keycodes
   switch (keycode) {
     // set trackball modes...
-    case SPC_SYM:
+    case SPC_NAV:
       charybdis_set_pointer_dragscroll_enabled(record->event.pressed);
       return return_or_achordion(true, keycode, record);
-    case TAB_MED:
+    case ESC_MED:
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_media_mode, NULL);
+        }
+      } else {
+        cancel_deferred_exec(activate_track_mode_token);
+        track_mode = CURSOR;
+      }
+      return return_or_achordion(true, keycode, record);
+    case TAB_SYM:
+      if (record->event.pressed) {
+        if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
+          activate_track_mode_token = defer_exec(CARRET_TIMEOUT_MS, activate_carret_mode, NULL);
         }
       } else {
         cancel_deferred_exec(activate_track_mode_token);
@@ -160,7 +158,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return true;
 
     case APPSWITCH:
-#if defined(TRACKBALL_ENABLE) || defined(ENCODER_ENABLE)
+#if defined(POINTING_DEVICE_ENABLE) || defined(ENCODER_ENABLE)
       if (record->event.pressed) {
         if (!appswitch_active) {
           register_code(KC_LGUI);
@@ -177,7 +175,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
 
     case TABSWITCH:
-#if defined(TRACKBALL_ENABLE) || defined(ENCODER_ENABLE)
+#if defined(POINTING_DEVICE_ENABLE) || defined(ENCODER_ENABLE)
       if (record->event.pressed) {
         if (!tabswitch_active) {
           register_code(KC_LCTL);
@@ -260,14 +258,14 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, ui
       //     break;
 
     case HM_D: // S + Tab.
-      if (other_keycode == HM_S || other_keycode == TAB_MED) {
+      if (other_keycode == HM_S || other_keycode == TAB_SYM) {
         return true;
       }
       break;
 
     case HM_S: // Tab.
     case HM_F: // Tab.
-      if (other_keycode == TAB_MED) {
+      if (other_keycode == TAB_SYM) {
         return true;
       }
       break;
@@ -279,10 +277,10 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, ui
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
   switch (tap_hold_keycode) {
-    case SPC_SYM:
-    case TAB_MED:
+    case TAB_SYM:
     case ENT_FUN:
     case BSP_NUM:
+    case SPC_NAV:
       return 0;
 
     case MSE(KC_Z):
@@ -325,16 +323,6 @@ bool caps_word_press_user(uint16_t keycode) {
       return false; // Deactivate Caps Word.
   }
 }
-
-// Tapping terms
-// uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-//   switch (keycode) {
-//     case SPC_SYM:
-//       return TAPPING_TERM + 80;
-//     default:
-//       return TAPPING_TERM;
-//   }
-// }
 
 // reset CPI after wake
 #ifdef KEYBOARD_charybdis

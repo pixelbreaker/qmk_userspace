@@ -24,7 +24,7 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
 	RGB_MATRIX_ENABLE = no
 	DEFERRED_EXEC_ENABLE = yes
     OPT_DEFS += -DKEYBOARD_charybdis
-    OPT_DEFS += -DTRACKBALL_ENABLE
+    # OPT_DEFS += -DTRACKBALL_ENABLE
 endif
 
 # ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/splinky_3))

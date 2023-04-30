@@ -5,6 +5,7 @@
 	"layers": [
 		[ "CHARYBDIS(HRM(_BASE))" ],
 		[ "CHARYBDIS(HRM(_COLE))" ],
+		[ "CHARYBDIS(_NAV)" ],
 		[ "CHARYBDIS(_NUMB)" ],
 		[ "CHARYBDIS(_SYMB)" ],
 		[ "CHARYBDIS(_FUNC)" ],

@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "quantum/keycodes.h"
+// #include "quantum/keycodes.h"
 
-#ifndef __ASSEMBLER__
-enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH };
-#endif
+// #ifndef __ASSEMBLER__
+// enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH };
+// #endif
 
 // Common QMK settings
 // #define TAP_CODE_DELAY 5
@@ -16,7 +16,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH };
 // #define USB_SUSPEND_WAKEUP_DELAY 2000
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 1000U
 // Space saving options
-#define LAYER_STATE_8BIT
+// #define LAYER_STATE_8BIT
 // #define NO_ACTION_ONESHOT
 //  Tap-hold settings
 #define TAPPING_TERM 180
@@ -32,6 +32,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH };
 #ifdef POINTING_DEVICE_ENABLE
 #  define MEDIA_TAP_THRESHOLD 85
 #  define MEDIA_TAP_TERM 600
+#  define CARRET_TIMEOUT_MS 350
 // #    define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #    define AUTO_MOUSE_DEFAULT_LAYER 3
@@ -67,7 +68,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH };
 
 #ifdef COMBO_ENABLE
 #  define COMBO_TERM 80
-// #    define COMBO_MUST_HOLD_PER_COMBO
+#  define COMBO_MUST_HOLD_PER_COMBO
 #  define COMBO_SHOULD_TRIGGER
 #  define COMBO_ONLY_FROM_LAYER 0
 #endif
