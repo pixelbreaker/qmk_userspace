@@ -107,7 +107,7 @@ The `split_3x5_2` layout is used as the base layout and defined in `layout.h` fi
 	KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
 	KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT,    \
 	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
-	                           SPC_NAV, TAB_SYM,     BSP_NUM, ENT_FUN
+	                           SPC_NAV, TAB_SYM,     ENT_FUN, BSP_NUM
 ```
 
 Next, a wrapper alias to the layout used by the keyboard is also defined in `layout.h` file, e.g. for Cradio:

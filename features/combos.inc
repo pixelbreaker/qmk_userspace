@@ -17,6 +17,9 @@ HOLD(tabswitch, TABSWITCH, MS_Z, KC_X)
 
 // characters
 COMB(char_tilde, KC_TILDE, KC_O, KC_P)
+COMB(char_scln, KC_SCLN, HM_L, HM_QUOT)
+COMB(char_bsls, KC_BSLS, KC_DOT, KC_SLSH)
+COMB(char_unds, KC_UNDS, KC_U, KC_I)  
 
 // brackets
 COMB(char_lbrc, KC_LBRC, KC_W, HM_S)

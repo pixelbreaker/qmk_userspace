@@ -21,11 +21,10 @@ static fast_timer_t tap_timer = 0;
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case SPC_NAV:
-      return TAPPING_TERM + 80;
-    default:
       return TAPPING_TERM;
+    default:
+      return IS_HOME_ROW(record) && !IS_MT_SHIFT(keycode) && IS_TYPING() ? TYPING_TERM : TAPPING_TERM;
   }
-  //   return TAPPING_TERM; // IS_HOME_ROW(record) && !IS_MT_SHIFT(keycode) && IS_TYPING() ? TYPING_TERM : TAPPING_TERM;
 }
 
 // Select Shift hold immediately with a nested key
@@ -109,6 +108,30 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
 }
 #endif // POINTING_DEVICE_ENABLE
 
+#ifdef ENCODER_ENABLE
+bool encoder_down  = false;
+bool encoder_moved = false;
+
+bool encoder_update_user(uint8_t index, bool clockwise) {
+  if (index == 0) { /* First encoder */
+    if (appswitch_active || tabswitch_active) {
+      tap_code16(clockwise ? KC_TAB : S(KC_TAB));
+
+    } else {
+      if (encoder_down) {
+        tap_code_delay(clockwise ? KC_MNXT : KC_MPRV, 10);
+      } else {
+        tap_code_delay(clockwise ? KC_VOLU : KC_VOLD, 10);
+      }
+    }
+    encoder_moved = true;
+    return false;
+  } else {
+    return true;
+  }
+}
+#endif
+
 bool return_or_achordion(bool default_return, uint16_t keycode, keyrecord_t *record) {
 #if !defined(POINTING_DEVICE_AUTO_MOUSE_ENABLE) && defined(ACHORDION_ENABLE)
   return process_achordion(keycode, record);
@@ -129,6 +152,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif
       return return_or_achordion(true, keycode, record);
     case ESC_MED:
+#ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_media_mode, NULL);
@@ -137,8 +161,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
+#endif
       return return_or_achordion(true, keycode, record);
     case TAB_SYM:
+#ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(CARRET_TIMEOUT_MS, activate_carret_mode, NULL);
@@ -147,6 +173,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
+#endif
       return return_or_achordion(true, keycode, record);
 
     // Pause mouse report updates for short time after clicking to make it easier
@@ -191,6 +218,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       tabswitch_active = record->event.pressed;
+#endif
+      return false;
+
+    case ENC_DOWN:
+#ifdef ENCODER_ENABLE
+      encoder_down = record->event.pressed;
+      if (encoder_moved && record->event.pressed) {
+        encoder_moved = false;
+      }
+      if (!record->event.pressed && !encoder_moved) {
+        tap_code16(KC_MPLY);
+      }
 #endif
       return false;
 
@@ -285,9 +324,9 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     case TAB_SYM:
     case ENT_FUN:
     case BSP_NUM:
-    case SPC_NAV:
       return 0;
 
+    case SPC_NAV:
     case MSE(KC_Z):
       return 100;
 

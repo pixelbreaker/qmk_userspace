@@ -5,11 +5,11 @@
 #include "quantum/keycodes.h"
 #include "pixelbreaker.h"
 
-#ifdef POINTING_DEVICE_ENABLE
-#  define MSE(k) LT(MOU, k)
-#else
-#  define MSE(k) k
-#endif
+// #ifdef POINTING_DEVICE_ENABLE
+#define MSE(k) LT(MOU, k)
+// #else
+// #  define MSE(k) k
+// #endif
 
 // macOS shortcuts
 #define Z_UND G(KC_Z)
@@ -20,7 +20,6 @@
 #define Z_LOCK C(G(KC_Q))
 #define Z_SLEEP RCS(KC_KB_POWER)
 #define Z_SHUT C(A(G(KC_PWR)))
-#define Z_SSAVE HYPR(KC_S)
 #define Z_SSHT G(S(KC_4))
 #define Z_SRCD G(S(KC_5))
 #define Z_VSML A(KC_LSFT)
@@ -80,7 +79,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
 	KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT,    \
 	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
-	                           SPC_NAV, TAB_SYM,     BSP_NUM, ENT_FUN
+	                           SPC_NAV, TAB_SYM,     ENT_FUN, BSP_NUM
 
 #define _COLE \
 	KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
@@ -92,13 +91,13 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	___________________________________________,     DELLINE, MV_UP,   KC_UP,    MV_DOWN, KC_COLN,   \
 	______________HOME_ROW_CAGS_L______________,     KC_EQL,  KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
 	________________COPY_PASTA_________________,     KC_MINS, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
-	                           _______, _______,     _______, _______
+	                           _______, _______,     KC_ENT,  KC_BSPC
 
 #define _NUMB \
-	KC_INS,  KC_7,    KC_8,    KC_9,    KC_VOLU,     ___________________________________________,    \
-	KC_DEL,  KC_4,    KC_5,    KC_6,    KC_VOLD,     ______________HOME_ROW_CAGS_R______________,    \
-	KC_CAPS, KC_1,    KC_2,    KC_3,    KC_0,        ________________COPY_PASTA_________________,    \
-	                           _______, KC_DOT,      _______, _______
+	S(KC_8), KC_7,    KC_8,    KC_9,    KC_PLUS,      ___________________________________________,    \
+	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     ______________HOME_ROW_CAGS_R______________,    \
+	KC_CAPS, KC_1,    KC_2,    KC_3,    KC_EQL,        ________________COPY_PASTA_________________,    \
+	                           KC_0,    KC_DOT,      _______, _______
 
 #define _SYMB \
 	_______, _______, KC_LBRC, KC_RBRC, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_GRV,    \
@@ -107,9 +106,9 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           _______, _______,     _______, KC_DEL
 
 #define _FUNC \
-	QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      _______, _______, KC_WH_U, KC_WH_D, TG(CMK),    \
-	_______, KC_F4,   KC_F5,   KC_F6,   KC_F11,      _______, KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R,    \
-	Z_SLEEP, KC_F1,   KC_F2,   KC_F3,   KC_F10,      _______, KC_BTN2, KC_BTN1, _______, Z_SSAVE,    \
+	QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      ___________________________________________,    \
+	_______, KC_F4,   KC_F5,   KC_F6,   KC_F11,      ______________HOME_ROW_CAGS_R______________,    \
+	Z_SLEEP, KC_F1,   KC_F2,   KC_F3,   KC_F10,      ________________COPY_PASTA_________________,    \
 	                           KC_BTN1, KC_BTN2,     _______, _______
 
 #define _MEDIA \
@@ -120,9 +119,9 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 
 // Only for boards with a pointing device
 #define _MOUSE \
-	DPI_MOD, S_D_MOD, _______, _______, _______,     _______, _______, _______, _______, _______,    \
-    _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
-    _______, SNIPE,   _______, KC_BTN3, _______,     _______, _______, _______, _______, _______,    \
+	DPI_MOD, S_D_MOD, _______, _______, _______,     _______, _______, KC_MS_U, _______, _______,    \
+    _______, _______, _______, _______, _______,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, _______,    \
+    _______, SNIPE,   _______, KC_BTN3, _______,     KC_WH_D, KC_BTN2, KC_BTN1, _______, _______,    \
                       		   KC_BTN1, KC_BTN2,     _______, _______
 
 // Mod-tap wrapper
@@ -141,7 +140,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 
 
 // Layout aliases for json keymap
-#define LAYOUT_34key_w(...) LAYOUT_split_3x5_2(__VA_ARGS__)
+#define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
 #define LAYOUT_charybdis_w(...) LAYOUT(__VA_ARGS__)
 
 
@@ -169,6 +168,6 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
-		KC_NO, ESC_MED,l16, l17,   r16, r17, KC_DEL, KC_MPLY
+		KC_NO, ESC_MED,l16, l17,   r16, r17, KC_DEL, ENC_DOWN
 
 // clang-format on

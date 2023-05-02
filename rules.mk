@@ -27,6 +27,13 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
     # OPT_DEFS += -DTRACKBALL_ENABLE
 endif
 
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
+	RGBLIGHT_SUPPORTED = no
+	RGB_MATRIX_ENABLE = no
+    OPT_DEFS += -DKEYBOARD_sphynx
+    OPT_DEFS += -DENCODER_ENABLE
+endif
+
 # ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/splinky_3))
 # endif
 

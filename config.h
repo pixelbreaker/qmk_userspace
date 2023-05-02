@@ -3,23 +3,17 @@
 
 #pragma once
 
-// #include "quantum/keycodes.h"
-
-// #ifndef __ASSEMBLER__
-// enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH };
-// #endif
-
 // Common QMK settings
-// #define TAP_CODE_DELAY 5
-// #define TAP_HOLD_CAPS_DELAY 35
-// #define GRAVE_ESC_SHIFT_OVERRIDE
-// #define USB_SUSPEND_WAKEUP_DELAY 2000
+#define TAP_CODE_DELAY 5
+#define TAP_HOLD_CAPS_DELAY 35
+#define USB_SUSPEND_WAKEUP_DELAY 1000
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 1000U
+
 // Space saving options
-// #define LAYER_STATE_8BIT
-// #define NO_ACTION_ONESHOT
+#define LAYER_STATE_8BIT
+
 //  Tap-hold settings
-#define TAPPING_TERM 180
+#define TAPPING_TERM 200
 #define TAPPING_TERM_PER_KEY
 #define QUICK_TAP_TERM 100
 #define PERMISSIVE_HOLD
@@ -67,21 +61,25 @@
 #endif
 
 #ifdef COMBO_ENABLE
-#  define COMBO_TERM 80
+#  ifdef KEYBOARD_charybdis
+#    define COMBO_TERM 90 // slower for heavier switches
+#  else
+#    define COMBO_TERM 60
+#  endif
 #  define COMBO_MUST_HOLD_PER_COMBO
 #  define COMBO_SHOULD_TRIGGER
 #  define COMBO_ONLY_FROM_LAYER 0
 #endif
 
 #ifdef MOUSEKEY_ENABLE
-#  define MOUSEKEY_DELAY 0       // Delay between pressing a key and cursor movement
-#  define MOUSEKEY_INTERVAL 15   // Time between cursor movements in milliseconds
-#  define MOUSEKEY_MOVE_DELTA 10 // Step size for acceleration
-#  define MOUSEKEY_MAX_SPEED 9
+#  define MOUSEKEY_DELAY 0      // Delay between pressing a key and cursor movement
+#  define MOUSEKEY_INTERVAL 15  // Time between cursor movements in milliseconds
+#  define MOUSEKEY_MOVE_DELTA 8 // Step size for acceleration
+#  define MOUSEKEY_MAX_SPEED 3
 #  define MOUSEKEY_TIME_TO_MAX 80
 #  define MOUSEKEY_WHEEL_DELAY 16
 #  define MOUSEKEY_WHEEL_INTERVAL 30
-#  define MOUSEKEY_WHEEL_MAX_SPEED 10
+#  define MOUSEKEY_WHEEL_MAX_SPEED 3
 #  define MOUSEKEY_WHEEL_TIME_TO_MAX 95
 #endif
 

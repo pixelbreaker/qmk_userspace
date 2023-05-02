@@ -1,0 +1,15 @@
+{
+	"keyboard": "handwired/sphynx",
+	"keymap": "pixelbreaker",
+	"layout": "LAYOUT_sphynx_w",
+	"layers": [
+		[ "SPHYNX(HRM(_BASE))" ],
+		[ "SPHYNX(HRM(_COLE))" ],
+		[ "SPHYNX(_NAV)" ],
+		[ "SPHYNX(_NUMB)" ],
+		[ "SPHYNX(_SYMB)" ],
+		[ "SPHYNX(_FUNC)" ],
+		[ "SPHYNX(_MEDIA)" ],
+		[ "SPHYNX(_MOUSE)" ]
+	]
+}
