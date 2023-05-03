@@ -23,6 +23,12 @@ A 3x5_3+2 split ergo keyboard with a trackball. Available from [BastardKB](https
 
 To build run `qmk compile ./users/pixelbreaker/keymaps/charybdis.json` or to flash directly to the board run `qmk flash ./users/pixelbreaker/keymaps/charybdis.json`
 
+# Sphynx low profile dacman
+
+A keyboard I designed in Clojure based on the infamous Dactyl Manuform. The repo to build the models is [here](https://github.com/pixelbreaker/sphynx-dactyl-keyboard)
+
+To build run `qmk compile ./users/pixelbreaker/keymaps/sphynx.json` or to flash directly to the board run `qmk flash ./users/pixelbreaker/keymaps/sphynx.json`
+
 # Code Snippets
 
 ## Combo helper macros
