@@ -28,25 +28,28 @@ SRC += combos.c
 #define COMBOS_DEF "combos.inc"
 
 // Combo code building macros
-#define C_ENUM(name, val, ...) name,
-#define C_DATA(name, val, ...) uint16_t const name##_combo[] PROGMEM = {__VA_ARGS__, COMBO_END};
-#define C_TYPE(name, val, ...) [name] = COMBO(name##_combo, val),
-#define A_TYPE(name, val, ...) [name] = COMBO_ACTION(name##_combo),
-#define P_SSTR(name, val, ...) \
-  case name:                   \
-    if (pressed) {             \
-      SEND_STRING(val);        \
-    }                          \
+#define C_ENUM(name, val, term, ...) name,
+#define C_DATA(name, val, term, ...) uint16_t const name##_combo[] PROGMEM = {__VA_ARGS__, COMBO_END};
+#define C_TYPE(name, val, term, ...) [name] = COMBO(name##_combo, val),
+#define A_TYPE(name, val, term, ...) [name] = COMBO_ACTION(name##_combo),
+#define P_SSTR(name, val, term, ...) \
+  case name:                         \
+    if (pressed) {                   \
+      SEND_STRING(val);              \
+    }                                \
     break;
-#define P_ACTN(name, val, ...) \
-  case name:                   \
-    if (pressed) {             \
-      val;                     \
-    }                          \
+#define P_ACTN(name, val, term, ...) \
+  case name:                         \
+    if (pressed) {                   \
+      val;                           \
+    }                                \
     break;
-#define C_HOLD(name, val, ...) \
-  case name:                   \
+#define C_HOLD(name, val, term, ...) \
+  case name:                         \
     return true;
+#define C_TERM(name, val, term, ...) \
+  case name:                         \
+    return COMBO_TERM + term;
 #define UNUSED(...)
 
 // Create an enumerated combo name list
@@ -115,6 +118,23 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
 #  define SUBS UNUSED
 #  define ACTN UNUSED
 bool get_combo_must_hold(uint16_t combo_index, bool pressed) {
+  switch (combo_index) {
+#  include COMBOS_DEF
+  }
+  return false;
+}
+#endif
+
+#ifdef COMBO_TERM_PER_COMBO
+#  undef COMB
+#  undef HOLD
+#  undef SUBS
+#  undef ACTN
+#  define COMB C_TERM
+#  define HOLD C_TERM
+#  define SUBS C_TERM
+#  define ACTN C_TERM
+bool get_combo_term(uint16_t combo_index, bool pressed) {
   switch (combo_index) {
 #  include COMBOS_DEF
   }
