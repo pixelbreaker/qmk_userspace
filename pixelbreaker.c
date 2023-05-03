@@ -324,6 +324,7 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     case TAB_SYM:
     case ENT_FUN:
     case BSP_NUM:
+    case ESC_MED:
       return 0;
 
     case SPC_NAV:

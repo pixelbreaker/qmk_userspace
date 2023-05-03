@@ -24,7 +24,8 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
 	RGB_MATRIX_ENABLE = no
 	DEFERRED_EXEC_ENABLE = yes
     OPT_DEFS += -DKEYBOARD_charybdis
-    # OPT_DEFS += -DTRACKBALL_ENABLE
+    OPT_DEFS += -DTRACKBALL_ENABLE
+	OPT_DEFS += -DCOMBO_TERM=90 
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
@@ -33,37 +34,3 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
     OPT_DEFS += -DKEYBOARD_sphynx
     OPT_DEFS += -DENCODER_ENABLE
 endif
-
-# ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/splinky_3))
-# endif
-
-# ifeq ($(strip $(MCU)), atmega32u4)
-# 	LTO_ENABLE = yes
-# 	BOOTLOADER = atmel-dfu
-# endif
-
-# ifneq ($(strip $(CONVERT_TO)),)
-# 	DEBOUNCE_TYPE = sym_defer_pr
-# 	ifeq ($(strip $(CONVERT_TO)), kb2040)
-# 		RGB_MATRIX_ENABLE = yes
-# 		RGB_MATRIX_DRIVER = WS2812
-# 		RGB_MATRIX_CUSTOM_USER = yes
-# 		SRC += rgb-matrix.c
-# 	endif
-# 	ifneq (,$(filter $(SPLIT), left right))
-# 		MAKECMDGOALS = uf2-split-$(SPLIT)
-# 	endif
-# endif
-
-# ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), crkbd/rev1))
-# 	RGB_MATRIX_ENABLE = yes
-# 	RGB_MATRIX_CUSTOM_USER = yes
-# 	SRC += rgb-matrix.c
-# 	OLED_ENABLE = yes
-# 	ifneq ($(strip $(OLED)),)
-# 		OPT_DEFS += -D$(OLED)
-# 		SRC += oled-icons.c oled-luna.c
-# 	else
-# 		SRC += oled-icons.c oled-bongocat.c
-# 	endif
-# endif

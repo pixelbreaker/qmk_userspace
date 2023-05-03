@@ -61,9 +61,7 @@
 #endif
 
 #ifdef COMBO_ENABLE
-#  ifdef KEYBOARD_charybdis
-#    define COMBO_TERM 90 // slower for heavier switches
-#  else
+#  ifndef COMBO_TERM
 #    define COMBO_TERM 60
 #  endif
 #  define COMBO_MUST_HOLD_PER_COMBO
