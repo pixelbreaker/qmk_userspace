@@ -100,21 +100,21 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           _______, KC_DOT,      _______, _______
 
 #define _SYMB \
-	_______, _______, KC_LBRC, KC_RBRC, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_GRV,    \
-	_______, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PIPE, KC_MINS, KC_SLSH,  KC_EQL,  KC_SCLN,   \
+	_______, _______, KC_LBRC, KC_RBRC, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
+	_______, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PIPE, KC_MINS, KC_SLSH,  KC_EQL,  KC_GRV,    \
 	_______, _______, KC_LCBR, KC_RCBR, _______,     KC_AMPR, KC_UNDS, Z_HASH,   Z_AT,    KC_BSLS,   \
 	                           _______, _______,     _______, KC_DEL
 
 #define _FUNC \
-	QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      ___________________________________________,    \
+	_______, KC_F7,   KC_F8,   KC_F9,   KC_F12,      ___________________________________________,    \
 	_______, KC_F4,   KC_F5,   KC_F6,   KC_F11,      ______________HOME_ROW_CAGS_R______________,    \
-	Z_SLEEP, KC_F1,   KC_F2,   KC_F3,   KC_F10,      ________________COPY_PASTA_________________,    \
+	_______, KC_F1,   KC_F2,   KC_F3,   KC_F10,      ________________COPY_PASTA_________________,    \
 	                           _______, _______,     _______, _______
 
 #define _MEDIA \
-    _______, _______, Z_SSHT,  Z_SRCD,  _______,     _______, _______, KC_VOLU, _______, _______,    \
+    QK_BOOT, _______, Z_SSHT,  Z_SRCD,  _______,     _______, _______, KC_VOLU, _______, _______,    \
     _______, _______, _______, Z_VSML,  _______,     KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, _______,    \
-    _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
+    Z_SLEEP, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
 							   _______, _______,     KC_MSTP, KC_MPLY
 
 // Only for boards with a pointing device

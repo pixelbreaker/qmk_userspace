@@ -62,10 +62,9 @@
 
 #ifdef COMBO_ENABLE
 #  ifndef COMBO_TERM
-#    define COMBO_TERM 60
+#    define COMBO_TERM 50
 #  endif
 #  define COMBO_MUST_HOLD_PER_COMBO
-#  define COMBO_TERM_PER_COMBO
 #  define COMBO_SHOULD_TRIGGER
 #  define COMBO_ONLY_FROM_LAYER 0
 #endif
