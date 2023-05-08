@@ -100,9 +100,9 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           _______, KC_DOT,      _______, _______
 
 #define _SYMB \
-	_______, _______, KC_LBRC, KC_RBRC, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
-	_______, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PIPE, KC_MINS, KC_SLSH,  KC_EQL,  KC_GRV,    \
-	_______, _______, KC_LCBR, KC_RCBR, _______,     KC_AMPR, KC_UNDS, Z_HASH,   Z_AT,    KC_BSLS,   \
+	_______, _______, _______, KC_LBRC, KC_RBRC,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
+	_______, _______, _______, KC_LPRN, KC_RPRN,     KC_PIPE, KC_MINS, KC_SLSH,  KC_EQL,  KC_GRV,    \
+	_______, _______, _______, KC_LCBR, KC_RCBR,     KC_AMPR, KC_UNDS, Z_HASH,   Z_AT,    KC_BSLS,   \
 	                           _______, _______,     _______, KC_DEL
 
 #define _FUNC \
@@ -117,7 +117,6 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
     Z_SLEEP, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
 							   _______, _______,     KC_MSTP, KC_MPLY
 
-// Only for boards with a pointing device
 #define _MOUSE \
 	DPI_MOD, S_D_MOD, _______, _______, _______,     _______, _______, KC_MS_U, _______, _______,    \
     _______, _______, _______, _______, _______,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, _______,    \
