@@ -1169,7 +1169,7 @@ dyas                -> dryas
 
 eahc                -> each
 ealier              -> earlier
-earnt               -> earned
+:earnt              -> earned
 ecclectic           -> eclectic
 eceonomy            -> economy
 ecidious            -> deciduous

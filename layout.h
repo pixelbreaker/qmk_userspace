@@ -94,7 +94,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           _______, _______,     KC_ENT,  KC_BSPC
 
 #define _NUMB \
-	S(KC_8), KC_7,    KC_8,    KC_9,    KC_PLUS,     ___________________________________________,    \
+	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     ___________________________________________,    \
 	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     ______________HOME_ROW_CAGS_R______________,    \
 	KC_0,    KC_1,    KC_2,    KC_3,    KC_EQL,      ________________COPY_PASTA_________________,    \
 	                           _______, KC_DOT,      _______, _______
@@ -119,8 +119,8 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 
 #define _MOUSE \
 	DPI_MOD, S_D_MOD, _______, _______, _______,     _______, _______, KC_MS_U, _______, _______,    \
-    _______, _______, _______, _______, _______,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, _______,    \
-    _______, SNIPE,   _______, KC_BTN3, _______,     KC_WH_D, KC_BTN2, KC_BTN1, _______, _______,    \
+    ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, _______,    \
+    _______, SNIPE,   _______, KC_BTN3, _______,     KC_WH_D, _______, _______, _______, _______,    \
                       		   KC_BTN1, KC_BTN2,     _______, _______
 
 // Mod-tap wrapper

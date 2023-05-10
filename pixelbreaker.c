@@ -302,17 +302,16 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, ui
       //     break;
 
     case HM_D: // S + Tab.
-      if (other_keycode == HM_S || other_keycode == TAB_SYM) {
+      if (other_keycode == HM_S || other_keycode == KC_W) {
         return true;
       }
       break;
+  }
 
-    case HM_S: // Tab.
-    case HM_F: // Tab.
-      if (other_keycode == TAB_SYM) {
-        return true;
-      }
-      break;
+  // Also allow same-hand holds when the other key is in the rows below the
+  // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
+  if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 3) {
+    return true;
   }
 
   // Otherwise, follow the opposite hands rule.
@@ -338,8 +337,12 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 
 bool achordion_eager_mod(uint8_t mod) {
   switch (mod) {
-    case MOD_HYPR:
-    case MOD_MEH:
+    case MOD_LSFT:
+    case MOD_RSFT:
+    case MOD_LGUI:
+    case MOD_RGUI:
+      // case MOD_HYPR:
+      // case MOD_MEH:
       return true;
 
     default:
