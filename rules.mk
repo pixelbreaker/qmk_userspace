@@ -1,9 +1,9 @@
 # Disable unused features
 MAGIC_ENABLE = no
-CONSOLE_ENABLE = no
 UNICODE_ENABLE = no
 SPACE_CADET_ENABLE = no
 SWAP_HANDS_ENABLE = no
+CONSOLE_ENABLE = no
 
 # Enable common features
 COMBO_ENABLE = yes

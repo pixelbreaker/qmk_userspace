@@ -4,6 +4,10 @@
 
 #include QMK_KEYBOARD_H
 
+#ifdef CONSOLE_ENABLE
+#  include "print.h"
+#endif
+
 #if defined(POINTING_DEVICE_ENABLE)
 #  include "features/scrollspam.h"
 #endif
@@ -34,10 +38,15 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 
 // Select layer hold immediately with another key
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-  if (keycode == SPC_NAV) {
-    return false;
+  // Hold space to toggle layer immediately when not currently typing else wait for tapping term
+  switch (keycode) {
+    case SPC_NAV:
+    case BSP_NUM:
+      return !IS_TYPING();
+
+    default:
+      return IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode) > 0;
   }
-  return IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode) > 0;
 }
 
 // Send custom hold keycode for mod tap
@@ -185,6 +194,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         last_mouse_press = timer_read();
       } else {
         mouse_is_down = false;
+#  ifdef KEYBOARD_charybdis
+        charybdis_set_pointer_dragscroll_enabled(false);
+#  endif
       }
 #endif
       return true;
@@ -324,9 +336,9 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     case ENT_FUN:
     case BSP_NUM:
     case ESC_MED:
+    case SPC_NAV:
       return 0;
 
-    case SPC_NAV:
     case MSE(KC_Z):
       return 100;
 
@@ -370,6 +382,16 @@ bool caps_word_press_user(uint16_t keycode) {
     default:
       return false; // Deactivate Caps Word.
   }
+}
+
+void keyboard_post_init_user(void) {
+// Customise these values to desired behaviour
+#ifdef CONSOLE_ENABLE
+  debug_enable = true;
+//   debug_matrix = true;
+#endif
+  // debug_keyboard=true;
+  // debug_mouse=true;
 }
 
 // reset CPI after wake
