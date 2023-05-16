@@ -1064,7 +1064,7 @@ deterioriating      -> deteriorating
 determinining       -> determining
 detremental         -> detrimental
 devasted            -> devastated
-develope            -> develop
+develope:           -> develop
 developped          -> developed
 develpment          -> development
 devels              -> delves

@@ -3,7 +3,7 @@
 // Layout key reference
 // KC_Q    KC_W    KC_E    KC_R    KC_T        KC_Y    KC_U    KC_I    KC_O    KC_P
 // HM_A    HM_S    HM_D    HM_F    KC_G        KC_H    HM_J    HM_K    HM_L    HM_QUOT
-// MS_Z    KC_X    KC_C    KC_V    KC_B        TH_N    TH_M    TH_COMM TH_DOT  TH_SLSH
+// MS_Z    KC_X    KC_C    KC_V    KC_B        KC_N    KC_M    KC_COMM KC_DOT  MS_SLSH
 //                      SPC_NAV TAB_SYM        ENT_FUN BSP_NUM
 
 // general
@@ -12,13 +12,13 @@ COMB(hypr, OSM_HYPR, KC_C, KC_V)
 COMB(meh, OSM_MEH, KC_M, KC_COMM)
 
 // switchers
-HOLD(appswitch, APPSWITCH, KC_E, KC_R)
+HOLD(appswitch, APPSWITCH, KC_V, KC_B)
 HOLD(tabswitch, TABSWITCH, MS_Z, KC_X)
 
 // characters
 //COMB(char_tilde, KC_TILDE, KC_Q, KC_W)
 COMB(char_scln, KC_SCLN, HM_L, HM_QUOT)
-COMB(char_bsls, KC_BSLS, KC_DOT, KC_SLSH)
+COMB(char_btn1, KC_BTN1, KC_DOT, MS_SLSH)
 //COMB(char_unds, KC_UNDS, KC_U, KC_I)  
 
 // brackets

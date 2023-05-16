@@ -26,12 +26,8 @@
 #define Z_HASH A(KC_3)
 #define Z_AT S(KC_2)
 
-#define MV_DOWN A(KC_DOWN)
-#define MV_UP A(KC_UP)
-#define MV_FOR G(KC_RIGHT)
-#define MV_BAK G(KC_LEFT)
-
 #define MS_Z MSE(KC_Z)
+#define MS_SLSH MSE(KC_SLSH)
 
 #define OSM_HYPR OSM(MOD_HYPR)
 #define OSM_MEH OSM(MOD_MEH)
@@ -88,7 +84,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           _______, _______,     _______, _______
 
 #define _NAV \
-	___________________________________________,     DELLINE, MV_UP,   KC_UP,    MV_DOWN, KC_COLN,   \
+	___________________________________________,     _______, DELLINE, KC_UP,    _______, KC_COLN,   \
 	______________HOME_ROW_CAGS_L______________,     KC_EQL,  KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
 	________________COPY_PASTA_________________,     KC_MINS, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
 	                           _______, _______,     KC_ENT,  KC_BSPC
@@ -97,7 +93,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     ___________________________________________,    \
 	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     ______________HOME_ROW_CAGS_R______________,    \
 	KC_0,    KC_1,    KC_2,    KC_3,    KC_EQL,      ________________COPY_PASTA_________________,    \
-	                           _______, KC_DOT,      _______, _______
+	                           KC_SPC,  KC_DOT,      _______, _______
 
 #define _SYMB \
 	_______, _______, _______, _______, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
@@ -106,7 +102,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           _______, _______,     _______, KC_DEL
 
 #define _FUNC \
-	_______, KC_F7,   KC_F8,   KC_F9,   KC_F12,      ___________________________________________,    \
+	_______, KC_F7,   KC_F8,   KC_F9,   KC_F12,      _______, _______, _______, _______, TG(CMK),    \
 	_______, KC_F4,   KC_F5,   KC_F6,   KC_F11,      ______________HOME_ROW_CAGS_R______________,    \
 	_______, KC_F1,   KC_F2,   KC_F3,   KC_F10,      ________________COPY_PASTA_________________,    \
 	                           _______, _______,     _______, _______
@@ -134,7 +130,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 ) \
 	  l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05,       \
 HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
- MSE(l11), l12, l13, l14, l15,   r11, r12, r13, r14, r15,  \
+ MSE(l11), l12, l13, l14, l15,   r11, r12, r13, r14, MSE(r15),  \
 	                 l16, l17,   r16, r17
 
 
