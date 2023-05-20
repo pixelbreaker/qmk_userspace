@@ -18,7 +18,7 @@
 #define Z_PST G(KC_V)
 #define Z_RDO S(G(KC_Z))
 #define Z_LOCK C(G(KC_Q))
-#define Z_SLEEP RCS(KC_KB_POWER)
+#define Z_SLEEP S(C(KC_EJCT))
 #define Z_SHUT C(A(G(KC_PWR)))
 #define Z_SSHT G(S(KC_4))
 #define Z_SRCD G(S(KC_5))
@@ -96,7 +96,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 	                           KC_SPC,  KC_DOT,      _______, _______
 
 #define _SYMB \
-	_______, _______, _______, _______, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
+	KC_GT,   KC_RBRC, KC_RCBR, KC_RPRN, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
 	KC_LT,   KC_LBRC, KC_LCBR, KC_LPRN, _______,     KC_PIPE, KC_MINS, KC_SLSH,  KC_EQL,  KC_GRV,    \
 	KC_GT,   KC_RBRC, KC_RCBR, KC_RPRN, _______,     KC_AMPR, KC_UNDS, Z_HASH,   Z_AT,    KC_BSLS,   \
 	                           _______, _______,     _______, KC_DEL

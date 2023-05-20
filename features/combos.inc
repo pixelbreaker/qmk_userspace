@@ -12,13 +12,13 @@ COMB(hypr, OSM_HYPR, KC_C, KC_V)
 COMB(meh, OSM_MEH, KC_M, KC_COMM)
 
 // switchers
-HOLD(appswitch, APPSWITCH, KC_V, KC_B)
+HOLD(appswitch, APPSWITCH, KC_X, KC_C)
 HOLD(tabswitch, TABSWITCH, MS_Z, KC_X)
 
 // characters
 //COMB(char_tilde, KC_TILDE, KC_Q, KC_W)
 COMB(char_scln, KC_SCLN, HM_L, HM_QUOT)
-COMB(char_btn1, KC_BTN1, KC_DOT, MS_SLSH)
+//COMB(char_btn1, KC_BTN1, KC_DOT, MS_SLSH)
 //COMB(char_unds, KC_UNDS, KC_U, KC_I)  
 
 // brackets
@@ -40,3 +40,4 @@ SUBS(c_arr, "->", KC_H, KC_N)
 SUBS(js_arr, "=>", HM_J, KC_M)
 SUBS(js_arrfn, "() => {}" SS_TAP(X_LEFT) "\n", HM_K, KC_COMM)
 SUBS(md_link, "[]()" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), HM_L, KC_DOT)
+SUBS(dir_up, "../", KC_DOT, MS_SLSH)

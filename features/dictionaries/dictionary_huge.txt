@@ -1835,12 +1835,12 @@ klenex              -> kleenex
 knifes              -> knives
 knive:              -> knife
 knowlege            -> knowledge
-knwo:               -> know
+:knwo:              -> know
 knwon:              -> known
-konw:               -> know
+:konw:              -> know
 konwn:              -> known
-kwno:               -> know
-kwnon:              -> known
+:kwno:              -> know
+:kwnon:             -> known
 
 labratory           -> laboratory
 laguage             -> language
@@ -2101,8 +2101,8 @@ nineth              -> ninth
 ninteenth           -> nineteenth
 ninties             -> 1990s
 ninty               -> ninety
-nkow                -> know
-nkwo                -> know
+:nkow               -> know
+:nkwo               -> know
 nmae                -> name
 noncombatents       -> noncombatants
 nonsence            -> nonsense
