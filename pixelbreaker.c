@@ -192,10 +192,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) {
         mouse_is_down    = true;
         last_mouse_press = timer_read();
+
+#  ifdef KEYBOARD_charybdis
+        charybdis_set_pointer_sniping_enabled(true);
+#  endif
       } else {
         mouse_is_down = false;
 #  ifdef KEYBOARD_charybdis
         charybdis_set_pointer_dragscroll_enabled(false);
+        charybdis_set_pointer_sniping_enabled(false);
 #  endif
       }
 #endif

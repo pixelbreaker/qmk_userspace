@@ -2044,7 +2044,7 @@ morgage             -> mortgage
 mortage             -> mortgage
 mosture             -> moisture
 motiviated          -> motivated
-mounth              -> month
+:mounth             -> month
 movei               -> movie
 movment             -> movement
 mroe                -> more
