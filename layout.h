@@ -61,7 +61,7 @@
 #define ________________COPY_PASTA_________________ Z_UND, Z_CUT, Z_CPY, Z_PST, Z_RDO
 
 // Layers
-enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
+enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU, LED };
 
 #define ESC_MED LT(MED, KC_ESC)
 #define SPC_NAV LT(NAV, KC_SPC)
@@ -104,7 +104,7 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
 #define _FUNC \
 	_______, KC_F7,   KC_F8,   KC_F9,   KC_F12,      _______, _______, _______, _______, TG(CMK),    \
 	_______, KC_F4,   KC_F5,   KC_F6,   KC_F11,      ______________HOME_ROW_CAGS_R______________,    \
-	_______, KC_F1,   KC_F2,   KC_F3,   KC_F10,      ________________COPY_PASTA_________________,    \
+	_______, KC_F1,   KC_2,    KC_F3,   KC_F10,      ________________COPY_PASTA_________________,    \
 	                           _______, _______,     _______, _______
 
 #define _MEDIA \
@@ -118,6 +118,12 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU };
     ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, _______,    \
     _______, SNIPE,   _______, KC_BTN3, _______,     KC_WH_D, _______, _______, _______, _______,    \
                       		   KC_BTN1, KC_BTN2,     _______, _______
+
+#define _LED \
+	___________________________________________,     RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_MOD,    \
+    ___________________________________________,     RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_RMOD,   \
+    ___________________________________________,     TG(LED), _______, _______, _______, _______,    \
+                      		   _______, _______,     _______, RGB_TOG
 
 // Mod-tap wrapper
 #define HRM(k) HR_MODTAP(k)
@@ -135,7 +141,8 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 
 
 // Layout aliases for json keymap
-#define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
+#define LAYOUT_sphynx_alpha_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
+#define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_3(__VA_ARGS__)
 #define LAYOUT_charybdis_w(...) LAYOUT(__VA_ARGS__)
 
 
@@ -152,6 +159,19 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 		       ESC_MED, l16, l17,   r16, r17
 
+// Convert 3x5_2 to Sphynx dacman 3x5_4 (with encoders optional)
+#define SPHYNX_ALPHA(k) CONV_SPHYNX_ALPHA(k)
+#define CONV_SPHYNX_ALPHA( \
+	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
+	     l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+	     l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
+	                    l16, l17,   r16, r17                 \
+) \
+		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
+		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
+		KC_NO, ESC_MED,l16, l17,   r16, r17, KC_DEL, ENC_DOWN
+
 // Convert 3x5_2 to Sphynx dacman 3x5_3 (with encoders optional)
 #define SPHYNX(k) CONV_SPHYNX(k)
 #define CONV_SPHYNX( \
@@ -163,6 +183,6 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
-		KC_NO, ESC_MED,l16, l17,   r16, r17, KC_DEL, ENC_DOWN
+		      ENC_DOWN,l16, l17,   r16, r17, KC_NO
 
 // clang-format on

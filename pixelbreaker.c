@@ -312,14 +312,14 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, ui
   // Exceptionally consider the following chords as holds, even though they
   // are on the same hand.
   switch (tap_hold_keycode) {
-      // case HRM_A:
-      //     if (other_keycode == KC_C || other_keycode == KC_X) {
-      //         return true;
-      //     }
-      //     break;
+    case HM_A:
+      if (other_keycode == KC_C || other_keycode == KC_X) {
+        return true;
+      }
+      break;
 
     case HM_D: // S + Tab.
-      if (other_keycode == HM_S || other_keycode == KC_W) {
+      if (other_keycode == HM_S || other_keycode == KC_W || other_keycode == KC_Q || other_keycode == KC_R || other_keycode == KC_T) {
         return true;
       }
       break;
@@ -395,13 +395,17 @@ void keyboard_post_init_user(void) {
   debug_enable = true;
 //   debug_matrix = true;
 #endif
-  // debug_keyboard=true;
-  // debug_mouse=true;
 }
 
 // reset CPI after wake
 #ifdef KEYBOARD_charybdis
 void suspend_wakeup_init_user(void) {
   keyboard_post_init_kb();
+}
+#endif
+
+#ifdef KEYBOARD_sphynx
+void pointing_device_init_kb() {
+  pointing_device_set_cpi(500);
 }
 #endif

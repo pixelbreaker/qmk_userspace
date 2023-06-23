@@ -10,6 +10,7 @@
 COMB(sft_capsword, CW_TOGG, HM_F, HM_J)
 COMB(hypr, OSM_HYPR, KC_C, KC_V)
 COMB(meh, OSM_MEH, KC_M, KC_COMM)
+COMB(rgb_layer, TG(LED), KC_M, KC_COMM, KC_DOT)
 
 // switchers
 HOLD(appswitch, APPSWITCH, KC_X, KC_C)

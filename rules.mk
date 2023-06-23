@@ -3,7 +3,7 @@ MAGIC_ENABLE = no
 UNICODE_ENABLE = no
 SPACE_CADET_ENABLE = no
 SWAP_HANDS_ENABLE = no
-CONSOLE_ENABLE = no
+CONSOLE_ENABLE = yes
 
 # Enable common features
 COMBO_ENABLE = yes
@@ -29,8 +29,17 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
+	SRC += scrollspam.c
+	RGBLIGHT_SUPPORTED = no
+	RGB_MATRIX_ENABLE = yes
+	DEFERRED_EXEC_ENABLE = yes
+    OPT_DEFS += -DKEYBOARD_sphynx
+    OPT_DEFS += -DENCODER_ENABLE
+endif
+
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx_alpha))
 	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = no
-    OPT_DEFS += -DKEYBOARD_sphynx
+    OPT_DEFS += -DKEYBOARD_sphynx_alpha
     OPT_DEFS += -DENCODER_ENABLE
 endif
