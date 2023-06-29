@@ -1,0 +1,16 @@
+{
+	"keyboard": "handwired/tenome",
+	"keymap": "pixelbreaker",
+	"layout": "LAYOUT_tenome_w",
+	"layers": [
+		[ "TENOME(HRM(_BASE))" ],
+		[ "TENOME(HRM(_COLE))" ],
+		[ "TENOME(_NAV)" ],
+		[ "TENOME(_NUMB)" ],
+		[ "TENOME(_SYMB)" ],
+		[ "TENOME(_FUNC)" ],
+		[ "TENOME(_MEDIA)" ],
+		[ "TENOME(_MOUSE)" ],
+		[ "TENOME(_LED)" ]
+	]
+}

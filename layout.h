@@ -141,8 +141,8 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 
 
 // Layout aliases for json keymap
-#define LAYOUT_sphynx_alpha_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
-#define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_3(__VA_ARGS__)
+#define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
+#define LAYOUT_tenome_w(...) LAYOUT_split_3x5_3(__VA_ARGS__)
 #define LAYOUT_charybdis_w(...) LAYOUT(__VA_ARGS__)
 
 
@@ -160,8 +160,8 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		       ESC_MED, l16, l17,   r16, r17
 
 // Convert 3x5_2 to Sphynx dacman 3x5_4 (with encoders optional)
-#define SPHYNX_ALPHA(k) CONV_SPHYNX_ALPHA(k)
-#define CONV_SPHYNX_ALPHA( \
+#define SPHYNX(k) CONV_SPHYNX(k)
+#define CONV_SPHYNX( \
 	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 	     l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 	     l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
@@ -172,9 +172,9 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 		KC_NO, ESC_MED,l16, l17,   r16, r17, KC_DEL, ENC_DOWN
 
-// Convert 3x5_2 to Sphynx dacman 3x5_3 (with encoders optional)
-#define SPHYNX(k) CONV_SPHYNX(k)
-#define CONV_SPHYNX( \
+// Convert 3x5_2 to Tenome 3x5_3 (with encoders optional)
+#define TENOME(k) CONV_TENOME(k)
+#define CONV_TENOME( \
 	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 	     l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 	     l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \

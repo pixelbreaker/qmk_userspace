@@ -59,7 +59,7 @@
 #  define ROTATIONAL_TRANSFORM_ANGLE -28
 #endif
 
-#ifdef KEYBOARD_sphynx
+#ifdef KEYBOARD_tenome
 #  define POINTING_DEVICE_GESTURES_SCROLL_ENABLE // Circular scroll.
 #  define CIRQUE_PINNACLE_TAP_ENABLE
 // absolute mode

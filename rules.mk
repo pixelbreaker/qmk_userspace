@@ -28,12 +28,12 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
 	OPT_DEFS += -DCOMBO_TERM=90 
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome))
 	SRC += scrollspam.c
 	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = yes
 	DEFERRED_EXEC_ENABLE = yes
-    OPT_DEFS += -DKEYBOARD_sphynx
+    OPT_DEFS += -DKEYBOARD_tenome
     OPT_DEFS += -DENCODER_ENABLE
 endif
 

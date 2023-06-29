@@ -404,7 +404,7 @@ void suspend_wakeup_init_user(void) {
 }
 #endif
 
-#ifdef KEYBOARD_sphynx
+#ifdef KEYBOARD_tenome
 void pointing_device_init_kb() {
   pointing_device_set_cpi(500);
 }

@@ -10,7 +10,6 @@
 		[ "SPHYNX(_SYMB)" ],
 		[ "SPHYNX(_FUNC)" ],
 		[ "SPHYNX(_MEDIA)" ],
-		[ "SPHYNX(_MOUSE)" ],
-		[ "SPHYNX(_LED)" ]
+		[ "SPHYNX(_MOUSE)" ]
 	]
 }
