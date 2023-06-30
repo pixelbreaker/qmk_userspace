@@ -37,9 +37,9 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome))
     OPT_DEFS += -DENCODER_ENABLE
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx_alpha))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
 	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = no
-    OPT_DEFS += -DKEYBOARD_sphynx_alpha
+    OPT_DEFS += -DKEYBOARD_sphynx
     OPT_DEFS += -DENCODER_ENABLE
 endif
