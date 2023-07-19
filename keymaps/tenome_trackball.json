@@ -1,5 +1,5 @@
 {
-	"keyboard": "handwired/tenome",
+	"keyboard": "handwired/tenome/trackball",
 	"keymap": "pixelbreaker",
 	"layout": "LAYOUT_tenome_w",
 	"layers": [
@@ -9,8 +9,6 @@
 		[ "TENOME(_NUMB)" ],
 		[ "TENOME(_SYMB)" ],
 		[ "TENOME(_FUNC)" ],
-		[ "TENOME(_MEDIA)" ],
-		[ "TENOME(_MOUSE)" ],
-		[ "TENOME(_LED)" ]
+		[ "TENOME(_MOUSE)" ]
 	]
 }

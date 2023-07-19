@@ -34,6 +34,8 @@
 
 #define DELLINE MEH(KC_DEL)
 
+#define ___N___ KC_NO
+
 // BastardKB Charybdis specific keycodes
 #ifdef KEYBOARD_charybdis
 #  define SNIPE SNIPING_MODE
@@ -45,25 +47,35 @@
 
 // Mod tap macros
 #define HM_A LCTL_T(KC_A)
+#define HM_R LALT_T(KC_R)
 #define HM_S LALT_T(KC_S)
+#define HM_S2 LGUI_T(KC_S)
+#define HM_T LSFT_T(KC_T)
 #define HM_D LGUI_T(KC_D)
 #define HM_F LSFT_T(KC_F)
 #define HM_J RSFT_T(KC_J)
+#define HM_N RSFT_T(KC_N)
+#define HM_E RGUI_T(KC_E)
+#define HM_I LALT_T(KC_I)
+#define HM_O RCTL_T(KC_O)
 #define HM_K RGUI_T(KC_K)
 #define HM_L LALT_T(KC_L)
 #define HM_QUOT RCTL_T(KC_QUOT)
 #define HRML(k1, k2, k3, k4) LCTL_T(k1), LALT_T(k2), LGUI_T(k3), LSFT_T(k4)
 #define HRMR(k1, k2, k3, k4) RSFT_T(k1), RGUI_T(k2), LALT_T(k3), RCTL_T(k4)
 
-#define ___________________________________________ _______, _______, _______, _______, _______
-#define ______________HOME_ROW_CAGS_L______________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, _______
-#define ______________HOME_ROW_CAGS_R______________ _______, KC_LSFT, KC_LGUI, KC_LALT, KC_LCTL
-#define ________________COPY_PASTA_________________ Z_UND, Z_CUT, Z_CPY, Z_PST, Z_RDO
+// clang-format off
+#define ___________________________________________ ___N___, ___N___, ___N___, ___N___, ___N___
+#define ______________HOME_ROW_CAGS_L______________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, ___N___
+#define ______________HOME_ROW_CAGS_R______________ ___N___, KC_LSFT, KC_LGUI, KC_LALT, KC_LCTL
+#define __________________APP_NAV__________________ C(S(KC_TAB)), C(KC_TAB), C(G(S(KC_TAB))), C(G(KC_TAB)), ___N___
+#define ________________COPY_PASTA_________________ Z_UND,   Z_CUT,   Z_CPY,   Z_PST,   Z_RDO
+// clang-format on
 
 // Layers
-enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU, LED };
+enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU };
 
-#define ESC_MED LT(MED, KC_ESC)
+// #define ESC_MED LT(MED, KC_ESC)
 #define SPC_NAV LT(NAV, KC_SPC)
 #define TAB_SYM LT(SYM, KC_TAB)
 #define ENT_FUN LT(FNC, KC_ENT)
@@ -77,53 +89,57 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MED, MOU, LED };
 	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
 	                           SPC_NAV, TAB_SYM,     ENT_FUN, BSP_NUM
 
-#define _COLE \
+// Colemak standard
+/* #define _COLE \
 	KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
 	KC_A,    KC_R,    KC_S,    KC_T,    KC_D,        KC_H,    KC_N,    KC_E,    KC_I,    KC_O,       \
 	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_K,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
+	                           _______, _______,     _______, _______*/
+
+// Colemak DH
+#define _COLE \
+	KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
+	KC_A,    KC_R,    KC_S,    KC_T,    KC_G,        KC_M,    KC_N,    KC_E,    KC_I,    KC_O,       \
+	KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,        KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH,    \
 	                           _______, _______,     _______, _______
 
 #define _NAV \
-	___________________________________________,     _______, DELLINE, KC_UP,    _______, KC_COLN,   \
+	__________________APP_NAV__________________,     ___N___, DELLINE, KC_UP,    ___N___, KC_COLN,   \
 	______________HOME_ROW_CAGS_L______________,     KC_EQL,  KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
 	________________COPY_PASTA_________________,     KC_MINS, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
 	                           _______, _______,     KC_ENT,  KC_BSPC
 
 #define _NUMB \
-	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     ___________________________________________,    \
+	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     __________________APP_NAV__________________,    \
 	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     ______________HOME_ROW_CAGS_R______________,    \
 	KC_0,    KC_1,    KC_2,    KC_3,    KC_EQL,      ________________COPY_PASTA_________________,    \
 	                           KC_SPC,  KC_DOT,      _______, _______
 
+/*
 #define _SYMB \
-	KC_GT,   KC_RBRC, KC_RCBR, KC_RPRN, _______,     KC_EXLM, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
-	KC_LT,   KC_LBRC, KC_LCBR, KC_LPRN, _______,     KC_PIPE, KC_MINS, KC_SLSH,  KC_EQL,  KC_GRV,    \
-	KC_GT,   KC_RBRC, KC_RCBR, KC_RPRN, _______,     KC_AMPR, KC_UNDS, Z_HASH,   Z_AT,    KC_BSLS,   \
+	_______, _______, KC_LBRC, KC_RBRC, _______,     KC_PIPE, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
+	_______, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_EXLM, KC_MINS, KC_SLSH,  KC_EQL,  KC_GRV,    \
+	_______, _______, KC_LCBR, KC_RCBR, _______,     KC_AMPR, KC_UNDS, Z_HASH,   Z_AT,    KC_BSLS,   \
 	                           _______, _______,     _______, KC_DEL
+*/
+
+#define _SYMB \
+	___N___, ___N___, KC_LBRC, KC_RBRC, ___N___,     KC_ASTR, KC_PLUS, KC_PIPE,  KC_DLR,  KC_TILDE,  \
+	___N___, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       Z_HASH,  KC_MINS, KC_EXLM,  KC_EQL,  KC_GRV,    \
+	___N___, ___N___, KC_LCBR, KC_RCBR, ___N___,     Z_AT,    KC_UNDS, KC_AMPR,  KC_PERC, KC_BSLS,   \
+	                           _______, _______,     KC_SPC,  KC_DEL
 
 #define _FUNC \
-	_______, KC_F7,   KC_F8,   KC_F9,   KC_F12,      _______, _______, _______, _______, TG(CMK),    \
-	_______, KC_F4,   KC_F5,   KC_F6,   KC_F11,      ______________HOME_ROW_CAGS_R______________,    \
-	_______, KC_F1,   KC_2,    KC_F3,   KC_F10,      ________________COPY_PASTA_________________,    \
-	                           _______, _______,     _______, _______
-
-#define _MEDIA \
-    QK_BOOT, _______, Z_SSHT,  Z_SRCD,  _______,     _______, _______, KC_VOLU, _______, _______,    \
-    _______, _______, _______, Z_VSML,  _______,     KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, _______,    \
-    Z_SLEEP, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
+    QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      Z_SSHT,  Z_SRCD,  KC_VOLU, Z_VSML,  TGL_BASE,   \
+    ___N___, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
+    Z_SLEEP, KC_F1,   KC_2,    KC_F3,   KC_F10,      E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
 							   _______, _______,     KC_MSTP, KC_MPLY
 
 #define _MOUSE \
-	DPI_MOD, S_D_MOD, _______, _______, _______,     _______, _______, KC_MS_U, _______, _______,    \
-    ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, _______,    \
-    _______, SNIPE,   _______, KC_BTN3, _______,     KC_WH_D, _______, _______, _______, _______,    \
+	DPI_MOD, S_D_MOD, ___N___, ___N___, ___N___,     ___N___, ___N___, KC_MS_U, ___N___, ___N___,    \
+    ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, ___N___,    \
+    ___N___, SNIPE,   ___N___, KC_BTN3, ___N___,     KC_WH_D, ___N___, ___N___, ___N___, ___N___,    \
                       		   KC_BTN1, KC_BTN2,     _______, _______
-
-#define _LED \
-	___________________________________________,     RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_MOD,    \
-    ___________________________________________,     RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_RMOD,   \
-    ___________________________________________,     TG(LED), _______, _______, _______, _______,    \
-                      		   _______, _______,     _______, RGB_TOG
 
 // Mod-tap wrapper
 #define HRM(k) HR_MODTAP(k)
@@ -157,7 +173,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
-		       ESC_MED, l16, l17,   r16, r17
+		       KC_ESC, l16, l17,   r16, r17
 
 // Convert 3x5_2 to Sphynx dacman 3x5_4 (with encoders optional)
 #define SPHYNX(k) CONV_SPHYNX(k)

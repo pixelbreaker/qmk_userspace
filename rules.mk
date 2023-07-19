@@ -13,6 +13,7 @@ AUTOCORRECT_ENABLE = yes
 EXTRAKEY_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 BOOTMAGIC_ENABLE = yes
+LEADER_ENABLE = yes
 
 VPATH += $(USER_PATH)/features
 SRC += pixelbreaker.c combos.c achordion.c
@@ -28,7 +29,7 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
 	OPT_DEFS += -DCOMBO_TERM=90 
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome/trackball handwired/tenome/trackpad))
 	SRC += scrollspam.c
 	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = yes
@@ -36,6 +37,11 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome))
     OPT_DEFS += -DKEYBOARD_tenome
     OPT_DEFS += -DENCODER_ENABLE
 endif
+
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome/trackball))
+    OPT_DEFS += -DTRACKBALL_ENABLE
+endif
+
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
 	RGBLIGHT_SUPPORTED = no
