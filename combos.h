@@ -56,9 +56,9 @@ SRC += combos.c
 #define ACTN C_ENUM
 enum combos {
 #include COMBOS_DEF
-  COMBO_LENGTH
+  // COMBO_LENGTH
 };
-uint16_t COMBO_LEN = COMBO_LENGTH;
+// uint16_t COMBO_LEN = COMBO_LENGTH;
 
 // Create name arrays with key sequences
 #undef COMB

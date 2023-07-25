@@ -16,7 +16,8 @@ BOOTMAGIC_ENABLE = yes
 LEADER_ENABLE = yes
 
 VPATH += $(USER_PATH)/features
-SRC += pixelbreaker.c combos.c achordion.c
+INTROSPECTION_KEYMAP_C = pixelbreaker.c
+SRC += achordion.c
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/splinky_3))
 	SRC += scrollspam.c
@@ -29,7 +30,7 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
 	OPT_DEFS += -DCOMBO_TERM=90 
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome/trackball handwired/tenome/trackpad))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/tenome/trackball pixelbreaker/tenome/trackpad))
 	SRC += scrollspam.c
 	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = yes
@@ -38,12 +39,12 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome/trackball han
     OPT_DEFS += -DENCODER_ENABLE
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/tenome/trackball))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/tenome/trackball))
     OPT_DEFS += -DTRACKBALL_ENABLE
 endif
 
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), handwired/sphynx))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/sphynx))
 	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = no
     OPT_DEFS += -DKEYBOARD_sphynx

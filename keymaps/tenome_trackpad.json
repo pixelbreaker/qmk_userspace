@@ -1,5 +1,5 @@
 {
-	"keyboard": "handwired/tenome/trackpad",
+	"keyboard": "pixelbreaker/tenome/trackpad",
 	"keymap": "pixelbreaker",
 	"layout": "LAYOUT_tenome_w",
 	"layers": [

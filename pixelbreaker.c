@@ -2,7 +2,7 @@
 // Copyright 2023 @pixelbreaker
 // SPDX-License-Identifier: GPL-2.0+
 
-#include QMK_KEYBOARD_H
+#include "pixelbreaker.h"
 
 #ifdef CONSOLE_ENABLE
 #  include "print.h"
@@ -19,39 +19,96 @@
 #  define SCROLL_BUFFER_SIZE 50
 #endif
 
-static fast_timer_t tap_timer = 0;
 #define TYPING_TERM (TAPPING_TERM * 2)
-#define IS_TYPING() (timer_elapsed_fast(tap_timer) < TYPING_TERM)
-#define IS_HOME_ROW(r) (r->event.key.row == 1 || r->event.key.row == 5)
-#define IS_MT_SHIFT(k) (QK_MOD_TAP_GET_MODS(k) & MOD_MASK_SHIFT)
+// #define IS_TYPING() (timer_elapsed_fast(tap_timer) < TYPING_TERM)
+// #define IS_HOMEROW(r) (r->event.key.row == 1 || r->event.key.row == 5)
+// #define IS_MT_SHIFT(k) (QK_MOD_TAP_GET_MODS(k) & MOD_MASK_SHIFT)
 
-// Increase tapping term while typing
+#if defined(PERMISSIVE_HOLD_PER_KEY) || defined(HOLD_ON_OTHER_KEY_PRESS_PER_KEY)
+static uint16_t    next_keycode;
+static keyrecord_t next_record;
+
+#  define TAP_INTERVAL_MS 100
+
+bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
+  static uint16_t prev_keycode;
+  if (record->event.pressed) {
+    // Store the previous keycode for instant tap decision
+    prev_keycode = next_keycode;
+    // Cache the next input for mod-tap decisions
+    next_keycode = keycode;
+    next_record  = *record;
+  }
+  // Match home row mod-tap keys when it is not preceded by a Layer key
+  if (IS_HOMEROW(record) && IS_QK_MOD_TAP(keycode) && !IS_QK_LAYER_TAP(prev_keycode)) {
+    // Tap the mod-tap key instantly when it follows a short interval
+    if (record->event.pressed && last_input_activity_elapsed() < TAP_INTERVAL_MS) {
+      record->keycode = keycode & 0xff;
+      action_tapping_process(*record);
+      return false;
+    } else { // Send the base keycode key up event
+      keyrecord_t base_record   = *record;
+      base_record.keycode       = keycode & 0xff;
+      base_record.event.pressed = false;
+      action_tapping_process(base_record);
+    }
+  }
+  return true;
+}
+#endif
+
+#ifdef TAPPING_TERM_PER_KEY
+static fast_timer_t tap_timer = 0;
+
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case SPC_NAV:
       return TAPPING_TERM;
     default:
-      return IS_HOME_ROW(record) && !IS_MT_SHIFT(keycode) && IS_TYPING() ? TYPING_TERM : TAPPING_TERM;
+      // Increase tapping term for the non-Shift home row mod-tap while typing
+      return IS_HOMEROW(record) && !IS_MOD_TAP_SHIFT(keycode) && IS_TYPING() ? TAPPING_TERM * 2 : TAPPING_TERM;
   }
 }
+#endif
 
-// Select Shift hold immediately with a nested key
+#ifdef PERMISSIVE_HOLD_PER_KEY
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-  return IS_QK_MOD_TAP(keycode) && IS_MT_SHIFT(keycode) && !IS_TYPING();
+  // Hold Control and Shift with a nested key tap on the opposite hand
+  return IS_BILATERAL_TAP(record, next_record) && IS_MOD_TAP_CS(keycode);
 }
+#endif
+
+#ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+  // Replace the mod-tap key with its base keycode when
+  // tapped with another non-Shift key on the same hand
+  if (IS_UNILATERAL_TAP(record, next_record) && !IS_MOD_TAP_SHIFT(next_keycode)) {
+    record->keycode = keycode & 0xff;
+    process_record(record);
+    record->event.pressed = false;
+    process_record(record);
+    return true;
+  }
+  // Hold layer with another key press
+  else if (IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode)) {
+    return true;
+  }
+  return false;
+}
+#endif
 
 // Select layer hold immediately with another key
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-  // Hold space to toggle layer immediately when not currently typing else wait for tapping term
-  switch (keycode) {
-    case SPC_NAV:
-    case BSP_NUM:
-      return !IS_TYPING();
+// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+//   // Hold space to toggle layer immediately when not currently typing else wait for tapping term
+//   switch (keycode) {
+//     case SPC_NAV:
+//     case BSP_NUM:
+//       return !IS_TYPING();
 
-    default:
-      return IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode) > 0;
-  }
-}
+//     default:
+//       return IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode) > 0;
+//   }
+// }
 
 // Send custom hold keycode for mod tap
 static inline bool process_tap_hold(uint16_t hold_keycode, keyrecord_t *record) {
@@ -209,7 +266,9 @@ bool return_or_achordion(bool default_return, uint16_t keycode, keyrecord_t *rec
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+#ifdef TAPPING_TERM_PER_KEY
   tap_timer = timer_read_fast();
+#endif
 
   // custom keycodes
   switch (keycode) {
@@ -375,7 +434,7 @@ bool pre_process_record_quantum_user(keyrecord_t *record) {
   uint16_t keycode = get_record_keycode(record, true);
 
   // Implement instant-tap of mod-tap keys
-  if (IS_HOME_ROW(record) && IS_QK_MOD_TAP(keycode)) {
+  if (IS_HOMEROW(record) && IS_QK_MOD_TAP(keycode)) {
     keyrecord_t quick_tap_record;
     quick_tap_record.keycode = keycode & 0xff;
 
@@ -463,15 +522,16 @@ bool achordion_eager_mod(uint8_t mod) {
     case MOD_RSFT:
     case MOD_LGUI:
     case MOD_RGUI:
+    case MOD_LALT:
+    case MOD_LCTL:
       // case MOD_HYPR:
       // case MOD_MEH:
-      return true; //! IS_TYPING();
+      return true; // !IS_TYPING();
 
     default:
       return false;
   }
 }
-
 #endif
 
 bool caps_word_press_user(uint16_t keycode) {
@@ -514,6 +574,10 @@ void leader_start_user(void) {
 void leader_end_user(void) {
   if (leader_sequence_one_key(KC_F)) {
     SEND_STRING("function ");
+  } else if (leader_sequence_one_key(KC_C)) {
+    SEND_STRING("const ");
+  } else if (leader_sequence_one_key(KC_Y)) {
+    SEND_STRING("you");
   } else if (leader_sequence_one_key(KC_R)) {
     SEND_STRING("return ");
   } else if (leader_sequence_two_keys(KC_E, KC_C)) {

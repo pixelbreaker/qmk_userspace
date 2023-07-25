@@ -3,7 +3,9 @@
 
 #pragma once
 #include "quantum/keycodes.h"
-#include "pixelbreaker.h"
+
+// RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_RMOD
+enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE, E_SAT, E_VAL, E_SPD, E_MOD };
 
 // #ifdef POINTING_DEVICE_ENABLE
 #define MSE(k) LT(MOU, k)
@@ -124,16 +126,16 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU };
 */
 
 #define _SYMB \
-	___N___, ___N___, KC_LBRC, KC_RBRC, ___N___,     KC_ASTR, KC_PLUS, KC_PIPE,  KC_DLR,  KC_TILDE,  \
+	Z_SSHT,  Z_SRCD,  KC_LBRC, KC_RBRC, ___N___,     KC_ASTR, KC_PLUS, KC_PIPE,  KC_DLR,  KC_TILDE,  \
 	___N___, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       Z_HASH,  KC_MINS, KC_EXLM,  KC_EQL,  KC_GRV,    \
 	___N___, ___N___, KC_LCBR, KC_RCBR, ___N___,     Z_AT,    KC_UNDS, KC_AMPR,  KC_PERC, KC_BSLS,   \
 	                           _______, _______,     KC_SPC,  KC_DEL
 
 #define _FUNC \
-    QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      Z_SSHT,  Z_SRCD,  KC_VOLU, Z_VSML,  TGL_BASE,   \
+    QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY,  KC_VOLU, Z_VSML,  TGL_BASE,   \
     ___N___, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
-    Z_SLEEP, KC_F1,   KC_2,    KC_F3,   KC_F10,      E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
-							   _______, _______,     KC_MSTP, KC_MPLY
+    Z_SLEEP, KC_F1,   KC_F2,   KC_F3,   KC_F10,      E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
+							   _______, _______,     _______, _______
 
 #define _MOUSE \
 	DPI_MOD, S_D_MOD, ___N___, ___N___, ___N___,     ___N___, ___N___, KC_MS_U, ___N___, ___N___,    \

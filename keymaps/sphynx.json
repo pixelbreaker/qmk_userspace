@@ -1,5 +1,5 @@
 {
-	"keyboard": "handwired/sphynx",
+	"keyboard": "pixelbreaker/sphynx",
 	"keymap": "pixelbreaker",
 	"layout": "LAYOUT_sphynx_w",
 	"layers": [

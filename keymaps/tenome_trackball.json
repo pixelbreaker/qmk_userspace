@@ -1,5 +1,5 @@
 {
-	"keyboard": "handwired/tenome/trackball",
+	"keyboard": "pixelbreaker/tenome/trackball",
 	"keymap": "pixelbreaker",
 	"layout": "LAYOUT_tenome_w",
 	"layers": [
