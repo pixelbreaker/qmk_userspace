@@ -13,11 +13,9 @@ AUTOCORRECT_ENABLE = yes
 EXTRAKEY_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 BOOTMAGIC_ENABLE = yes
-LEADER_ENABLE = yes
 
 VPATH += $(USER_PATH)/features
 INTROSPECTION_KEYMAP_C = pixelbreaker.c
-SRC += achordion.c
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/splinky_3))
 	SRC += scrollspam.c
@@ -49,4 +47,10 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/sphynx))
 	RGB_MATRIX_ENABLE = no
     OPT_DEFS += -DKEYBOARD_sphynx
     OPT_DEFS += -DENCODER_ENABLE
+endif
+
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/hummingbird))
+	RGBLIGHT_SUPPORTED = no
+	RGB_MATRIX_ENABLE = no
+    OPT_DEFS += -DKEYBOARD_hummingbird
 endif

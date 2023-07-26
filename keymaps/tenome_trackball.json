@@ -9,6 +9,7 @@
 		[ "TENOME(_NUMB)" ],
 		[ "TENOME(_SYMB)" ],
 		[ "TENOME(_FUNC)" ],
-		[ "TENOME(_MOUSE)" ]
+		[ "TENOME(_MOUSE)" ],
+		[ "TENOME(HRM(_EXTRA))" ]
 	]
 }

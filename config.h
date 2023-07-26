@@ -10,7 +10,7 @@
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 1000U
 
 // Space saving options
-#define LAYER_STATE_8BIT
+// #define LAYER_STATE_8BIT
 
 //  Tap-hold settings
 #define TAPPING_TERM 180
@@ -86,7 +86,7 @@
 
 #ifdef COMBO_ENABLE
 #  ifndef COMBO_TERM
-#    define COMBO_TERM 50
+#    define COMBO_TERM 80
 #  endif
 #  define COMBO_MUST_HOLD_PER_COMBO
 #  define COMBO_SHOULD_TRIGGER

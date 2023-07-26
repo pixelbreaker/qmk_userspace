@@ -66,6 +66,10 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 #define HRML(k1, k2, k3, k4) LCTL_T(k1), LALT_T(k2), LGUI_T(k3), LSFT_T(k4)
 #define HRMR(k1, k2, k3, k4) RSFT_T(k1), RGUI_T(k2), LALT_T(k3), RCTL_T(k4)
 
+// Tap hold macros
+#define TH_QUOT LT(0, KC_QUOT)
+#define TH_SLSH LT(0, KC_SLSH)
+
 // clang-format off
 #define ___________________________________________ ___N___, ___N___, ___N___, ___N___, ___N___
 #define ______________HOME_ROW_CAGS_L______________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, ___N___
@@ -75,7 +79,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 // clang-format on
 
 // Layers
-enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU };
+enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU, EXT };
 
 // #define ESC_MED LT(MED, KC_ESC)
 #define SPC_NAV LT(NAV, KC_SPC)
@@ -87,8 +91,8 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU };
 // clang-format off
 #define _BASE \
 	KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
-	KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT,    \
-	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
+	KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    TH_QUOT,    \
+	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  TH_SLSH,    \
 	                           SPC_NAV, TAB_SYM,     ENT_FUN, BSP_NUM
 
 // Colemak standard
@@ -100,20 +104,20 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU };
 
 // Colemak DH
 #define _COLE \
-	KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
+	KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
 	KC_A,    KC_R,    KC_S,    KC_T,    KC_G,        KC_M,    KC_N,    KC_E,    KC_I,    KC_O,       \
-	KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,        KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH,    \
+	KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,        KC_K,    KC_H,    KC_COMM, KC_DOT,  TH_SLSH,    \
 	                           _______, _______,     _______, _______
 
 #define _NAV \
-	__________________APP_NAV__________________,     ___N___, DELLINE, KC_UP,    ___N___, KC_COLN,   \
-	______________HOME_ROW_CAGS_L______________,     KC_EQL,  KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
-	________________COPY_PASTA_________________,     KC_MINS, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
+	__________________APP_NAV__________________,     KC_EQL,  DELLINE, KC_UP,    ___N___, KC_COLN,   \
+	______________HOME_ROW_CAGS_L______________,     KC_MINS, KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
+	________________COPY_PASTA_________________,     ___N___, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
 	                           _______, _______,     KC_ENT,  KC_BSPC
 
 #define _NUMB \
-	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     __________________APP_NAV__________________,    \
-	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     ______________HOME_ROW_CAGS_R______________,    \
+	KC_PLUS, KC_7,    KC_8,    KC_9,    KC_0,        KC_ASTR, KC_SLSH, ___N___, ___N___, ___N___,    \
+	KC_MINS, KC_4,    KC_5,    KC_6,    KC_EQL,      ______________HOME_ROW_CAGS_R______________,    \
 	KC_0,    KC_1,    KC_2,    KC_3,    KC_EQL,      ________________COPY_PASTA_________________,    \
 	                           KC_SPC,  KC_DOT,      _______, _______
 
@@ -132,16 +136,22 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU };
 	                           _______, _______,     KC_SPC,  KC_DEL
 
 #define _FUNC \
-    QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY,  KC_VOLU, Z_VSML,  TGL_BASE,   \
-    ___N___, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
-    Z_SLEEP, KC_F1,   KC_F2,   KC_F3,   KC_F10,      E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
-							   _______, _______,     _______, _______
+  QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, Z_VSML,  TGL_BASE,   \
+  ___N___, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
+  ___N___, KC_F1,   KC_F2,   KC_F3,   KC_F10,      E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
+	                				   _______, _______,     _______, _______
 
 #define _MOUSE \
 	DPI_MOD, S_D_MOD, ___N___, ___N___, ___N___,     ___N___, ___N___, KC_MS_U, ___N___, ___N___,    \
-    ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, ___N___,    \
-    ___N___, SNIPE,   ___N___, KC_BTN3, ___N___,     KC_WH_D, ___N___, ___N___, ___N___, ___N___,    \
+  ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, ___N___,    \
+  ___N___, SNIPE,   ___N___, KC_BTN3, ___N___,     KC_WH_D, ___N___, ___N___, ___N___, ___N___,    \
                       		   KC_BTN1, KC_BTN2,     _______, _______
+
+#define _EXTRA \
+	___N___, ___N___, ___N___, ___N___, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
+  ___N___, KC_Z,    ___N___, KC_V,    ___N___,     ___N___, KC_K,    ___N___, KC_SLSH, ___N___,    \
+  ___N___, ___N___, ___N___, ___N___, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
+                      		   _______, _______,     _______, _______
 
 // Mod-tap wrapper
 #define HRM(k) HR_MODTAP(k)
@@ -162,6 +172,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 #define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
 #define LAYOUT_tenome_w(...) LAYOUT_split_3x5_3(__VA_ARGS__)
 #define LAYOUT_charybdis_w(...) LAYOUT(__VA_ARGS__)
+#define LAYOUT_hummingbird_w(...) LAYOUT_23332x2(__VA_ARGS__)
 
 
 // Convert 3x5_2 to Charybdis Nano 3x5_3+2
@@ -190,7 +201,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 		KC_NO, ESC_MED,l16, l17,   r16, r17, KC_DEL, ENC_DOWN
 
-// Convert 3x5_2 to Tenome 3x5_3 (with encoders optional)
+// Convert 3x5_2 to Tenome 3x5_2 (with encoders optional)
 #define TENOME(k) CONV_TENOME(k)
 #define CONV_TENOME( \
 	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
@@ -202,5 +213,19 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 		      ENC_DOWN,l16, l17,   r16, r17, KC_NO
+
+// Convert 3x5_2 to to 23332_2 split
+#define HUMMINGBIRD(k) CONV_HUMMINGBIRD(k)
+#define CONV_HUMMINGBIRD( \
+	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
+	     l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+	     l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
+	                    l16, l17,   r16, r17                 \
+) \
+		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
+		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+		     l12, l13, l14,             r12, r13, r14,      \
+		               l17, l16,   r17, r16 // swap thumbs
+		              //  l16, l17,   r16, r17
 
 // clang-format on

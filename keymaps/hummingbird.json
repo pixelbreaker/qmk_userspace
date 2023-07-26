@@ -1,0 +1,15 @@
+{
+	"keyboard": "pixelbreaker/hummingbird",
+	"keymap": "pixelbreaker",
+	"layout": "LAYOUT_hummingbird_w",
+	"layers": [
+		[ "HUMMINGBIRD(HRM(_BASE))" ],
+		[ "HUMMINGBIRD(HRM(_COLE))" ],
+		[ "HUMMINGBIRD(_NAV)" ],
+		[ "HUMMINGBIRD(_NUMB)" ],
+		[ "HUMMINGBIRD(_SYMB)" ],
+		[ "HUMMINGBIRD(_FUNC)" ],
+		[ "HUMMINGBIRD(_MOUSE)" ],
+		[ "HUMMINGBIRD(HRM(_EXTRA))" ]
+	]
+}

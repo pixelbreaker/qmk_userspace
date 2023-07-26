@@ -54,6 +54,7 @@ SRC += combos.c
 #define HOLD C_ENUM
 #define SUBS C_ENUM
 #define ACTN C_ENUM
+
 enum combos {
 #include COMBOS_DEF
   // COMBO_LENGTH

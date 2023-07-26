@@ -11,9 +11,6 @@
 #if defined(POINTING_DEVICE_ENABLE)
 #  include "features/scrollspam.h"
 #endif
-#ifdef ACHORDION_ENABLE
-#  include "features/achordion.h"
-#endif
 
 #ifndef SCROLL_BUFFER_SIZE
 #  define SCROLL_BUFFER_SIZE 50
@@ -31,28 +28,28 @@ static keyrecord_t next_record;
 #  define TAP_INTERVAL_MS 100
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
-  static uint16_t prev_keycode;
+  // static uint16_t prev_keycode;
   if (record->event.pressed) {
     // Store the previous keycode for instant tap decision
-    prev_keycode = next_keycode;
+    // prev_keycode = next_keycode;
     // Cache the next input for mod-tap decisions
     next_keycode = keycode;
     next_record  = *record;
   }
   // Match home row mod-tap keys when it is not preceded by a Layer key
-  if (IS_HOMEROW(record) && IS_QK_MOD_TAP(keycode) && !IS_QK_LAYER_TAP(prev_keycode)) {
-    // Tap the mod-tap key instantly when it follows a short interval
-    if (record->event.pressed && last_input_activity_elapsed() < TAP_INTERVAL_MS) {
-      record->keycode = keycode & 0xff;
-      action_tapping_process(*record);
-      return false;
-    } else { // Send the base keycode key up event
-      keyrecord_t base_record   = *record;
-      base_record.keycode       = keycode & 0xff;
-      base_record.event.pressed = false;
-      action_tapping_process(base_record);
-    }
-  }
+  // if (IS_HOMEROW(record) && IS_QK_MOD_TAP(keycode) && !IS_QK_LAYER_TAP(prev_keycode)) {
+  //   // Tap the mod-tap key instantly when it follows a short interval
+  //   if (record->event.pressed && last_input_activity_elapsed() < TAP_INTERVAL_MS) {
+  //     record->keycode = keycode & 0xff;
+  //     action_tapping_process(*record);
+  //     return false;
+  //   } else { // Send the base keycode key up event
+  //     keyrecord_t base_record   = *record;
+  //     base_record.keycode       = keycode & 0xff;
+  //     base_record.event.pressed = false;
+  //     action_tapping_process(base_record);
+  //   }
+  // }
   return true;
 }
 #endif
@@ -110,13 +107,11 @@ bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
 //   }
 // }
 
-// Send custom hold keycode for mod tap
-static inline bool process_tap_hold(uint16_t hold_keycode, keyrecord_t *record) {
-  if (record->tap.count == 0) {
-    tap_code16(hold_keycode);
-    return false;
-  }
-  return true;
+// Send custom hold keycode
+static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
+  if (record->tap.count) return true;
+  tap_code16(keycode);
+  return false;
 }
 
 /*
@@ -257,18 +252,18 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif
 
-bool return_or_achordion(bool default_return, uint16_t keycode, keyrecord_t *record) {
-#if !defined(POINTING_DEVICE_AUTO_MOUSE_ENABLE) && defined(ACHORDION_ENABLE)
-  return process_achordion(keycode, record);
-#else
-  return default_return;
-#endif
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef TAPPING_TERM_PER_KEY
   tap_timer = timer_read_fast();
 #endif
+
+  // Clipboard shortcuts
+  if (record->event.pressed) {
+    if (keycode == TH_QUOT)
+      return process_tap_hold(S(KC_QUOT), record);
+    else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
+      return process_tap_hold(KC_BSLS, record);
+  }
 
   // custom keycodes
   switch (keycode) {
@@ -301,7 +296,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #  endif
 
 #endif
-      return return_or_achordion(true, keycode, record);
+      return true;
     case BSP_NUM:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
@@ -313,7 +308,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         track_mode = CURSOR;
       }
 #endif
-      return return_or_achordion(true, keycode, record);
+      return true;
     case TAB_SYM:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
@@ -325,7 +320,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         track_mode = CURSOR;
       }
 #endif
-      return return_or_achordion(true, keycode, record);
+      return true;
 
     // Pause mouse report updates for short time after clicking to make it easier
     // to double click with small movement of trackball
@@ -393,27 +388,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
 
     case E_HUE:
+#ifdef ENCODER_ENABLE
       encoder_mode = HUE;
+#endif
       return false;
     case E_SAT:
+#ifdef ENCODER_ENABLE
       encoder_mode = SAT;
+#endif
       return false;
     case E_VAL:
+#ifdef ENCODER_ENABLE
       encoder_mode = VAL;
+#endif
       return false;
     case E_SPD:
+#ifdef ENCODER_ENABLE
       encoder_mode = SPD;
+#endif
       return false;
     case E_MOD:
+#ifdef ENCODER_ENABLE
       encoder_mode = MOD;
+#endif
       return false;
 
     default:
-#if !defined(POINTING_DEVICE_AUTO_MOUSE_ENABLE) && defined(ACHORDION_ENABLE)
-      return process_achordion(keycode, record);
-#else
       return true;
-#endif
   }
 }
 
@@ -457,83 +458,6 @@ bool pre_process_record_quantum_user(keyrecord_t *record) {
   return true; // Continue processing record
 }
 
-/*
-   ACHORDION config
-*/
-#ifdef ACHORDION_ENABLE
-
-void matrix_scan_user(void) {
-  achordion_task();
-}
-
-bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode, keyrecord_t *other_record) {
-  // Exceptionally consider the following chords as holds, even though they
-  // are on the same hand.
-  switch (tap_hold_keycode) {
-    case HM_A:
-      if (other_keycode == KC_C || other_keycode == KC_X) {
-        return true;
-      }
-      break;
-
-    case HM_D: // GUI.
-      if (other_keycode == HM_S || other_keycode == KC_W || other_keycode == KC_Q || other_keycode == KC_R || other_keycode == KC_T || other_keycode == HM_T) {
-        return true;
-      }
-      break;
-
-    case HM_S2:                                                                                               // GUI Colemak.
-      if (other_keycode == HM_S || other_keycode == KC_W || other_keycode == KC_Q || other_keycode == KC_R) { // || other_keycode == HM_T) {
-        return true;
-      }
-      break;
-  }
-
-  // Also allow same-hand holds when the other key is in the rows below the
-  // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
-  if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 3) {
-    return true;
-  }
-
-  // Otherwise, follow the opposite hands rule.
-  return achordion_opposite_hands(tap_hold_record, other_record);
-}
-
-uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-  switch (tap_hold_keycode) {
-    case TAB_SYM:
-    case ENT_FUN:
-    case BSP_NUM:
-    // case ESC_MED:
-    case SPC_NAV:
-      return 0;
-
-    case MSE(KC_Z):
-      return 100;
-
-    default:
-      return 800;
-  }
-}
-
-bool achordion_eager_mod(uint8_t mod) {
-  switch (mod) {
-    case MOD_LSFT:
-    case MOD_RSFT:
-    case MOD_LGUI:
-    case MOD_RGUI:
-    case MOD_LALT:
-    case MOD_LCTL:
-      // case MOD_HYPR:
-      // case MOD_MEH:
-      return true; // !IS_TYPING();
-
-    default:
-      return false;
-  }
-}
-#endif
-
 bool caps_word_press_user(uint16_t keycode) {
   switch (keycode) {
     // Keycodes that continue Caps Word, with shift applied.
@@ -563,34 +487,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     default:
       return QUICK_TAP_TERM;
   }
-}
-
-void leader_start_user(void) {
-#ifdef RGB_MATRIX_ENABLE
-  rgb_matrix_sethsv_noeeprom(255, 255, 127);
-#endif
-}
-
-void leader_end_user(void) {
-  if (leader_sequence_one_key(KC_F)) {
-    SEND_STRING("function ");
-  } else if (leader_sequence_one_key(KC_C)) {
-    SEND_STRING("const ");
-  } else if (leader_sequence_one_key(KC_Y)) {
-    SEND_STRING("you");
-  } else if (leader_sequence_one_key(KC_R)) {
-    SEND_STRING("return ");
-  } else if (leader_sequence_two_keys(KC_E, KC_C)) {
-    SEND_STRING("export const  = " SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
-  } else if (leader_sequence_three_keys(KC_E, KC_D, KC_F)) {
-    SEND_STRING("export default function () { " SS_TAP(X_LEFT) "\n" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
-  } else if (leader_sequence_three_keys(KC_I, KC_M, KC_P)) {
-    SEND_STRING("import  from \"\"" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
-  }
-
-#ifdef RGB_MATRIX_ENABLE
-  rgb_matrix_reload_from_eeprom();
-#endif
 }
 
 void keyboard_post_init_user(void) {
