@@ -69,6 +69,10 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 // Tap hold macros
 #define TH_QUOT LT(0, KC_QUOT)
 #define TH_SLSH LT(0, KC_SLSH)
+#define TH_Q LT(0, KC_Q)
+#define TH_W LT(0, KC_W)
+#define TH_F LT(0, KC_F)
+#define TH_E LT(0, KC_E)
 
 // clang-format off
 #define ___________________________________________ ___N___, ___N___, ___N___, ___N___, ___N___
@@ -82,29 +86,22 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU, EXT };
 
 // #define ESC_MED LT(MED, KC_ESC)
-#define SPC_NAV LT(NAV, KC_SPC)
-#define TAB_SYM LT(SYM, KC_TAB)
-#define ENT_FUN LT(FNC, KC_ENT)
-#define BSP_NUM LT(NUM, KC_BSPC)
+#define THM_1 LT(NAV, KC_SPC)
+#define THM_2 LT(SYM, KC_TAB)
+#define THM_3 LT(FNC, KC_ENT)
+#define THM_4 LT(NUM, KC_BSPC)
 
 // Default 3x5_2 split layout
 // clang-format off
 #define _BASE \
-	KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
+	TH_Q,    TH_W,    TH_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
 	KC_A,    KC_S,    KC_D,    KC_F,    KC_G,        KC_H,    KC_J,    KC_K,    KC_L,    TH_QUOT,    \
 	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  TH_SLSH,    \
-	                           SPC_NAV, TAB_SYM,     ENT_FUN, BSP_NUM
-
-// Colemak standard
-/* #define _COLE \
-	KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
-	KC_A,    KC_R,    KC_S,    KC_T,    KC_D,        KC_H,    KC_N,    KC_E,    KC_I,    KC_O,       \
-	KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,        KC_K,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
-	                           _______, _______,     _______, _______*/
+	                           THM_1,   THM_2,       THM_3,   THM_4
 
 // Colemak DH
 #define _COLE \
-	KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
+	TH_Q,    TH_W,    TH_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
 	KC_A,    KC_R,    KC_S,    KC_T,    KC_G,        KC_M,    KC_N,    KC_E,    KC_I,    KC_O,       \
 	KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,        KC_K,    KC_H,    KC_COMM, KC_DOT,  TH_SLSH,    \
 	                           _______, _______,     _______, _______

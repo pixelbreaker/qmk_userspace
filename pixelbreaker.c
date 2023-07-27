@@ -59,7 +59,7 @@ static fast_timer_t tap_timer = 0;
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case SPC_NAV:
+    case THM_1:
       return TAPPING_TERM;
     default:
       // Increase tapping term for the non-Shift home row mod-tap while typing
@@ -98,8 +98,8 @@ bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
 // bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
 //   // Hold space to toggle layer immediately when not currently typing else wait for tapping term
 //   switch (keycode) {
-//     case SPC_NAV:
-//     case BSP_NUM:
+//     case THM_1:
+//     case THM_4:
 //       return !IS_TYPING();
 
 //     default:
@@ -257,12 +257,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   tap_timer = timer_read_fast();
 #endif
 
-  // Clipboard shortcuts
+  // TAP holds
   if (record->event.pressed) {
     if (keycode == TH_QUOT)
       return process_tap_hold(S(KC_QUOT), record);
     else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
       return process_tap_hold(KC_BSLS, record);
+    else if (keycode == TH_Q)
+      if (record->tap.count)
+        return true;
+      else {
+        tap_code16(KC_Q);
+        tap_code16(KC_U);
+        return false;
+      }
+    else if (keycode == TH_W)
+      return process_tap_hold(KC_AT, record);
+    else if (keycode == TH_F || keycode == TH_E)
+      return process_tap_hold(Z_HASH, record);
   }
 
   // custom keycodes
@@ -279,11 +291,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
       }
     // set trackball modes...
-    case SPC_NAV:
+    case THM_1:
 #ifdef POINTING_DEVICE_ENABLE
 #  ifdef KEYBOARD_charybdis
       charybdis_set_pointer_dragscroll_enabled(record->event.pressed);
-
 #  else
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
@@ -294,10 +305,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         track_mode = CURSOR;
       }
 #  endif
-
 #endif
       return true;
-    case BSP_NUM:
+    case THM_4:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
@@ -309,7 +319,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
 #endif
       return true;
-    case TAB_SYM:
+
+    case THM_2:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
