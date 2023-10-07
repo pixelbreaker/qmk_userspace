@@ -1,0 +1,15 @@
+{
+	"keyboard": "pixelbreaker/buteo",
+	"keymap": "pixelbreaker",
+	"layout": "LAYOUT_buteo_w",
+	"layers": [
+		[ "BUTEO(HRM(_BASE))" ],
+		[ "BUTEO(HRM(_COLE))" ],
+		[ "BUTEO(_NAV)" ],
+		[ "BUTEO(_NUMB)" ],
+		[ "BUTEO(_SYMB)" ],
+		[ "BUTEO(_FUNC)" ],
+		[ "BUTEO(_MOUSE)" ],
+		[ "BUTEO(HRM(_EXTRA))" ]
+	]
+}

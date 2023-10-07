@@ -8,7 +8,7 @@
 #  include "print.h"
 #endif
 
-#if defined(POINTING_DEVICE_ENABLE)
+#if POINTING_DEVICE_ENABLE
 #  include "features/scrollspam.h"
 #endif
 
@@ -77,35 +77,21 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 
 #ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-  // Replace the mod-tap key with its base keycode when
-  // tapped with another non-Shift key on the same hand
-  if (IS_UNILATERAL_TAP(record, next_record) && !IS_MOD_TAP_SHIFT(next_keycode)) {
+  // Replace the mod-tap key with its base keycode
+  // when tapped with another key on the same hand
+  if (IS_UNILATERAL_TAP(record, next_record)) {
+    // Mask the base keycode and send the tap event
     record->keycode = keycode & 0xff;
     process_record(record);
+    // Send the base keycode key up event
     record->event.pressed = false;
     process_record(record);
-    return true;
-  }
-  // Hold layer with another key press
-  else if (IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode)) {
+    // Return true to end action tapping process
     return true;
   }
   return false;
 }
 #endif
-
-// Select layer hold immediately with another key
-// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-//   // Hold space to toggle layer immediately when not currently typing else wait for tapping term
-//   switch (keycode) {
-//     case THM_1:
-//     case THM_4:
-//       return !IS_TYPING();
-
-//     default:
-//       return IS_QK_LAYER_TAP(keycode) && QK_LAYER_TAP_GET_LAYER(keycode) > 0;
-//   }
-// }
 
 // Send custom hold keycode
 static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
@@ -259,22 +245,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   // TAP holds
   if (record->event.pressed) {
-    if (keycode == TH_QUOT)
+    if (keycode == TH_X)
+      return process_tap_hold(Z_CUT, record);
+    else if (keycode == TH_C)
+      return process_tap_hold(Z_CPY, record);
+    else if (keycode == TH_D || keycode == TH_V)
+      return process_tap_hold(Z_PST, record);
+    else if (keycode == TH_QUOT)
       return process_tap_hold(S(KC_QUOT), record);
     else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
       return process_tap_hold(KC_BSLS, record);
-    else if (keycode == TH_Q)
-      if (record->tap.count)
-        return true;
-      else {
-        tap_code16(KC_Q);
-        tap_code16(KC_U);
-        return false;
-      }
     else if (keycode == TH_W)
       return process_tap_hold(KC_AT, record);
     else if (keycode == TH_F || keycode == TH_E)
       return process_tap_hold(Z_HASH, record);
+    else if (keycode == TH_G)
+      return process_tap_hold(KC_MINS, record);
+    else if (keycode == TH_B)
+      return process_tap_hold(KC_UNDS, record);
+
+    // return process_tap_hold(OSM(MOD_HYPR), record);
   }
 
   // custom keycodes
@@ -399,27 +389,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
 
     case E_HUE:
-#ifdef ENCODER_ENABLE
+#if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
       encoder_mode = HUE;
 #endif
       return false;
     case E_SAT:
-#ifdef ENCODER_ENABLE
+#if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
       encoder_mode = SAT;
 #endif
       return false;
     case E_VAL:
-#ifdef ENCODER_ENABLE
+#if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
       encoder_mode = VAL;
 #endif
       return false;
     case E_SPD:
-#ifdef ENCODER_ENABLE
+#if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
       encoder_mode = SPD;
 #endif
       return false;
     case E_MOD:
-#ifdef ENCODER_ENABLE
+#if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
       encoder_mode = MOD;
 #endif
       return false;
@@ -504,18 +494,53 @@ void keyboard_post_init_user(void) {
 // Customise these values to desired behaviour
 #ifdef CONSOLE_ENABLE
   debug_enable = true;
-//   debug_matrix = true;
+  //   debug_matrix = true;
+  // debug_mouse = true;
+#endif
+
+#ifdef RGBLIGHT_ENABLE
+  // rgblight_set_effect_range(0, 1);
+  rgblight_sethsv_at(HSV_WHITE, 0);
 #endif
 }
+
+#ifdef RGBLIGHT_ENABLE
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+  rgblight_sethsv_at(HSV_WHITE, 0);
+  return state;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+  switch (get_highest_layer(state)) {
+    case NAV:
+      rgblight_sethsv_at(HSV_SPRINGGREEN, 0);
+      break;
+    case SYM:
+      rgblight_sethsv_at(HSV_ORANGE, 0);
+      break;
+    case NUM:
+      rgblight_sethsv_at(HSV_CYAN, 0);
+      break;
+    case FNC:
+      rgblight_sethsv_at(HSV_PINK, 0);
+      break;
+    default:
+      rgblight_sethsv_at(HSV_WHITE, 0);
+      break;
+  }
+  return state;
+}
+#endif
 
 // reset CPI after wake
 #ifdef KEYBOARD_charybdis
 void suspend_wakeup_init_user(void) {
   keyboard_post_init_kb();
+  keyboard_post_init_user();
 }
 #endif
 
-#ifdef KEYBOARD_tenome
+#if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo)
 void pointing_device_init_kb() {
 #  ifdef TRACKBALL_ENABLE
   pointing_device_set_cpi(900);

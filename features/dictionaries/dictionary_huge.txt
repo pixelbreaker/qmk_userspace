@@ -84,8 +84,8 @@ andd:               -> and
 :teh:               -> the
 :tehy:              -> they
 :tghe:              -> the
-# :th:                -> the
-:the:the:           -> the
+# :th:              -> the
+# :the:the:           -> the
 :theri:             -> their
 :thier              -> their
 :thn:               -> then
