@@ -5,9 +5,9 @@
 	"layers": [
 		[ "SPHYNX(HRM(_BASE))" ],
 		[ "SPHYNX(HRM(_COLE))" ],
+		[ "SPHYNX(_SYMB)" ],
 		[ "SPHYNX(_NAV)" ],
 		[ "SPHYNX(_NUMB)" ],
-		[ "SPHYNX(_SYMB)" ],
 		[ "SPHYNX(_FUNC)" ],
 		[ "SPHYNX(_MOUSE)" ]
 	]

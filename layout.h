@@ -74,6 +74,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 #define TH_F LT(0, KC_F)
 #define TH_G LT(0, KC_G)
 #define TH_QUOT LT(0, KC_QUOT)
+#define TH_DOT LT(0, KC_DOT)
 #define TH_SLSH LT(0, KC_SLSH)
 #define TH_V LT(0, KC_V)
 #define TH_W LT(0, KC_W)
@@ -88,7 +89,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 // clang-format on
 
 // Layers
-enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU, EXT };
+enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 
 // #define ESC_MED LT(MED, KC_ESC)
 #define THM_1 LT(NAV, KC_SPC)
@@ -101,14 +102,14 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU, EXT };
 #define _BASE \
 	KC_Q,    TH_W,    TH_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
 	KC_A,    KC_S,    KC_D,    KC_F,    TH_G,        KC_H,    KC_J,    KC_K,    KC_L,    TH_QUOT,    \
-	KC_Z,    TH_X,    TH_C,    TH_V,    KC_B,        KC_N,    KC_M,    KC_COMM, KC_DOT,  TH_SLSH,    \
+	KC_Z,    TH_X,    TH_C,    TH_V,    KC_B,        KC_N,    KC_M,    KC_COMM, TH_DOT,  TH_SLSH,    \
 	                           THM_1,   THM_2,       THM_3,   THM_4
 
 // Colemak DH
 #define _COLE \
 	KC_Q,    TH_W,    TH_F,    KC_P,    TH_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
 	KC_A,    KC_R,    KC_S,    KC_T,    TH_G,        KC_M,    KC_N,    KC_E,    KC_I,    KC_O,       \
-	KC_Z,    TH_X,    TH_C,    TH_D,    KC_V,        KC_K,    KC_H,    KC_COMM, KC_DOT,  TH_SLSH,    \
+	KC_Z,    TH_X,    TH_C,    TH_D,    KC_V,        KC_K,    KC_H,    KC_COMM, TH_DOT,  TH_SLSH,    \
 	                           _______, _______,     _______, _______
 
 #define _NAV \
@@ -117,25 +118,12 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU, EXT };
 	________________COPY_PASTA_________________,     ___N___, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
 	                           _______, _______,     KC_ENT,  KC_BSPC
 
-#define _NUMB \
-	KC_PLUS, KC_7,    KC_8,    KC_9,    KC_0,        KC_ASTR, KC_SLSH, ___N___, ___N___, ___N___,    \
-	KC_MINS, KC_4,    KC_5,    KC_6,    KC_EQL,      ______________HOME_ROW_CAGS_R______________,    \
-	KC_0,    KC_1,    KC_2,    KC_3,    KC_EQL,      ________________COPY_PASTA_________________,    \
-	                           KC_SPC,  KC_DOT,      _______, _______
-
-/*
 #define _SYMB \
-	_______, _______, KC_LBRC, KC_RBRC, _______,     KC_PIPE, KC_PLUS, KC_ASTR,  KC_DLR,  KC_TILDE,  \
-	_______, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_EXLM, KC_MINS, KC_SLSH,  KC_EQL,  KC_GRV,    \
-	_______, _______, KC_LCBR, KC_RCBR, _______,     KC_AMPR, KC_UNDS, Z_HASH,   Z_AT,    KC_BSLS,   \
-	                           _______, _______,     _______, KC_DEL
-*/
-
-#define _SYMB \
-	Z_SSHT,  Z_SRCD,  KC_LBRC, KC_RBRC, ___N___,     KC_ASTR, KC_PLUS, KC_PIPE,  KC_DLR,  KC_GRV,    \
-	___N___, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       Z_HASH,  KC_MINS, KC_EXLM,  KC_EQL,  KC_TILDE,  \
-	___N___, ___N___, KC_LCBR, KC_RCBR, ___N___,     Z_AT,    KC_UNDS, KC_AMPR,  KC_BSLS, KC_SLSH,   \
+	Z_SSHT,  Z_AT,    KC_LBRC, KC_RBRC, S(KC_6),     KC_ASTR, KC_PLUS, KC_PIPE,  KC_AMPR, KC_GRV,    \
+	Z_SRCD,  KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_DLR,  KC_MINS, KC_EXLM,  KC_EQL,  KC_TILDE,  \
+	___N___, ___N___, KC_LCBR, KC_RCBR, ___N___,     Z_HASH,  KC_UNDS, _______,  KC_BSLS, KC_SLSH,   \
 	                           _______, _______,     KC_SPC,  KC_DEL
+
 
 #define _FUNC \
   QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, Z_VSML,  TGL_BASE,   \
@@ -143,8 +131,14 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU, EXT };
   ___N___, KC_F1,   KC_F2,   KC_F3,   KC_F10,      E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
 	                				   _______, _______,     _______, _______
 
+#define _NUMB \
+	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_EQL,      ___N___, ___N___, ___N___, ___N___, ___N___,    \
+	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     ______________HOME_ROW_CAGS_R______________,    \
+	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     ________________COPY_PASTA_________________,    \
+	                           KC_0,    KC_DOT,      _______, _______
+
 #define _MOUSE \
-	DPI_MOD, S_D_MOD, ___N___, ___N___, ___N___,     ___N___, ___N___, KC_MS_U, ___N___, ___N___,    \
+	DPI_MOD, S_D_MOD, ___N___, G(KC_BSPC), KC_DEL,   ___N___, ___N___, KC_MS_U, ___N___, ___N___,    \
   ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, ___N___,    \
   ___N___, SNIPE,   ___N___, KC_BTN3, ___N___,     KC_WH_D, ___N___, ___N___, ___N___, ___N___,    \
                       		   KC_BTN1, KC_BTN2,     _______, _______
@@ -164,9 +158,23 @@ enum layers { BSE, CMK, NAV, NUM, SYM, FNC, MOU, EXT };
 	  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 	                 l16, l17,   r16, r17                 \
 ) \
-	  MSE(l01), l02, l03, l04, l05,   r01, r02, r03, r04, r05,       \
+	  l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05,       \
 HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
  MSE(l11), l12, l13, l14, l15,   r11, r12, r13, r14, MSE(r15),  \
+	                 l16, l17,   r16, r17
+
+
+#define HRM2332(k) HR2332_MODTAP(k)
+
+#define HR2332_MODTAP( \
+	  l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
+	  l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+	  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
+	                 l16, l17,   r16, r17                 \
+) \
+	  MSE(l01), l02, l03, l04, l05,   r01, r02, r03, r04, r05,       \
+HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
+ l11, l12, l13, l14, l15,   r11, r12, r13, r14, MSE(r15),  \
 	                 l16, l17,   r16, r17
 
 

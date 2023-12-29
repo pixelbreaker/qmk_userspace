@@ -122,3 +122,15 @@ bool get_combo_must_hold(uint16_t combo_index, bool pressed) {
   return false;
 }
 #endif
+
+// #ifdef COMBO_TERM_PER_COMBO
+// uint16_t get_combo_term(uint16_t index, combo_t *combo) {
+//   // or with combo index, i.e. its name from enum.
+//   switch (index) {
+//     case sft_capsword:
+//       return 500;
+//   }
+
+//   return COMBO_TERM;
+// }
+// #endif

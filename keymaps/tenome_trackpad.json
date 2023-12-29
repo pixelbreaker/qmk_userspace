@@ -5,11 +5,10 @@
 	"layers": [
 		[ "TENOME(HRM(_BASE))" ],
 		[ "TENOME(HRM(_COLE))" ],
+		[ "TENOME(_SYMB)" ],
 		[ "TENOME(_NAV)" ],
 		[ "TENOME(_NUMB)" ],
-		[ "TENOME(_SYMB)" ],
 		[ "TENOME(_FUNC)" ],
-		[ "TENOME(_MOUSE)" ],
-		[ "TENOME(HRM(_EXTRA))" ]
+		[ "TENOME(_MOUSE)" ]
 	]
 }

@@ -50,11 +50,13 @@ endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/hummingbird))
   OPT_DEFS += -DKEYBOARD_hummingbird
+  OPT_DEFS += -DLAYOUT_23332
   RGBLIGHT_ENABLE = yes
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo))
   OPT_DEFS += -DKEYBOARD_buteo
+  OPT_DEFS += -DLAYOUT_23332
   OPT_DEFS += -DENCODER_ENABLE
   SRC += scrollspam.c
   RGBLIGHT_ENABLE = no

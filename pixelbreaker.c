@@ -17,12 +17,10 @@
 #endif
 
 #define TYPING_TERM (TAPPING_TERM * 2)
-// #define IS_TYPING() (timer_elapsed_fast(tap_timer) < TYPING_TERM)
-// #define IS_HOMEROW(r) (r->event.key.row == 1 || r->event.key.row == 5)
-// #define IS_MT_SHIFT(k) (QK_MOD_TAP_GET_MODS(k) & MOD_MASK_SHIFT)
 
 #if defined(PERMISSIVE_HOLD_PER_KEY) || defined(HOLD_ON_OTHER_KEY_PRESS_PER_KEY)
-static uint16_t    next_keycode;
+static uint16_t next_keycode;
+// static uint16_t    prev_keycode;
 static keyrecord_t next_record;
 
 #  define TAP_INTERVAL_MS 100
@@ -60,6 +58,7 @@ static fast_timer_t tap_timer = 0;
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case THM_1:
+      // case HM_S2:
       return TAPPING_TERM;
     default:
       // Increase tapping term for the non-Shift home row mod-tap while typing
@@ -79,8 +78,12 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
   // Replace the mod-tap key with its base keycode
   // when tapped with another key on the same hand
+
+  // #  ifdef CONSOLE_ENABLE
+  //   uprintf("KL: kc: 0x%04X, is: %u\n", keycode, keycode == HM_S2);
+  // #  endif
   if (IS_UNILATERAL_TAP(record, next_record)) {
-    // Mask the base keycode and send the tap event
+    // Mask the base keycode and send the tap events
     record->keycode = keycode & 0xff;
     process_record(record);
     // Send the base keycode key up event
@@ -159,24 +162,20 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   // to double click with small movement of trackball
   bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
 
-  if ((track_mode != CURSOR && track_mode != SCROLL) || appswitch_active || tabswitch_active || mouse_pause) {
-    // Nerf mouse_report as we're doing something else
-    tap_report(mouse_report);
-    mouse_report.x = 0;
-    mouse_report.y = 0;
-  }
+#  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo)
+  pointing_device_set_cpi(track_mode == SCROLL || appswitch_active || tabswitch_active ? DPI_SCROLL : DPI_POINTER);
+#  endif
+
   if (track_mode == SCROLL) {
     scroll_buffer_x -= mouse_report.x;
     scroll_buffer_y -= mouse_report.y;
-    mouse_report.x = 0;
-    mouse_report.y = 0;
-    if (abs(scroll_buffer_x) > SCROLL_BUFFER_SIZE) {
-      mouse_report.h  = scroll_buffer_x > 0 ? -1 : 1;
-      scroll_buffer_x = 0;
-    }
+
     if (abs(scroll_buffer_y) > SCROLL_BUFFER_SIZE) {
       mouse_report.v  = scroll_buffer_y > 0 ? 1 : -1;
       scroll_buffer_y = 0;
+    } else if (abs(scroll_buffer_x) > SCROLL_BUFFER_SIZE) {
+      mouse_report.h  = scroll_buffer_x > 0 ? -1 : 1;
+      scroll_buffer_x = 0;
     }
   } else if (track_mode == MEDIA) {
     tap_media();
@@ -185,6 +184,14 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   } else if (appswitch_active || tabswitch_active) {
     tap_switcher();
   }
+
+  if (track_mode != CURSOR || appswitch_active || tabswitch_active || mouse_pause) {
+    // Nerf mouse_report as we're doing something else
+    tap_report(mouse_report);
+    mouse_report.x = 0;
+    mouse_report.y = 0;
+  }
+
   return mouse_report;
 }
 #endif // POINTING_DEVICE_ENABLE
@@ -263,6 +270,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return process_tap_hold(KC_MINS, record);
     else if (keycode == TH_B)
       return process_tap_hold(KC_UNDS, record);
+    else if (keycode == TH_DOT)
+      return process_tap_hold(KC_SLSH, record);
 
     // return process_tap_hold(OSM(MOD_HYPR), record);
   }
@@ -494,7 +503,7 @@ void keyboard_post_init_user(void) {
 // Customise these values to desired behaviour
 #ifdef CONSOLE_ENABLE
   debug_enable = true;
-  //   debug_matrix = true;
+  // debug_matrix = true;
   // debug_mouse = true;
 #endif
 
@@ -542,10 +551,6 @@ void suspend_wakeup_init_user(void) {
 
 #if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo)
 void pointing_device_init_kb() {
-#  ifdef TRACKBALL_ENABLE
-  pointing_device_set_cpi(900);
-#  else
-  pointing_device_set_cpi(500);
-#  endif
+  pointing_device_set_cpi(DPI_POINTER);
 }
 #endif
