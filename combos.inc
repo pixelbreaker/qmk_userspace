@@ -7,7 +7,7 @@
 //                      THM_1 THM_2        THM_3 THM_4
 
 // general
-COMB(sft_capsword, CW_TOGG, HM_F, HM_J)
+COMB(sft_capsword, CW_TOGG, TH_G, KC_H)
 // COMB(hypr, OSM_HYPR, KC_C, KC_V)
 // COMB(meh, OSM_MEH, KC_M, KC_COMM)
 // COMB(rgb_layer, TG(LED), KC_M, KC_COMM, KC_DOT)
@@ -28,13 +28,13 @@ HOLD(appswitch, APPSWITCH, TH_X, TH_V)
 // COMB(key_hash, Z_HASH, KC_I, KC_O)
 
 // thumbs
-COMB(thmb_l, OSM_HYPR, THM_1, THM_2)
+COMB(thmb_l, OSM_HYPR, THM_1, THM_4)
 // COMB(hypr, OSM_HYPR, TH_C, TH_V)
-COMB(thmb_r, OSM_MEH, THM_3, THM_4)
+COMB(thmb_r, OSM_MEH, THM_2, THM_3)
 
 // SUBS(c_arr, "->", KC_H, KC_N)
 // SUBS(js_arr, "=>", HM_J, KC_M)
-SUBS(js_arrfn, "() =>", HM_K, KC_COMM)
+// SUBS(js_arrfn, "() =>", HM_K, KC_COMM)
 // SUBS(md_link, "[]()" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), HM_L, KC_DOT)
 SUBS(dir_up, "../", KC_DOT, MS_SLSH)
 
@@ -50,7 +50,7 @@ COMB(char_rbrc, KC_RBRC, KC_O, HM_L)
 // 23332 combos (colemak only)
 #ifdef LAYOUT_23332
 // COMB(tg_sym, TG(SYM), THM_1, THM_4)
-COMB(osl_extra, OSL(EXT), THM_2, THM_3)
+COMB(osl_extra, OSL(EXT), THM_3, THM_4)
 
 COMB(key_z, KC_Z, TH_X, TH_C)
 COMB(key_v, KC_V, TH_C, TH_V)

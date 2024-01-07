@@ -20,6 +20,9 @@ __attribute__((always_inline)) static inline bool process_tap_hold(uint16_t keyc
 #define IS_TYPING()          (timer_elapsed_fast(tap_timer) < TAPPING_TERM * 2)
 #define IS_MOD_TAP_SHIFT(kc) (QK_MOD_TAP_GET_MODS(kc) & MOD_LSFT)
 #define IS_MOD_TAP_CS(kc)    (QK_MOD_TAP_GET_MODS(kc) & (MOD_LCTL | MOD_LSFT))
+#define IS_MOD_TAP_CAG(kc)   (QK_MOD_TAP_GET_MODS(kc) & (MOD_LCTL | MOD_LALT | MOD_LGUI))
+#define IS_MOD_TAP_G(kc)   (QK_MOD_TAP_GET_MODS(kc) & (MOD_LGUI))
+#define IS_LAYER_TAP(kc)     (IS_QK_LAYER_TAP(kc) &&  QK_LAYER_TAP_GET_LAYER(kc))
 
 #ifdef KEYBOARD_hummingbird
     // specifically for hummingbird's odd matrix

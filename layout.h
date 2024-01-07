@@ -85,7 +85,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 #define ______________HOME_ROW_CAGS_L______________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, KC_DEL
 #define ______________HOME_ROW_CAGS_R______________ ___N___, KC_LSFT, KC_LGUI, KC_LALT, KC_LCTL
 #define __________________APP_NAV__________________ C(S(KC_TAB)), C(KC_TAB), C(G(S(KC_TAB))), C(G(KC_TAB)), ___N___
-#define ________________COPY_PASTA_________________ ___N___, Z_UND,   Z_SAVE,  Z_RDO,   ___N___
+#define _________________FILE_NAV__________________ ___N___, Z_UND,   Z_SAVE,  Z_RDO,   ___N___
 // clang-format on
 
 // Layers
@@ -115,7 +115,7 @@ enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 #define _NAV \
 	__________________APP_NAV__________________,     KC_EQL,  DELLINE, KC_UP,    ___N___, KC_COLN,   \
 	______________HOME_ROW_CAGS_L______________,     KC_MINS, KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
-	________________COPY_PASTA_________________,     ___N___, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
+	_________________FILE_NAV__________________,     ___N___, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
 	                           _______, _______,     KC_ENT,  KC_BSPC
 
 #define _SYMB \
@@ -132,9 +132,9 @@ enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 	                				   _______, _______,     _______, _______
 
 #define _NUMB \
-	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_EQL,      ___N___, ___N___, ___N___, ___N___, ___N___,    \
+	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_EQL,      ___________________________________________,    \
 	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     ______________HOME_ROW_CAGS_R______________,    \
-	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     ________________COPY_PASTA_________________,    \
+	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     ___________________________________________,    \
 	                           KC_0,    KC_DOT,      _______, _______
 
 #define _MOUSE \
@@ -144,9 +144,9 @@ enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
                       		   KC_BTN1, KC_BTN2,     _______, _______
 
 #define _EXTRA \
-	___N___, ___N___, ___N___, ___N___, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
+	___________________________________________,     ___________________________________________,    \
   ___N___, KC_Z,    ___N___, KC_V,    ___N___,     ___N___, KC_K,    ___N___, KC_SLSH, KC_BSLS,    \
-  ___N___, ___N___, ___N___, ___N___, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
+  ___________________________________________,     ___________________________________________,    \
                       		   _______, _______,     _______, _______
 
 // Mod-tap wrapper
