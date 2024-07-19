@@ -7,14 +7,7 @@
 //                      THM_1 THM_2        THM_3 THM_4
 
 // general
-COMB(sft_capsword, CW_TOGG, TH_G, KC_H)
-// COMB(hypr, OSM_HYPR, KC_C, KC_V)
-// COMB(meh, OSM_MEH, KC_M, KC_COMM)
-// COMB(rgb_layer, TG(LED), KC_M, KC_COMM, KC_DOT)
-// COMB(meh, OSM_MEH, HM_J, HM_K, HM_L)
-// COMB(hypr, OSM_HYPR, HM_S, HM_D, HM_F)
-// COMB(meh, OSM_HYPR, KC_X, KC_V)
-// COMB(hypr, OSM_MEH, KC_M, KC_DOT)
+COMB(sft_capsword, CW_TOGG, HM_F, HM_J)
 COMB(esc, KC_ESC, KC_Q, TH_W)
 COMB(esc_2, KC_ESC, MSE(KC_Q), TH_W)
 
@@ -65,4 +58,3 @@ COMB(key_slsh, KC_SLSH, KC_COMM, TH_DOT)
 
 // #else
 #endif
-

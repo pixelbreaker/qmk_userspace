@@ -41,7 +41,7 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode)) {
     uint8_t const tap_keycode = keycode & 0xff;
     // Press the tap keycode on short input interval when not preceded by layer or combo keys
-    if (record->event.pressed && IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && !IS_MOD_TAP_G(next_keycode) && prev_event != COMBO_EVENT) {
+    if (record->event.pressed && IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && !IS_MOD_TAP_CAG(next_keycode) && prev_event != COMBO_EVENT) {
       record->keycode         = tap_keycode;
       is_pressed[tap_keycode] = true;
     }
@@ -61,11 +61,10 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case THM_1:
-      // case HM_S2:
       return TAPPING_TERM;
     default:
       // Increase tapping term for the non-Shift home row mod-tap while typing
-      return IS_HOMEROW(record) && !IS_MOD_TAP_SHIFT(keycode) && IS_TYPING() ? TAPPING_TERM * 2 : TAPPING_TERM;
+      return IS_HOMEROW(record) && !IS_MOD_TAP_SHIFT(keycode) && IS_TYPING() ? TAPPING_TERM * 3 : TAPPING_TERM;
   }
 }
 #endif
@@ -73,35 +72,15 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 #ifdef PERMISSIVE_HOLD_PER_KEY
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
   // Hold Control and Shift with a nested key tap on the opposite hand
-  return IS_BILATERAL_TAP(record, next_record) && (!IS_TYPING() && IS_MOD_TAP_CS(keycode));
+  return IS_BILATERAL_TAP(record, next_record) && ((!IS_TYPING() && IS_MOD_TAP_CS(keycode)) || IS_MOD_TAP_SHIFT(keycode));
+  // return IS_BILATERAL_TAP(record, next_record) && IS_MOD_TAP_CS(keycode);
 }
 #endif
-
-// #ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
-// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-//   // Replace the mod-tap key with its base keycode
-//   // when tapped with another key on the same hand
-
-//   // #  ifdef CONSOLE_ENABLE
-//   //   uprintf("KL: kc: 0x%04X, is: %u\n", keycode, keycode == HM_S2);
-//   // #  endif
-//   if (IS_UNILATERAL_TAP(record, next_record)) {
-//     // Mask the base keycode and send the tap events
-//     record->keycode = keycode & 0xff;
-//     process_record(record);
-//     // Send the base keycode key up event
-//     record->event.pressed = false;
-//     process_record(record);
-//     // Return true to end action tapping process
-//     return true;
-//   }
-//   return false;
-// }
-// #endif
 
 #ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
   // Activate layer with another key press
+
   if (IS_LAYER_TAP(keycode) && (!IS_TYPING() && keycode != THM_1)) return true;
 
   // Send the tap keycode when the mod-tap key overlaps with
@@ -176,28 +155,79 @@ uint32_t activate_scroll_mode(uint32_t trigger_time, void *cb_arg) {
   return 0;
 }
 
+#  define SCROLL_DIVISOR_H 32.0
+#  define SCROLL_DIVISOR_V 32.0
+
+float scroll_accumulated_h = 0;
+float scroll_accumulated_v = 0;
+
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-  static int16_t scroll_buffer_x = 0;
-  static int16_t scroll_buffer_y = 0;
+#  ifdef KEYBOARD_buteo_talon
+  if (mouse_report.buttons != 0) {
+    // uprintf("Buttons: %u, btn_7: %d\n", mouse_report.buttons, MOUSE_BTN7);
+
+    // if (mouse_report.buttons & MOUSE_BTN4) {
+    //   char *message = "Swipe left";
+    //   mouse_report.buttons &= ~MOUSE_BTN4;
+    //   tap_code16(G(KC_LEFT));
+    //   uprintf("%s\n", message);
+    // }
+    // if (mouse_report.buttons & MOUSE_BTN5) {
+    //   char *message = "Swipe right";
+    //   mouse_report.buttons &= ~MOUSE_BTN5;
+    //   tap_code16(G(KC_RIGHT));
+    //   uprintf("%s\n", message);
+    // }
+    if (mouse_report.buttons & MOUSE_BTN7) {
+      // char *message = "Zoom in";
+      mouse_report.buttons &= ~MOUSE_BTN7;
+      // tap_code16(A(S(KC_VOLD)));
+      tap_code16(G(KC_LEFT));
+      // uprintf("%s\n", message);
+    }
+    if (mouse_report.buttons & MOUSE_BTN8) {
+      // char *message = "Zoom out";
+      mouse_report.buttons &= ~MOUSE_BTN8;
+      // tap_code16(A(S(KC_VOLU)));
+      tap_code16(G(KC_RIGHT));
+      // uprintf("%s\n", message);
+    }
+  }
+
+  scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
+  scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR_V;
+
+  // Assign integer parts of accumulated scroll values to the mouse report
+  mouse_report.h = (int8_t)scroll_accumulated_h;
+  mouse_report.v = (int8_t)scroll_accumulated_v;
+
+  // Update accumulated scroll values by subtracting the integer parts
+  scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
+  scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+#  endif
   // Pause mouse report updates for short time after clicking to make it easier
   // to double click with small movement of trackball
   bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
 
-#  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo)
+#  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon)
   pointing_device_set_cpi(track_mode == SCROLL || appswitch_active || tabswitch_active ? DPI_SCROLL : DPI_POINTER);
 #  endif
 
   if (track_mode == SCROLL) {
-    scroll_buffer_x -= mouse_report.x;
-    scroll_buffer_y -= mouse_report.y;
+    scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR_H;
+    scroll_accumulated_v -= (float)mouse_report.y / SCROLL_DIVISOR_V;
 
-    if (abs(scroll_buffer_y) > SCROLL_BUFFER_SIZE) {
-      mouse_report.v  = scroll_buffer_y > 0 ? 1 : -1;
-      scroll_buffer_y = 0;
-    } else if (abs(scroll_buffer_x) > SCROLL_BUFFER_SIZE) {
-      mouse_report.h  = scroll_buffer_x > 0 ? -1 : 1;
-      scroll_buffer_x = 0;
-    }
+    // Assign integer parts of accumulated scroll values to the mouse report
+    mouse_report.h = (int8_t)scroll_accumulated_h;
+    mouse_report.v = (int8_t)scroll_accumulated_v;
+
+    // Update accumulated scroll values by subtracting the integer parts
+    scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
+    scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+
+    // Clear the X and Y values of the mouse report
+    mouse_report.x = 0;
+    mouse_report.y = 0;
   } else if (track_mode == MEDIA) {
     tap_media();
   } else if (track_mode == CARRET) {
@@ -299,6 +329,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // return process_tap_hold(OSM(MOD_HYPR), record);
   }
 
+  // uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %u, time: %5u, int: %u, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
   // custom keycodes
   switch (keycode) {
     case TGL_BASE:
@@ -329,6 +360,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #  endif
 #endif
       return true;
+    case THM_0:
     case THM_4:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
@@ -364,13 +396,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         last_mouse_press = timer_read();
 
 #  ifdef KEYBOARD_charybdis
-        charybdis_set_pointer_sniping_enabled(true);
+        // charybdis_set_pointer_sniping_enabled(true);
 #  endif
       } else {
         mouse_is_down = false;
 #  ifdef KEYBOARD_charybdis
         charybdis_set_pointer_dragscroll_enabled(false);
-        charybdis_set_pointer_sniping_enabled(false);
+        // charybdis_set_spointer_sniping_enabled(false);
 #  endif
       }
 #endif
@@ -462,34 +494,33 @@ void housekeeping_task_user(void) {
     }
   }
 }
-
 // Handle keyrecord before quantum processing
-bool pre_process_record_quantum_user(keyrecord_t *record) {
-  uint16_t keycode = get_record_keycode(record, true);
+// bool pre_process_record_quantum_user(keyrecord_t *record) {
+//   uint16_t keycode = get_record_keycode(record, true);
 
-  // Implement instant-tap of mod-tap keys
-  if (IS_HOMEROW(record) && IS_QK_MOD_TAP(keycode)) {
-    keyrecord_t quick_tap_record;
-    quick_tap_record.keycode = keycode & 0xff;
+//   // Implement instant-tap of mod-tap keys
+//   if (IS_HOMEROW(record) && IS_QK_MOD_TAP(keycode)) {
+//     keyrecord_t quick_tap_record;
+//     quick_tap_record.keycode = keycode & 0xff;
 
-    // When a mod-tap key is pressed within QUICK_TAP_TERM of a previous key,
-    // send its masked base keycode through process_record and skip processing
-    if (record->event.pressed && (timer_elapsed_fast(tap_timer) < QUICK_TAP_TERM)) {
-      quick_tap_record.event.pressed = true;
-      process_record(&quick_tap_record);
-#if TAP_CODE_DELAY > 0
-      wait_ms(TAP_CODE_DELAY);
-#endif
-      return false; // Skip processing
-    } else {
-      // Handle key up record event
-      quick_tap_record.event.pressed = false;
-      process_record(&quick_tap_record);
-    }
-  }
+//     // When a mod-tap key is pressed within QUICK_TAP_TERM of a previous key,
+//     // send its masked base keycode through process_record and skip processing
+//     if (record->event.pressed && (timer_elapsed_fast(tap_timer) < QUICK_TAP_TERM)) {
+//       quick_tap_record.event.pressed = true;
+//       process_record(&quick_tap_record);
+// #if TAP_CODE_DELAY > 0
+//       wait_ms(TAP_CODE_DELAY);
+// #endif
+//       return false; // Skip processing
+//     } else {
+//       // Handle key up record event
+//       quick_tap_record.event.pressed = false;
+//       process_record(&quick_tap_record);
+//     }
+//   }
 
-  return true; // Continue processing record
-}
+//   return true; // Continue processing record
+// }
 
 bool caps_word_press_user(uint16_t keycode) {
   switch (keycode) {
@@ -516,7 +547,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     case KC_SPC:
       return 0;
     case KC_BSPC:
-      return QUICK_TAP_TERM * 2;
+      return QUICK_TAP_TERM * 3;
     default:
       return QUICK_TAP_TERM;
   }
@@ -527,12 +558,17 @@ void keyboard_post_init_user(void) {
 #ifdef CONSOLE_ENABLE
   debug_enable = true;
   // debug_matrix = true;
-  // debug_mouse = true;
+  // debug_mouse  = true;
 #endif
 
 #ifdef RGBLIGHT_ENABLE
   // rgblight_set_effect_range(0, 1);
   rgblight_sethsv_at(HSV_WHITE, 0);
+#endif
+
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+  // set_auto_mouse_layer(6);
+  set_auto_mouse_enable(true);
 #endif
 }
 
@@ -572,7 +608,7 @@ void suspend_wakeup_init_user(void) {
 }
 #endif
 
-#if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo)
+#if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon)
 void pointing_device_init_kb() {
   pointing_device_set_cpi(DPI_POINTER);
 }

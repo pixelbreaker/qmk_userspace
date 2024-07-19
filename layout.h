@@ -92,6 +92,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 
 // #define ESC_MED LT(MED, KC_ESC)
+#define THM_0 LT(FNC, KC_ESC)
 #define THM_1 LT(NAV, KC_SPC)
 #define THM_2 LT(SYM, KC_TAB)
 #define THM_3 LT(FNC, KC_ENT)
@@ -113,23 +114,23 @@ enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 	                           _______, _______,     _______, _______
 
 #define _NAV \
-	__________________APP_NAV__________________,     KC_EQL,  DELLINE, KC_UP,    ___N___, KC_COLN,   \
+	__________________APP_NAV__________________,     KC_EQL,  DELLINE, KC_UP,    KC_PGUP, KC_COLN,   \
 	______________HOME_ROW_CAGS_L______________,     KC_MINS, KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
-	_________________FILE_NAV__________________,     ___N___, KC_HOME, KC_PGDN,  KC_PGUP, KC_END,    \
+	_________________FILE_NAV__________________,     ___N___, KC_HOME, KC_END,   KC_PGDN, ___N___,   \
 	                           _______, _______,     KC_ENT,  KC_BSPC
 
 #define _SYMB \
 	Z_SSHT,  Z_AT,    KC_LBRC, KC_RBRC, S(KC_6),     KC_ASTR, KC_PLUS, KC_PIPE,  KC_AMPR, KC_GRV,    \
 	Z_SRCD,  KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_DLR,  KC_MINS, KC_EXLM,  KC_EQL,  KC_TILDE,  \
-	___N___, ___N___, KC_LCBR, KC_RCBR, ___N___,     Z_HASH,  KC_UNDS, _______,  KC_BSLS, KC_SLSH,   \
+	___N___, KC_DLR,  KC_LCBR, KC_RCBR, ___N___,     Z_HASH,  KC_UNDS, _______,  KC_BSLS, KC_SLSH,   \
 	                           _______, _______,     KC_SPC,  KC_DEL
 
 
 #define _FUNC \
   QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, Z_VSML,  TGL_BASE,   \
   ___N___, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
-  ___N___, KC_F1,   KC_F2,   KC_F3,   KC_F10,      E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
-	                				   _______, _______,     _______, _______
+  ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
+	                				   KC_F10,  _______,     _______, _______
 
 #define _NUMB \
 	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_EQL,      ___________________________________________,    \
@@ -138,9 +139,9 @@ enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 	                           KC_0,    KC_DOT,      _______, _______
 
 #define _MOUSE \
-	DPI_MOD, S_D_MOD, ___N___, G(KC_BSPC), KC_DEL,   ___N___, ___N___, KC_MS_U, ___N___, ___N___,    \
-  ______________HOME_ROW_CAGS_L______________,     KC_WH_U, KC_MS_L, KC_MS_D, KC_MS_R, ___N___,    \
-  ___N___, SNIPE,   ___N___, KC_BTN3, ___N___,     KC_WH_D, ___N___, ___N___, ___N___, ___N___,    \
+	DPI_MOD, S_D_MOD, ___N___, G(KC_BSPC), KC_DEL,   KC_WH_U, ___N___, KC_MS_U, ___N___, ___N___,    \
+  ______________HOME_ROW_CAGS_L______________,     KC_WH_D, KC_MS_L, KC_MS_D, KC_MS_R, ___N___,    \
+  ___N___, SNIPE,   ___N___, KC_BTN3, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
                       		   KC_BTN1, KC_BTN2,     _______, _______
 
 #define _EXTRA \
@@ -198,7 +199,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
-		       KC_ESC, l16, l17,   r16, r17
+		       THM_0, l16, l17,   r16, r17
 
 // Convert 3x5_2 to Sphynx dacman 3x5_4 (with encoders optional)
 #define SPHYNX(k) CONV_SPHYNX(k)
@@ -211,7 +212,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
-		KC_NO, KC_ESC,l16, l17,   r16, r17, KC_DEL, ENC_DOWN
+		KC_NO, THM_0,l16, l17,   r16, r17, KC_DEL, ENC_DOWN
 
 // Convert 3x5_2 to Tenome 3x5_2 (with encoders optional)
 #define TENOME(k) CONV_TENOME(k)
@@ -237,8 +238,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		     l12, l13, l14,             r12, r13, r14,      \
-		               l16, l17,   r16, r17
-		              //  l17, l16,   r17, r16 // swap thumbs
+		          l16, l17,             r16, r17
 
 // Convert 3x5_2 to to 23332_2 split with encoder
 #define BUTEO(k) CONV_BUTEO(k)
@@ -251,7 +251,6 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		     l12, l13, l14,             r12, r13, r14,      \
-		               l16, l17,  ENC_DOWN, r16, r17
-		              //  l17, l16,   r17, r16 // swap thumbs
+              l16, l17,  ENC_DOWN,  r16, r17
 
 // clang-format on

@@ -64,8 +64,12 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo))
   DEFERRED_EXEC_ENABLE = yes
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/sweep))
-  OPT_DEFS += -DKEYBOARD_sweep
-  # AUTOCORRECT_ENABLE = no
-  # CONVERT_TO = elite_pi
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo/talon))
+  OPT_DEFS += -DKEYBOARD_buteo_talon
+  OPT_DEFS += -DLAYOUT_23332
+  OPT_DEFS += -DENCODER_ENABLE
+  SRC += scrollspam.c
+  RGBLIGHT_ENABLE = no
+  RGB_MATRIX_ENABLE = no
+  DEFERRED_EXEC_ENABLE = yes
 endif
