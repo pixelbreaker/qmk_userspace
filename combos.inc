@@ -31,14 +31,14 @@ COMB(thmb_r, OSM_MEH, THM_2, THM_3)
 // SUBS(md_link, "[]()" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), HM_L, KC_DOT)
 SUBS(dir_up, "../", KC_DOT, MS_SLSH)
 
-COMB(char_lbrc, KC_LBRC, TH_W, HM_S)
-COMB(char_lcbr, KC_LCBR, TH_E, HM_D)
-COMB(char_lprn, KC_LPRN, KC_R, HM_F)
-COMB(char_lt, KC_LT, KC_T, TH_G)
-COMB(char_gt, KC_GT, KC_Y, KC_H)
-COMB(char_rprn, KC_RPRN, KC_U, HM_J)
-COMB(char_rcbr, KC_RCBR, KC_I, HM_K)
-COMB(char_rbrc, KC_RBRC, KC_O, HM_L)
+COMB(char_lbrc, KC_LBRC, TH_W, HM_S) // [
+COMB(char_lcbr, KC_LCBR, TH_E, HM_D) // {
+COMB(char_lprn, KC_LPRN, KC_R, HM_F) // (
+COMB(char_lt, KC_LT, KC_T, TH_G) // <
+COMB(char_gt, KC_GT, KC_Y, KC_H) // >
+COMB(char_rprn, KC_RPRN, KC_U, HM_J) // )
+COMB(char_rcbr, KC_RCBR, KC_I, HM_K) // }
+COMB(char_rbrc, KC_RBRC, KC_O, HM_L) // ]
 
 // 23332 combos (colemak only)
 #ifdef LAYOUT_23332

@@ -33,6 +33,10 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 
 #define OSM_HYPR OSM(MOD_HYPR)
 #define OSM_MEH OSM(MOD_MEH)
+#define OSM_LCTL OSM(MOD_LCTL)
+#define OSM_LALT OSM(MOD_LALT)
+#define OSM_LGUI OSM(MOD_LGUI)
+#define OSM_LSFT OSM(MOD_LSFT)
 
 #define DELLINE MEH(KC_DEL)
 
@@ -82,8 +86,8 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 
 // clang-format off
 #define ___________________________________________ ___N___, ___N___, ___N___, ___N___, ___N___
-#define ______________HOME_ROW_CAGS_L______________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, KC_DEL
-#define ______________HOME_ROW_CAGS_R______________ ___N___, KC_LSFT, KC_LGUI, KC_LALT, KC_LCTL
+#define ______________HOME_ROW_CAGS_L______________ OSM_LCTL, OSM_LALT, OSM_LGUI, OSM_LSFT, KC_DEL
+#define ______________HOME_ROW_CAGS_R______________ ___N___, OSM_LSFT, OSM_LGUI, OSM_LALT, OSM_LCTL
 #define __________________APP_NAV__________________ C(S(KC_TAB)), C(KC_TAB), C(G(S(KC_TAB))), C(G(KC_TAB)), ___N___
 #define _________________FILE_NAV__________________ ___N___, Z_UND,   Z_SAVE,  Z_RDO,   ___N___
 // clang-format on
@@ -93,8 +97,10 @@ enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 
 // #define ESC_MED LT(MED, KC_ESC)
 #define THM_0 LT(FNC, KC_ESC)
+
 #define THM_1 LT(NAV, KC_SPC)
 #define THM_2 LT(SYM, KC_TAB)
+
 #define THM_3 LT(FNC, KC_ENT)
 #define THM_4 LT(NUM, KC_BSPC)
 
