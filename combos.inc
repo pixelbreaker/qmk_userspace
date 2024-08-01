@@ -21,15 +21,15 @@ HOLD(appswitch, APPSWITCH, TH_X, TH_V)
 // COMB(key_hash, Z_HASH, KC_I, KC_O)
 
 // thumbs
-COMB(thmb_l, OSM_HYPR, THM_1, THM_4)
+// COMB(thmb_l, OSM_HYPR, THM_1, THM_4)
 // COMB(hypr, OSM_HYPR, TH_C, TH_V)
-COMB(thmb_r, OSM_MEH, THM_2, THM_3)
+// COMB(thmb_r, OSM_MEH, THM_2, THM_3)
 
 // SUBS(c_arr, "->", KC_H, KC_N)
 // SUBS(js_arr, "=>", HM_J, KC_M)
 // SUBS(js_arrfn, "() =>", HM_K, KC_COMM)
 // SUBS(md_link, "[]()" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), HM_L, KC_DOT)
-SUBS(dir_up, "../", KC_DOT, MS_SLSH)
+// SUBS(dir_up, "../", KC_DOT, MS_SLSH)
 
 COMB(char_lbrc, KC_LBRC, TH_W, HM_S) // [
 COMB(char_lcbr, KC_LCBR, TH_E, HM_D) // {
@@ -42,19 +42,10 @@ COMB(char_rbrc, KC_RBRC, KC_O, HM_L) // ]
 
 // 23332 combos (colemak only)
 #ifdef LAYOUT_23332
-// COMB(tg_sym, TG(SYM), THM_1, THM_4)
-COMB(osl_extra, OSL(EXT), THM_3, THM_4)
+// COMB(osl_extra, OSL(EXT), THM_3, THM_4)
 
-COMB(key_z, KC_Z, TH_X, TH_C)
-COMB(key_v, KC_V, TH_C, TH_V)
-COMB(key_k, KC_K, KC_COMM, KC_M)
+COMB(key_q, KC_Q, TH_E, TH_R)
+COMB(key_v, KC_V, TH_W, TH_E)
+COMB(key_z, KC_X, TH_C, TH_V)
 COMB(key_slsh, KC_SLSH, KC_COMM, TH_DOT)
-// COMB(key_z, KC_Z, HM_S, TH_X)
-// COMB(key_v, KC_V, HM_F, TH_V)
-// COMB(key_k, KC_K, HM_J, KC_M)
-// COMB(key_slsh, KC_SLSH, HM_L, KC_DOT)
-
-// sym
-
-// #else
 #endif

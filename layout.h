@@ -26,6 +26,8 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 #define Z_SRCD G(S(KC_5))
 #define Z_VSML A(KC_LSFT)
 #define Z_HASH A(KC_3)
+#define Z_GBP S(KC_3)
+
 #define Z_AT S(KC_2)
 
 #define MS_Z MSE(KC_Z)
@@ -80,9 +82,16 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 #define TH_QUOT LT(0, KC_QUOT)
 #define TH_DOT LT(0, KC_DOT)
 #define TH_SLSH LT(0, KC_SLSH)
+#define TH_DLR LT(0, KC_DLR)
 #define TH_V LT(0, KC_V)
 #define TH_W LT(0, KC_W)
 #define TH_X LT(0, KC_X)
+#define THA_C LT(0, KC_C)
+#define THA_G LT(0, KC_G)
+#define TH_LBRC LT(0, KC_LBRC)
+#define TH_LPRN LT(0, KC_LPRN)
+#define TH_LCBR LT(0, KC_LCBR)
+#define TH_LT LT(0, KC_LT)
 
 // clang-format off
 #define ___________________________________________ ___N___, ___N___, ___N___, ___N___, ___N___
@@ -119,24 +128,31 @@ enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
 	KC_Z,    TH_X,    TH_C,    TH_D,    KC_V,        KC_K,    KC_H,    KC_COMM, TH_DOT,  TH_SLSH,    \
 	                           _______, _______,     _______, _______
 
+// Aptmak
+#define _APT \
+	QK_REP,  TH_W,    TH_F,    KC_P,    TH_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
+	KC_R,    KC_S,    KC_T,    KC_H,    TH_K,        KC_X,    KC_N,    KC_A,    KC_I,    KC_O,       \
+	KC_Z,    THA_C,   THA_G,   TH_D,    KC_V,        KC_Q,    KC_M,    KC_COMM, TH_DOT,  TH_SLSH,    \
+	                           _______, _______,     _______, _______
+
 #define _NAV \
-	__________________APP_NAV__________________,     KC_EQL,  DELLINE, KC_UP,    KC_PGUP, KC_COLN,   \
-	______________HOME_ROW_CAGS_L______________,     KC_MINS, KC_LEFT, KC_DOWN,  KC_RGHT, KC_SCLN,   \
-	_________________FILE_NAV__________________,     ___N___, KC_HOME, KC_END,   KC_PGDN, ___N___,   \
-	                           _______, _______,     KC_ENT,  KC_BSPC
+	_______, _______, OSM_HYPR, OSM_MEH, G(KC_BSPC), KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_COLN,   \
+	______________HOME_ROW_CAGS_L______________,     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_SCLN,   \
+	_________________FILE_NAV__________________,     ___N___, KC_BSPC, DELLINE, KC_QUES, ___N___,   \
+	                           _______, _______,     _______, KC_DEL
 
 #define _SYMB \
-	Z_SSHT,  Z_AT,    KC_LBRC, KC_RBRC, S(KC_6),     KC_ASTR, KC_PLUS, KC_PIPE,  KC_AMPR, KC_GRV,    \
-	Z_SRCD,  KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_DLR,  KC_MINS, KC_EXLM,  KC_EQL,  KC_TILDE,  \
-	___N___, KC_DLR,  KC_LCBR, KC_RCBR, ___N___,     Z_HASH,  KC_UNDS, _______,  KC_BSLS, KC_SLSH,   \
+	Z_SSHT,  KC_DLR,  Z_GBP,   TH_LBRC, TH_LPRN,     KC_ASTR, KC_PLUS, KC_PIPE,  KC_AMPR, KC_GRV,    \
+	Z_SRCD,  KC_AT,   Z_HASH,  TH_LT,   TH_LCBR,     TH_DLR,  KC_MINS, KC_EXLM,  KC_EQL,  KC_TILDE,  \
+	___N___, KC_SLSH, KC_PERC, KC_CIRC, ___N___,     Z_HASH,  KC_UNDS, _______,  KC_BSLS, KC_SLSH,   \
 	                           _______, _______,     KC_SPC,  KC_DEL
 
 
 #define _FUNC \
   QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, Z_VSML,  TGL_BASE,   \
-  ___N___, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
+  KC_F10, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
   ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
-	                				   KC_F10,  _______,     _______, _______
+	                				   _______, _______,     _______, _______
 
 #define _NUMB \
 	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_EQL,      ___________________________________________,    \

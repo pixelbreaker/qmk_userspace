@@ -305,14 +305,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
     prev_event = record->event.type;
 
-    if (keycode == TH_X)
+    if (keycode == TH_X || keycode == THA_C)
       return process_tap_hold(Z_CUT, record);
-    else if (keycode == TH_C)
+    else if (keycode == TH_C || keycode == THA_G)
       return process_tap_hold(Z_CPY, record);
     else if (keycode == TH_D || keycode == TH_V)
       return process_tap_hold(Z_PST, record);
     else if (keycode == TH_QUOT)
       return process_tap_hold(S(KC_QUOT), record);
+    else if (keycode == TH_LBRC)
+      return process_tap_hold(S(KC_RBRC), record);
+    else if (keycode == TH_LPRN)
+      return process_tap_hold(S(KC_RPRN), record);
+    else if (keycode == TH_LCBR)
+      return process_tap_hold(S(KC_RCBR), record);
+    else if (keycode == TH_LT)
+      return process_tap_hold(S(KC_GT), record);
     else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
       return process_tap_hold(KC_BSLS, record);
     else if (keycode == TH_W)
@@ -325,6 +333,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return process_tap_hold(KC_UNDS, record);
     else if (keycode == TH_DOT)
       return process_tap_hold(KC_SLSH, record);
+    else if (keycode == TH_DLR) {
+      if (record->tap.count) return true;
+      SEND_STRING("${}");
+      return false;
+    }
 
     // return process_tap_hold(OSM(MOD_HYPR), record);
   }
