@@ -102,7 +102,7 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
 
 #ifdef COMBO_SHOULD_TRIGGER
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-  return get_highest_layer(layer_state) <= CMK;
+  return get_highest_layer(layer_state) <= BSE;
 }
 #endif
 

@@ -22,79 +22,78 @@
 static uint16_t        next_keycode;
 static keyrecord_t     next_record;
 static keyevent_type_t prev_event;
-static fast_timer_t    tap_timer = 0;
+// static fast_timer_t    tap_timer = 0;
 
 // #  define TAP_INTERVAL_MS 100
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
-  static uint16_t prev_keycode;
-  static bool     is_pressed[UINT8_MAX];
+  // static uint16_t prev_keycode;
+  // static bool     is_pressed[UINT8_MAX];
 
   // Store previous and next input for tap-hold decisions
   if (record->event.pressed) {
-    prev_keycode = next_keycode;
+    // prev_keycode = next_keycode;
     next_keycode = keycode;
     next_record  = *record;
   }
 
   // Trigger tap for tap-hold keys based on previous input
-  if (IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode)) {
-    uint8_t const tap_keycode = keycode & 0xff;
-    // Press the tap keycode on short input interval when not preceded by layer or combo keys
-    if (record->event.pressed && IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && !IS_MOD_TAP_CAG(next_keycode) && prev_event != COMBO_EVENT) {
-      record->keycode         = tap_keycode;
-      is_pressed[tap_keycode] = true;
-    }
-    // Release the tap keycode if pressed
-    else if (is_pressed[tap_keycode]) {
-      record->keycode         = tap_keycode;
-      is_pressed[tap_keycode] = false;
-    }
-  }
+  // if (IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode)) {
+  //   uint8_t const tap_keycode = keycode & 0xff;
+  //   // Press the tap keycode on short input interval when not preceded by layer or combo keys
+  //   if (record->event.pressed && IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && !IS_MOD_TAP_CAG(next_keycode) && prev_event != COMBO_EVENT) {
+  //     record->keycode         = tap_keycode;
+  //     is_pressed[tap_keycode] = true;
+  //   }
+  //   // Release the tap keycode if pressed
+  //   else if (is_pressed[tap_keycode]) {
+  //     record->keycode         = tap_keycode;
+  //     is_pressed[tap_keycode] = false;
+  //   }
+  // }
 
   return true;
 }
 #endif
 
-#ifdef TAPPING_TERM_PER_KEY
+// #ifdef TAPPING_TERM_PER_KEY
+// uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+//   switch (keycode) {
+//     case THM_1:
+//       return TAPPING_TERM;
+//     default:
+//       // Increase tapping term for the non-Shift home row mod-tap while typing
+//       return IS_HOMEROW(record) && !IS_MOD_TAP_SHIFT(keycode) && IS_TYPING() ? TAPPING_TERM * 3 : TAPPING_TERM;
+//   }
+// }
+// #endif
 
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case THM_1:
-      return TAPPING_TERM;
-    default:
-      // Increase tapping term for the non-Shift home row mod-tap while typing
-      return IS_HOMEROW(record) && !IS_MOD_TAP_SHIFT(keycode) && IS_TYPING() ? TAPPING_TERM * 3 : TAPPING_TERM;
-  }
-}
-#endif
+// #ifdef PERMISSIVE_HOLD_PER_KEY
+// bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+//   // Hold Control and Shift with a nested key tap on the opposite hand
+//   return IS_BILATERAL_TAP(record, next_record) && ((!IS_TYPING() && IS_MOD_TAP_CS(keycode)) || IS_MOD_TAP_SHIFT(keycode));
+//   // return IS_BILATERAL_TAP(record, next_record) && IS_MOD_TAP_CS(keycode);
+// }
+// #endif
 
-#ifdef PERMISSIVE_HOLD_PER_KEY
-bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-  // Hold Control and Shift with a nested key tap on the opposite hand
-  return IS_BILATERAL_TAP(record, next_record) && ((!IS_TYPING() && IS_MOD_TAP_CS(keycode)) || IS_MOD_TAP_SHIFT(keycode));
-  // return IS_BILATERAL_TAP(record, next_record) && IS_MOD_TAP_CS(keycode);
-}
-#endif
+// #ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+//   // Activate layer with another key press
 
-#ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-  // Activate layer with another key press
+//   if (IS_LAYER_TAP(keycode) && (!IS_TYPING() && keycode != THM_1)) return true;
 
-  if (IS_LAYER_TAP(keycode) && (!IS_TYPING() && keycode != THM_1)) return true;
+//   // Send the tap keycode when the mod-tap key overlaps with
+//   // another key on the same hand with no active modifiers
+//   if (IS_UNILATERAL_TAP(record, next_record) && IS_MOD_TAP_CAG(next_keycode) && !get_mods()) {
+//     record->keycode = keycode & 0xff;
+//     process_record(record);
+//     record->event.pressed = false;
+//     process_record(record);
+//   }
 
-  // Send the tap keycode when the mod-tap key overlaps with
-  // another key on the same hand with no active modifiers
-  if (IS_UNILATERAL_TAP(record, next_record) && IS_MOD_TAP_CAG(next_keycode) && !get_mods()) {
-    record->keycode = keycode & 0xff;
-    process_record(record);
-    record->event.pressed = false;
-    process_record(record);
-  }
-
-  return false;
-}
-#endif
+//   return false;
+// }
+// #endif
 
 // Send custom hold keycode
 static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
@@ -110,6 +109,8 @@ static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
 bool appswitch_active = false;
 bool tabswitch_active = false;
 #endif
+
+bool appkeys_active = false;
 
 /*
         POINTING device related
@@ -297,45 +298,67 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 #endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-#ifdef TAPPING_TERM_PER_KEY
-  tap_timer = timer_read_fast();
-#endif
+  // #ifdef TAPPING_TERM_PER_KEY
+  //   tap_timer = timer_read_fast();
+  // #endif
 
   // TAP holds
   if (record->event.pressed) {
     prev_event = record->event.type;
 
-    if (keycode == TH_X || keycode == THA_C)
+    if (keycode == TH_C) // cut, copy, paste
       return process_tap_hold(Z_CUT, record);
-    else if (keycode == TH_C || keycode == THA_G)
+    else if (keycode == TH_G)
       return process_tap_hold(Z_CPY, record);
-    else if (keycode == TH_D || keycode == TH_V)
+    else if (keycode == TH_D)
       return process_tap_hold(Z_PST, record);
     else if (keycode == TH_QUOT)
       return process_tap_hold(S(KC_QUOT), record);
-    else if (keycode == TH_LBRC)
-      return process_tap_hold(S(KC_RBRC), record);
-    else if (keycode == TH_LPRN)
-      return process_tap_hold(S(KC_RPRN), record);
-    else if (keycode == TH_LCBR)
-      return process_tap_hold(S(KC_RCBR), record);
-    else if (keycode == TH_LT)
-      return process_tap_hold(S(KC_GT), record);
-    else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
+    else if (keycode == TH_O)
+      return process_tap_hold(KC_SCLN, record);
+    // brackets on sym layer
+    else if (keycode == TH_LBRC) // []
+      return process_tap_hold(KC_RBRC, record);
+    else if (keycode == TH_LPRN) { //
+      //
+      if (record->tap.count) {
+        tap_code16(S(KC_9));
+      } else {
+        tap_code16(S(KC_0));
+      }
+      return false;
+    } else if (keycode == TH_LCBR) { // {}
+      if (record->tap.count) {
+        tap_code16(KC_LCBR);
+      } else {
+        tap_code16(KC_RCBR);
+      }
+      return false;
+    } else if (keycode == TH_LT) {
+      if (record->tap.count) {
+        tap_code16(S(KC_COMM));
+      } else {
+        tap_code16(S(KC_DOT));
+      }
+      return false;
+    } else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
       return process_tap_hold(KC_BSLS, record);
-    else if (keycode == TH_W)
+    else if (keycode == TH_W) // @
       return process_tap_hold(KC_AT, record);
-    else if (keycode == TH_F || keycode == TH_E)
+    else if (keycode == TH_F) // #
       return process_tap_hold(Z_HASH, record);
-    else if (keycode == TH_G)
-      return process_tap_hold(KC_MINS, record);
-    else if (keycode == TH_B)
-      return process_tap_hold(KC_UNDS, record);
     else if (keycode == TH_DOT)
       return process_tap_hold(KC_SLSH, record);
     else if (keycode == TH_DLR) {
+      if (record->tap.count) {
+        tap_code16(S(KC_4));
+      } else {
+        SEND_STRING("${}");
+      }
+      return false;
+    } else if (keycode == TH_EQL) {
       if (record->tap.count) return true;
-      SEND_STRING("${}");
+      SEND_STRING("=>");
       return false;
     }
 
@@ -347,17 +370,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case TGL_BASE:
       if (record->event.pressed) {
-        if (IS_LAYER_ON(CMK)) {
-          set_single_persistent_default_layer(BSE);
-          layer_off(CMK);
-        } else {
-          set_single_persistent_default_layer(CMK);
-          layer_on(CMK);
-        }
+        set_single_persistent_default_layer(BSE);
         return false;
       }
     // set trackball modes...
     case THM_1:
+      if (appkeys_active) {
+        unregister_code(KC_LGUI);
+        appkeys_active = false;
+      }
 #ifdef POINTING_DEVICE_ENABLE
 #  ifdef KEYBOARD_charybdis
       charybdis_set_pointer_dragscroll_enabled(record->event.pressed);
@@ -436,6 +457,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       appswitch_active = record->event.pressed;
 #endif
+      return false;
+
+    case APP_R:
+      if (record->event.pressed) {
+        if (!appkeys_active) {
+          register_code(KC_LGUI);
+          appkeys_active = true;
+        }
+        register_code(KC_TAB);
+        unregister_code(KC_TAB);
+      }
+      return false;
+
+    case APP_L:
+      if (record->event.pressed) {
+        if (!appkeys_active) {
+          register_code(KC_LGUI);
+          appkeys_active = true;
+        }
+        register_code16(S(KC_TAB));
+        unregister_code16(S(KC_TAB));
+      }
       return false;
 
     case TABSWITCH:
@@ -539,6 +582,7 @@ bool caps_word_press_user(uint16_t keycode) {
   switch (keycode) {
     // Keycodes that continue Caps Word, with shift applied.
     case KC_A ... KC_Z:
+    case TH_O:
       add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
       return true;
 

@@ -4,7 +4,6 @@
 	"layout": "LAYOUT_buteo_w",
 	"layers": [
 		[ "BUTEO(HRM2332(_BASE))" ],
-		[ "BUTEO(HRM2332(_COLE))" ],
 		[ "BUTEO(_SYMB)" ],
 		[ "BUTEO(_NAV)" ],
 		[ "BUTEO(_NUMB)" ],

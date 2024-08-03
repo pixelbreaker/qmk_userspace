@@ -4,7 +4,7 @@
 #pragma once
 #include "quantum/keycodes.h"
 
-enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE, E_SAT, E_VAL, E_SPD, E_MOD };
+enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TGL_BASE, E_HUE, E_SAT, E_VAL, E_SPD, E_MOD };
 
 // #ifdef POINTING_DEVICE_ENABLE
 #define MSE(k) LT(MOU, k)
@@ -26,6 +26,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 #define Z_SRCD G(S(KC_5))
 #define Z_VSML A(KC_LSFT)
 #define Z_HASH A(KC_3)
+#define Z_EUR A(KC_2)
 #define Z_GBP S(KC_3)
 
 #define Z_AT S(KC_2)
@@ -73,24 +74,24 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 #define HRMR(k1, k2, k3, k4) RSFT_T(k1), RGUI_T(k2), LALT_T(k3), RCTL_T(k4)
 
 // Tap hold macros
-#define TH_B LT(0, KC_B)
+
 #define TH_C LT(0, KC_C)
-#define TH_D LT(0, KC_D)
-#define TH_E LT(0, KC_E)
-#define TH_F LT(0, KC_F)
 #define TH_G LT(0, KC_G)
+#define TH_D LT(0, KC_D)
+
+#define TH_W LT(0, KC_W)
+#define TH_F LT(0, KC_F)
+
 #define TH_QUOT LT(0, KC_QUOT)
+#define TH_O LT(0, KC_O)
 #define TH_DOT LT(0, KC_DOT)
 #define TH_SLSH LT(0, KC_SLSH)
+
 #define TH_DLR LT(0, KC_DLR)
-#define TH_V LT(0, KC_V)
-#define TH_W LT(0, KC_W)
-#define TH_X LT(0, KC_X)
-#define THA_C LT(0, KC_C)
-#define THA_G LT(0, KC_G)
+#define TH_EQL LT(0, KC_EQL)
 #define TH_LBRC LT(0, KC_LBRC)
-#define TH_LPRN LT(0, KC_LPRN)
-#define TH_LCBR LT(0, KC_LCBR)
+#define TH_LPRN LT(0, S(KC_9))
+#define TH_LCBR LT(0, KC_SPC)
 #define TH_LT LT(0, KC_LT)
 
 // clang-format off
@@ -102,55 +103,42 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, ENC_DOWN, TGL_BASE, E_HUE,
 // clang-format on
 
 // Layers
-enum layers { BSE, CMK, SYM, NAV, NUM, FNC, MOU, EXT };
+enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
 
 // #define ESC_MED LT(MED, KC_ESC)
 #define THM_0 LT(FNC, KC_ESC)
 
 #define THM_1 LT(NAV, KC_SPC)
-#define THM_2 LT(SYM, KC_TAB)
+#define THM_2 MO(SYM)
 
-#define THM_3 LT(FNC, KC_ENT)
-#define THM_4 LT(NUM, KC_BSPC)
+#define THM_3 LT(NUM, KC_ENT)
+#define THM_4 KC_E
 
 // Default 3x5_2 split layout
 // clang-format off
-#define _BASE \
-	KC_Q,    TH_W,    TH_E,    KC_R,    KC_T,        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,       \
-	KC_A,    KC_S,    KC_D,    KC_F,    TH_G,        KC_H,    KC_J,    KC_K,    KC_L,    TH_QUOT,    \
-	KC_Z,    TH_X,    TH_C,    TH_V,    KC_B,        KC_N,    KC_M,    KC_COMM, TH_DOT,  TH_SLSH,    \
-	                           THM_1,   THM_2,       THM_3,   THM_4
-
-// Colemak DH
-#define _COLE \
-	KC_Q,    TH_W,    TH_F,    KC_P,    TH_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
-	KC_A,    KC_R,    KC_S,    KC_T,    TH_G,        KC_M,    KC_N,    KC_E,    KC_I,    KC_O,       \
-	KC_Z,    TH_X,    TH_C,    TH_D,    KC_V,        KC_K,    KC_H,    KC_COMM, TH_DOT,  TH_SLSH,    \
-	                           _______, _______,     _______, _______
 
 // Aptmak
-#define _APT \
-	QK_REP,  TH_W,    TH_F,    KC_P,    TH_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
-	KC_R,    KC_S,    KC_T,    KC_H,    TH_K,        KC_X,    KC_N,    KC_A,    KC_I,    KC_O,       \
-	KC_Z,    THA_C,   THA_G,   TH_D,    KC_V,        KC_Q,    KC_M,    KC_COMM, TH_DOT,  TH_SLSH,    \
-	                           _______, _______,     _______, _______
+#define _BASE \
+	QK_REP,  TH_W,    TH_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    TH_QUOT,    \
+	KC_R,    KC_S,    KC_T,    KC_H,    KC_K,        KC_X,    KC_N,    KC_A,    KC_I,    TH_O,       \
+	KC_Z,    TH_C,    TH_G,    TH_D,    KC_V,        KC_Q,    KC_M,    KC_COMM, TH_DOT,  TH_SLSH,    \
+	                           THM_1,   THM_2,       THM_3,   THM_4
 
 #define _NAV \
-	_______, _______, OSM_HYPR, OSM_MEH, G(KC_BSPC), KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_COLN,   \
-	______________HOME_ROW_CAGS_L______________,     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_SCLN,   \
-	_________________FILE_NAV__________________,     ___N___, KC_BSPC, DELLINE, KC_QUES, ___N___,   \
-	                           _______, _______,     _______, KC_DEL
+  KC_TAB,  APP_L,   _______, APP_R,   G(KC_BSPC),  KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_COLN,    \
+	______________HOME_ROW_CAGS_L______________,     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_SCLN,    \
+	_________________FILE_NAV__________________,     ___N___, KC_BSPC, DELLINE, KC_QUES, ___N___,    \
+	                           _______, _______,     KC_ENT,  KC_DEL
 
 #define _SYMB \
-	Z_SSHT,  KC_DLR,  Z_GBP,   TH_LBRC, TH_LPRN,     KC_ASTR, KC_PLUS, KC_PIPE,  KC_AMPR, KC_GRV,    \
-	Z_SRCD,  KC_AT,   Z_HASH,  TH_LT,   TH_LCBR,     TH_DLR,  KC_MINS, KC_EXLM,  KC_EQL,  KC_TILDE,  \
-	___N___, KC_SLSH, KC_PERC, KC_CIRC, ___N___,     Z_HASH,  KC_UNDS, _______,  KC_BSLS, KC_SLSH,   \
-	                           _______, _______,     KC_SPC,  KC_DEL
-
+	Z_SSHT,  Z_EUR,   Z_GBP,   TH_LCBR, TH_LBRC,     KC_ASTR, KC_PLUS, KC_PIPE,  KC_AMPR, KC_GRV,    \
+	Z_SRCD,  KC_AT,   Z_HASH,  TH_LPRN, TH_LT,       TH_DLR,  KC_MINS, KC_EXLM,  TH_EQL,  KC_TILDE,  \
+	___N___, KC_BSLS, KC_PERC, KC_CIRC, ___N___,     ___N___, KC_UNDS, _______,  KC_SLSH, KC_SLSH,   \
+	                           _______, _______,     _______, _______
 
 #define _FUNC \
   QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, Z_VSML,  TGL_BASE,   \
-  KC_F10, KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
+  KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
   ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
 	                				   _______, _______,     _______, _______
 
@@ -195,9 +183,9 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 	  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 	                 l16, l17,   r16, r17                 \
 ) \
-	  MSE(l01), l02, l03, l04, l05,   r01, r02, r03, r04, r05,       \
-HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
- l11, l12, l13, l14, l15,   r11, r12, r13, r14, MSE(r15),  \
+	  l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05,       \
+ MSE(l06), l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+ l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15,  \
 	                 l16, l17,   r16, r17
 
 
