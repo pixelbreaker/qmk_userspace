@@ -16,84 +16,101 @@
 #  define SCROLL_BUFFER_SIZE 50
 #endif
 
-#define TYPING_TERM (TAPPING_TERM * 2)
+// #define TYPING_TERM (TAPPING_TERM * 2)
 
 #if defined(PERMISSIVE_HOLD_PER_KEY) || defined(HOLD_ON_OTHER_KEY_PRESS_PER_KEY)
 static uint16_t        next_keycode;
 static keyrecord_t     next_record;
 static keyevent_type_t prev_event;
-// static fast_timer_t    tap_timer = 0;
+static fast_timer_t    tap_timer = 0;
 
 // #  define TAP_INTERVAL_MS 100
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
-  // static uint16_t prev_keycode;
-  // static bool     is_pressed[UINT8_MAX];
+  static uint16_t prev_keycode;
+  static bool     is_pressed[UINT8_MAX];
 
   // Store previous and next input for tap-hold decisions
   if (record->event.pressed) {
-    // prev_keycode = next_keycode;
+    prev_keycode = next_keycode;
     next_keycode = keycode;
     next_record  = *record;
   }
 
   // Trigger tap for tap-hold keys based on previous input
-  // if (IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode)) {
-  //   uint8_t const tap_keycode = keycode & 0xff;
-  //   // Press the tap keycode on short input interval when not preceded by layer or combo keys
-  //   if (record->event.pressed && IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && !IS_MOD_TAP_CAG(next_keycode) && prev_event != COMBO_EVENT) {
-  //     record->keycode         = tap_keycode;
-  //     is_pressed[tap_keycode] = true;
-  //   }
-  //   // Release the tap keycode if pressed
-  //   else if (is_pressed[tap_keycode]) {
-  //     record->keycode         = tap_keycode;
-  //     is_pressed[tap_keycode] = false;
-  //   }
-  // }
+  if (IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode)) {
+    uint8_t const tap_keycode = keycode & 0xff;
+    // Press the tap keycode on short input interval when not preceded by layer or combo keys
+    if (record->event.pressed && !IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && !IS_MOD_TAP_CAG(next_keycode) && prev_event != COMBO_EVENT) {
+      // if (record->event.pressed && IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && prev_event != COMBO_EVENT) {
+      record->keycode         = tap_keycode;
+      is_pressed[tap_keycode] = true;
+    }
+    // Release the tap keycode if pressed
+    else if (is_pressed[tap_keycode]) {
+      record->keycode         = tap_keycode;
+      is_pressed[tap_keycode] = false;
+    }
+  }
 
   return true;
 }
 #endif
 
-// #ifdef TAPPING_TERM_PER_KEY
-// uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-//   switch (keycode) {
-//     case THM_1:
-//       return TAPPING_TERM;
-//     default:
-//       // Increase tapping term for the non-Shift home row mod-tap while typing
-//       return IS_HOMEROW(record) && !IS_MOD_TAP_SHIFT(keycode) && IS_TYPING() ? TAPPING_TERM * 3 : TAPPING_TERM;
-//   }
-// }
-// #endif
+#ifdef COMBO_ENABLE
+#  ifdef COMBO_SHOULD_TRIGGER
+bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+  bool below_base = get_highest_layer(layer_state) <= BSE;
 
-// #ifdef PERMISSIVE_HOLD_PER_KEY
-// bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-//   // Hold Control and Shift with a nested key tap on the opposite hand
-//   return IS_BILATERAL_TAP(record, next_record) && ((!IS_TYPING() && IS_MOD_TAP_CS(keycode)) || IS_MOD_TAP_SHIFT(keycode));
-//   // return IS_BILATERAL_TAP(record, next_record) && IS_MOD_TAP_CS(keycode);
-// }
-// #endif
+  switch (index) {
+    case thmb_l:
+    case thmb_r:
+      return below_base && !IS_TYPING();
+  }
 
-// #ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
-// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-//   // Activate layer with another key press
+  return below_base;
+}
+#  endif
+#endif
 
-//   if (IS_LAYER_TAP(keycode) && (!IS_TYPING() && keycode != THM_1)) return true;
+#ifdef TAPPING_TERM_PER_KEY
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case THM_1:
+      return TAPPING_TERM;
+    default:
+      // Increase tapping term for the non-Shift home row mod-tap while typing
+      return IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode) && IS_TYPING() ? TAPPING_TERM * 2 : TAPPING_TERM;
+  }
+}
+#endif
 
-//   // Send the tap keycode when the mod-tap key overlaps with
-//   // another key on the same hand with no active modifiers
-//   if (IS_UNILATERAL_TAP(record, next_record) && IS_MOD_TAP_CAG(next_keycode) && !get_mods()) {
-//     record->keycode = keycode & 0xff;
-//     process_record(record);
-//     record->event.pressed = false;
-//     process_record(record);
-//   }
+#ifdef PERMISSIVE_HOLD_PER_KEY
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+  // Hold Control and Shift with a nested key tap on the opposite hand
+  return IS_BILATERAL_TAP(record, next_record) && ((!IS_TYPING() && IS_MOD_TAP_CS(keycode)) || IS_MOD_TAP_SHIFT(keycode));
+  // return IS_BILATERAL_TAP(record, next_record) && IS_MOD_TAP_CS(keycode);
+}
+#endif
 
-//   return false;
-// }
-// #endif
+#ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+  // Activate layer with another key press
+
+  if (IS_LAYER_TAP(keycode) && (!IS_TYPING() && keycode != THM_1 && keycode != THM_2 && keycode != THM_4 && keycode != MSE(KC_V))) return true;
+
+  // Send the tap keycode when the mod-tap key overlaps with
+  // another key on the same hand with no active modifiers
+  if (IS_UNILATERAL_TAP(record, next_record) && IS_MOD_TAP_CAG(next_keycode) && !IS_TYPING() && !get_mods()) {
+    record->keycode = keycode & 0xff;
+    process_record(record);
+    record->event.pressed = false;
+    process_record(record);
+  }
+
+  return false;
+}
+#endif
 
 // Send custom hold keycode
 static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
@@ -103,7 +120,7 @@ static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
 }
 
 /*
-        APP/TAB switchers
+  APP/TAB switchers
 */
 #if defined(POINTING_DEVICE_ENABLE) || defined(ENCODER_ENABLE)
 bool appswitch_active = false;
@@ -132,6 +149,7 @@ enum encoder_modes {
 uint8_t track_mode   = CURSOR;
 uint8_t encoder_mode = HUE;
 
+bool     sniping          = false;
 bool     mouse_is_down    = false;
 uint16_t last_mouse_press = 0; // for click tracking pause
 
@@ -164,36 +182,36 @@ float scroll_accumulated_v = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
 #  ifdef KEYBOARD_buteo_talon
-  if (mouse_report.buttons != 0) {
-    // uprintf("Buttons: %u, btn_7: %d\n", mouse_report.buttons, MOUSE_BTN7);
-
-    // if (mouse_report.buttons & MOUSE_BTN4) {
-    //   char *message = "Swipe left";
-    //   mouse_report.buttons &= ~MOUSE_BTN4;
-    //   tap_code16(G(KC_LEFT));
-    //   uprintf("%s\n", message);
-    // }
-    // if (mouse_report.buttons & MOUSE_BTN5) {
-    //   char *message = "Swipe right";
-    //   mouse_report.buttons &= ~MOUSE_BTN5;
-    //   tap_code16(G(KC_RIGHT));
-    //   uprintf("%s\n", message);
-    // }
-    if (mouse_report.buttons & MOUSE_BTN7) {
-      // char *message = "Zoom in";
-      mouse_report.buttons &= ~MOUSE_BTN7;
-      // tap_code16(A(S(KC_VOLD)));
-      tap_code16(G(KC_LEFT));
-      // uprintf("%s\n", message);
-    }
-    if (mouse_report.buttons & MOUSE_BTN8) {
-      // char *message = "Zoom out";
-      mouse_report.buttons &= ~MOUSE_BTN8;
-      // tap_code16(A(S(KC_VOLU)));
-      tap_code16(G(KC_RIGHT));
-      // uprintf("%s\n", message);
-    }
-  }
+  // if (mouse_report.buttons != 0) {
+  // uprintf("Buttons: %u, btn_7: %d\n", mouse_report.buttons, MOUSE_BTN7);
+ 
+  // if (mouse_report.buttons & MOUSE_BTN4) {
+  //   char *message = "Swipe left";
+  //   mouse_report.buttons &= ~MOUSE_BTN4;
+  //   tap_code16(G(KC_LEFT));
+  //   uprintf("%s\n", message);
+  // }
+  // if (mouse_report.buttons & MOUSE_BTN5) {
+  //   char *message = "Swipe right";
+  //   mouse_report.buttons &= ~MOUSE_BTN5;
+  //   tap_code16(G(KC_RIGHT));
+  //   uprintf("%s\n", message);
+  // }
+  // if (mouse_report.buttons & MOUSE_BTN7) {
+  //   // char *message = "Zoom in";
+  //   mouse_report.buttons &= ~MOUSE_BTN7;
+  //   // tap_code16(A(S(KC_VOLD)));
+  //   tap_code16(G(KC_LEFT));
+  //   // uprintf("%s\n", message);
+  // }
+  // if (mouse_report.buttons & MOUSE_BTN8) {
+  //   // char *message = "Zoom out";
+  //   mouse_report.buttons &= ~MOUSE_BTN8;
+  //   // tap_code16(A(S(KC_VOLU)));
+  //   tap_code16(G(KC_RIGHT));
+  //   // uprintf("%s\n", message);
+  // }
+  // }
 
   scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
   scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR_V;
@@ -209,12 +227,15 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   // Pause mouse report updates for short time after clicking to make it easier
   // to double click with small movement of trackball
   bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
+  // #  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_charybdis)
+#ifdef TRACKBALL_ENABLE 
+  pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : sniping ? DPI_POINTER_SNIPE : DPI_POINTER);
+# else
+  pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : DPI_POINTER);
+# endif
+  // #  endif
 
-#  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon)
-  pointing_device_set_cpi(track_mode == SCROLL || appswitch_active || tabswitch_active ? DPI_SCROLL : DPI_POINTER);
-#  endif
-
-  if (track_mode == SCROLL) {
+  if (track_mode == SCROLL && !appkeys_active) {
     scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR_H;
     scroll_accumulated_v -= (float)mouse_report.y / SCROLL_DIVISOR_V;
 
@@ -233,11 +254,12 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     tap_media();
   } else if (track_mode == CARRET) {
     tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
-  } else if (appswitch_active || tabswitch_active) {
-    tap_switcher();
   }
+  // else if (appswitch_active || tabswitch_active) {
+  //   tap_switcher();
+  // }
 
-  if (track_mode != CURSOR || appswitch_active || tabswitch_active || mouse_pause) {
+  if ((track_mode != CURSOR && (track_mode != SCROLL && !appkeys_active)) || mouse_pause) { // appswitch_active || tabswitch_active ||
     // Nerf mouse_report as we're doing something else
     tap_report(mouse_report);
     mouse_report.x = 0;
@@ -298,9 +320,12 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 #endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  // #ifdef TAPPING_TERM_PER_KEY
-  //   tap_timer = timer_read_fast();
-  // #endif
+  uprintf("Col: %d Row: %d\n",record->event.key.col, record->event.key.row);
+
+  // set_single_persistent_default_layer(BSE);
+#ifdef TAPPING_TERM_PER_KEY
+  tap_timer = timer_read_fast();
+#endif
 
   // TAP holds
   if (record->event.pressed) {
@@ -313,52 +338,85 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     else if (keycode == TH_D)
       return process_tap_hold(Z_PST, record);
     else if (keycode == TH_QUOT)
-      return process_tap_hold(S(KC_QUOT), record);
+      return process_tap_hold(KC_GRV, record);
     else if (keycode == TH_O)
       return process_tap_hold(KC_SCLN, record);
     // brackets on sym layer
-    else if (keycode == TH_LBRC) // []
-      return process_tap_hold(KC_RBRC, record);
-    else if (keycode == TH_LPRN) { //
-      //
-      if (record->tap.count) {
-        tap_code16(S(KC_9));
-      } else {
-        tap_code16(S(KC_0));
-      }
-      return false;
-    } else if (keycode == TH_LCBR) { // {}
-      if (record->tap.count) {
-        tap_code16(KC_LCBR);
-      } else {
-        tap_code16(KC_RCBR);
-      }
-      return false;
-    } else if (keycode == TH_LT) {
-      if (record->tap.count) {
-        tap_code16(S(KC_COMM));
-      } else {
-        tap_code16(S(KC_DOT));
-      }
-      return false;
-    } else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
+    // else if (keycode == TH_LBRC) // []
+    //   return process_tap_hold(KC_RBRC, record);
+    // else if (keycode == TH_LPRN) {
+    //   //
+    //   if (record->tap.count) {
+    //     tap_code16(S(KC_9));
+    //   } else {
+    //     tap_code16(S(KC_0));
+    //   }
+    //   return false;
+    // } else if (keycode == TH_LCBR) { // {}
+    //   if (record->tap.count) {
+    //     tap_code16(KC_LCBR);
+    //   } else {
+    //     tap_code16(KC_RCBR);
+    //   }
+    //   return false;
+    // } else if (keycode == TH_LT) {
+    //   if (record->tap.count) {
+    //     tap_code16(S(KC_COMM));
+    //   } else {
+    //     tap_code16(S(KC_DOT));
+    //   }
+    //   return false;
+    // }
+    else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
       return process_tap_hold(KC_BSLS, record);
     else if (keycode == TH_W) // @
       return process_tap_hold(KC_AT, record);
     else if (keycode == TH_F) // #
       return process_tap_hold(Z_HASH, record);
     else if (keycode == TH_DOT)
-      return process_tap_hold(KC_SLSH, record);
-    else if (keycode == TH_DLR) {
+      return process_tap_hold(S(KC_SLSH), record);
+    else if (keycode == TH_QU) {
+      if (is_caps_word_on()) {
+        register_mods(MOD_MASK_SHIFT);
+      }
+      if (record->tap.count) {
+        tap_code(KC_Q);
+        bool shifted = !is_caps_word_on() && get_mods() & MOD_MASK_SHIFT;
+        if (shifted) {
+          unregister_mods(MOD_MASK_SHIFT);
+        }
+        tap_code(KC_U);
+      } else {
+        tap_code16(KC_Q);
+      }
+      if (is_caps_word_on()) {
+        unregister_mods(MOD_MASK_SHIFT);
+      }
+      return false;
+    } else if (keycode == TH_DLR) {
       if (record->tap.count) {
         tap_code16(S(KC_4));
       } else {
-        SEND_STRING("${}");
+        SEND_STRING("${}" SS_TAP(X_LEFT));
       }
       return false;
     } else if (keycode == TH_EQL) {
       if (record->tap.count) return true;
       SEND_STRING("=>");
+      return false;
+    } else if (keycode == TH_DEL) {
+      if (record->tap.count) {
+        tap_code16(KC_DEL);
+      } else {
+        tap_code16(G(KC_BSPC));
+      }
+      return false;
+    } else if (keycode == TH_SCR) {
+      if (record->tap.count) {
+        tap_code16(Z_SSHT);
+      } else {
+        tap_code16(Z_SRCD);
+      }
       return false;
     }
 
@@ -368,35 +426,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %u, time: %5u, int: %u, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
   // custom keycodes
   switch (keycode) {
+    case MSE(V_Q):
+    case V_Q:
+      if (get_mods() & MOD_MASK_GUI) {
+        if (record->event.pressed) {
+          register_code(KC_Q);
+        } else {
+          unregister_code(KC_Q);
+        }
+        // Do not let QMK process the keycode further
+        return false;
+      }
+      // Else, let QMK process the KC_ESC keycode as usual
+      return true;
+
     case TGL_BASE:
       if (record->event.pressed) {
         set_single_persistent_default_layer(BSE);
         return false;
       }
     // set trackball modes...
-    case THM_1:
-      if (appkeys_active) {
-        unregister_code(KC_LGUI);
-        appkeys_active = false;
-      }
-#ifdef POINTING_DEVICE_ENABLE
-#  ifdef KEYBOARD_charybdis
-      charybdis_set_pointer_dragscroll_enabled(record->event.pressed);
-#  else
-      if (record->event.pressed) {
-        if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
-          activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_scroll_mode, NULL);
-        }
-      } else {
-        cancel_deferred_exec(activate_track_mode_token);
-        track_mode = CURSOR;
-      }
-#  endif
-#endif
-      return true;
     case THM_0:
     case THM_4:
-#ifdef POINTING_DEVICE_ENABLE
+    #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_media_mode, NULL);
@@ -405,11 +457,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
-#endif
+    #endif
       return true;
-
-    case THM_2:
-#ifdef POINTING_DEVICE_ENABLE
+      
+    case THM_1:
+      if (appkeys_active) {
+        unregister_code(KC_LGUI);
+        appkeys_active = false;
+      }
+      #ifdef POINTING_DEVICE_ENABLE
+      // #  ifdef KEYBOARD_charybdis
+      //       charybdis_set_pointer_dragscroll_enabled(record->event.pressed);
+      // #  else
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(CARRET_TIMEOUT_MS, activate_carret_mode, NULL);
@@ -418,7 +477,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
-#endif
+      // #  endif
+      #endif
+      return true;
+      
+      case THM_2:
+      #ifdef POINTING_DEVICE_ENABLE
+      if (record->event.pressed) {
+        if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
+          activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_scroll_mode, NULL);
+        }
+      } else {
+        cancel_deferred_exec(activate_track_mode_token);
+        track_mode = CURSOR;
+      }
+      #endif
       return true;
 
     // Pause mouse report updates for short time after clicking to make it easier
@@ -435,7 +508,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       } else {
         mouse_is_down = false;
 #  ifdef KEYBOARD_charybdis
-        charybdis_set_pointer_dragscroll_enabled(false);
+        // charybdis_set_pointer_dragscroll_enabled(false);
         // charybdis_set_spointer_sniping_enabled(false);
 #  endif
       }
@@ -505,6 +578,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (!record->event.pressed && !encoder_moved) {
         tap_code16(KC_MPLY);
       }
+#endif
+      return false;
+
+    case P_SNIPE:
+#ifdef TRACKBALL_ENABLE
+      sniping = record->event.pressed;
 #endif
       return false;
 
@@ -611,6 +690,8 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 void keyboard_post_init_user(void) {
+  set_single_persistent_default_layer(BSE);
+  // eeconfig_init();
 // Customise these values to desired behaviour
 #ifdef CONSOLE_ENABLE
   debug_enable = true;
@@ -665,7 +746,7 @@ void suspend_wakeup_init_user(void) {
 }
 #endif
 
-#if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon)
+#if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_cnano)
 void pointing_device_init_kb() {
   pointing_device_set_cpi(DPI_POINTER);
 }

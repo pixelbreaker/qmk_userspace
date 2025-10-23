@@ -1,5 +1,5 @@
 {
-	"keyboard": "bastardkb/charybdis/3x5/v2/splinky_3",
+	"keyboard": "pixelbreaker/cnano/stock",
 	"keymap": "pixelbreaker",
 	"layout": "LAYOUT_charybdis_w",
 	"layers": [

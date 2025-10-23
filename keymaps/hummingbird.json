@@ -4,12 +4,10 @@
 	"layout": "LAYOUT_hummingbird_w",
 	"layers": [
 		[ "HUMMINGBIRD(HRM2332(_BASE))" ],
-		[ "HUMMINGBIRD(HRM2332(_COLE))" ],
 		[ "HUMMINGBIRD(_SYMB)" ],
 		[ "HUMMINGBIRD(_NAV)" ],
 		[ "HUMMINGBIRD(_NUMB)" ],
 		[ "HUMMINGBIRD(_FUNC)" ],
-		[ "HUMMINGBIRD(_MOUSE)" ],
-		[ "HUMMINGBIRD(HRM(_EXTRA))" ]
+		[ "HUMMINGBIRD(_MOUSE)" ]
 	]
 }

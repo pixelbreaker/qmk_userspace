@@ -100,12 +100,6 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
   }
 }
 
-#ifdef COMBO_SHOULD_TRIGGER
-bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-  return get_highest_layer(layer_state) <= BSE;
-}
-#endif
-
 #ifdef COMBO_MUST_HOLD_PER_COMBO
 #  undef COMB
 #  undef HOLD
@@ -123,14 +117,42 @@ bool get_combo_must_hold(uint16_t combo_index, bool pressed) {
 }
 #endif
 
-// #ifdef COMBO_TERM_PER_COMBO
-// uint16_t get_combo_term(uint16_t index, combo_t *combo) {
-//   // or with combo index, i.e. its name from enum.
-//   switch (index) {
-//     case sft_capsword:
-//       return 500;
-//   }
+#ifdef COMBO_TERM_PER_COMBO
+uint16_t get_combo_term(uint16_t index, combo_t *combo) {
+  // or with combo index, i.e. its name from enum.
+  switch (index) {
+    case thmb_l:
+    case thmb_r:
+      return COMBO_TERM + 100;
 
-//   return COMBO_TERM;
-// }
-// #endif
+    case capsword:
+    case capslock:
+      return COMBO_TERM + 100;
+
+    case esc:
+    // case bckspc:
+    case bckspc_word:
+      // case del:
+      // case ent:
+      return COMBO_TERM + 20;
+  }
+
+  return COMBO_TERM;
+}
+#endif
+
+#ifdef COMBO_MUST_TAP_PER_COMBO
+bool get_combo_must_tap(uint16_t index, combo_t *combo) {
+  // If you want all combos to be tap-only, just uncomment the next line
+  // return true
+
+  // If you want *all* combos, that have Mod-Tap/Layer-Tap/Momentary keys in its chord, to be tap-only, this is for you:
+  // switch (index) {
+  //   case thmb_l:
+  //   case thmb_r:
+  //     return true;
+  // }
+
+  return false;
+}
+#endif

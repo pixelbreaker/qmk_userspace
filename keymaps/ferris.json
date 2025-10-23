@@ -1,0 +1,13 @@
+{
+	"keyboard": "ferris/sweep",
+	"keymap": "pixelbreaker",
+	"layout": "LAYOUT_ferris",
+	"layers": [
+		[ "HRM(_BASE)" ],
+		[ "_SYMB" ],
+		[ "_NAV" ],
+		[ "_NUMB" ],
+		[ "_FUNC" ],
+		[ "_MOUSE" ]
+	]
+}

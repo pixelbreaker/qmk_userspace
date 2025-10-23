@@ -4,7 +4,6 @@
 	"layout": "LAYOUT_tenome_w",
 	"layers": [
 		[ "TENOME(HRM(_BASE))" ],
-		[ "TENOME(HRM(_COLE))" ],
 		[ "TENOME(_SYMB)" ],
 		[ "TENOME(_NAV)" ],
 		[ "TENOME(_NUMB)" ],

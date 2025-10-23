@@ -13,7 +13,9 @@ AUTOCORRECT_ENABLE = yes
 EXTRAKEY_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 BOOTMAGIC_ENABLE = yes
-REPEAT_KEY_ENABLE = yes
+REPEAT_KEY_ENABLE = no
+RGBLIGHT_ENABLE = no
+RGB_MATRIX_ENABLE = no
 
 VPATH += $(USER_PATH)/features
 INTROSPECTION_KEYMAP_C = pixelbreaker.c
@@ -22,16 +24,26 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/spl
   OPT_DEFS += -DKEYBOARD_charybdis
   OPT_DEFS += -DTRACKBALL_ENABLE
 	SRC += scrollspam.c
-	RGBLIGHT_SUPPORTED = no
-	RGB_MATRIX_ENABLE = no
 	DEFERRED_EXEC_ENABLE = yes
+endif
+
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/cnano/stock pixelbreaker/cnano/encoder))
+  OPT_DEFS += -DKEYBOARD_charybdis
+  OPT_DEFS += -DKEYBOARD_cnano
+  OPT_DEFS += -DTRACKBALL_ENABLE
+	SRC += scrollspam.c
+	DEFERRED_EXEC_ENABLE = yes
+endif
+
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/cnano/encoder))
+	RGB_MATRIX_ENABLE = yes
+  OPT_DEFS += -DENCODER_ENABLE
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/tenome/trackball pixelbreaker/tenome/trackpad))
   OPT_DEFS += -DKEYBOARD_tenome
   OPT_DEFS += -DENCODER_ENABLE
 	SRC += scrollspam.c
-	RGBLIGHT_SUPPORTED = no
 	RGB_MATRIX_ENABLE = yes
 	DEFERRED_EXEC_ENABLE = yes
 endif
@@ -44,8 +56,6 @@ endif
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/sphynx))
   OPT_DEFS += -DKEYBOARD_sphynx
   OPT_DEFS += -DENCODER_ENABLE
-	RGBLIGHT_SUPPORTED = no
-	RGB_MATRIX_ENABLE = no
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/hummingbird))
@@ -54,22 +64,21 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/hummingbird))
   RGBLIGHT_ENABLE = yes
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), ferris/sweep))
+  OPT_DEFS += -DKEYBOARD_ferris
+  AUTOCORRECT_ENABLE = no
+  # fix flashing for elite-c
+  BOOTLOADER = atmel-dfu
+endif
+
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo pixelbreaker/buteo/talon))
   OPT_DEFS += -DKEYBOARD_buteo
   OPT_DEFS += -DLAYOUT_23332
   OPT_DEFS += -DENCODER_ENABLE
   SRC += scrollspam.c
-  RGBLIGHT_ENABLE = no
-  RGB_MATRIX_ENABLE = no
   DEFERRED_EXEC_ENABLE = yes
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo/talon))
   OPT_DEFS += -DKEYBOARD_buteo_talon
-  OPT_DEFS += -DLAYOUT_23332
-  OPT_DEFS += -DENCODER_ENABLE
-  SRC += scrollspam.c
-  RGBLIGHT_ENABLE = no
-  RGB_MATRIX_ENABLE = no
-  DEFERRED_EXEC_ENABLE = yes
 endif
