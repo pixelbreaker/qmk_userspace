@@ -20,11 +20,12 @@ RGB_MATRIX_ENABLE = no
 VPATH += $(USER_PATH)/features
 INTROSPECTION_KEYMAP_C = pixelbreaker.c
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/v2/splinky_3))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/elitec))
   OPT_DEFS += -DKEYBOARD_charybdis
   OPT_DEFS += -DTRACKBALL_ENABLE
 	SRC += scrollspam.c
 	DEFERRED_EXEC_ENABLE = yes
+  CONVERT_TO = rp2040_ce
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/cnano/stock pixelbreaker/cnano/encoder))
@@ -71,7 +72,7 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), ferris/sweep))
   BOOTLOADER = atmel-dfu
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo pixelbreaker/buteo/talon))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo/cirque pixelbreaker/buteo/talon))
   OPT_DEFS += -DKEYBOARD_buteo
   OPT_DEFS += -DLAYOUT_23332
   OPT_DEFS += -DENCODER_ENABLE

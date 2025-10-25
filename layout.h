@@ -148,7 +148,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
 
 #define _FUNC \
   QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, Z_VSML,  TGL_BASE,   \
-  KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RGB_TOG,    \
+  KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RM_TOGG,    \
   ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
 	                				   _______, _______,     _______, _______
 
@@ -159,10 +159,10 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
 	                           KC_0,    KC_DOT,      _______, _______
 
 #define _MOUSE \
-	___N___, SNIPE,   ___N___, G(KC_BSPC),KC_DEL,    KC_WH_U, KC_WH_L, KC_MS_U, KC_WH_R, ___N___,    \
-  __________HOME_ROW_CAGS_L__________, ___N___,    KC_WH_D, KC_MS_L, KC_MS_D, KC_MS_R, ___N___,    \
-  ___N___, SNIPE,   ___N___, KC_BTN3, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
-                      		   KC_BTN1, KC_BTN2,     _______, _______
+	___N___, SNIPE,   ___N___, G(KC_BSPC),KC_DEL,    MS_WHLU, MS_WHLL, MS_UP,   MS_WHLR, ___N___,    \
+  __________HOME_ROW_CAGS_L__________, ___N___,    MS_WHLD, MS_LEFT, MS_DOWN, MS_RGHT, ___N___,    \
+  ___N___, SNIPE,   ___N___, MS_BTN3, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
+                      		   MS_BTN1, MS_BTN2,     _______, _______
 
 #define _EXTRA \
 	___________________________________________,     ___________________________________________,    \
@@ -203,7 +203,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 #define LAYOUT_ferris(...) LAYOUT_split_3x5_2(__VA_ARGS__)
 #define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
 #define LAYOUT_tenome_w(...) LAYOUT_split_3x5_3(__VA_ARGS__)
-#define LAYOUT_charybdis_w(...) LAYOUT_charybdis_3x5(__VA_ARGS__)
+#define LAYOUT_charybdis_w(...) LAYOUT(__VA_ARGS__)
 #define LAYOUT_hummingbird_w(...) LAYOUT_23332x2(__VA_ARGS__)
 #define LAYOUT_buteo_w(...) LAYOUT_23332x2_enc(__VA_ARGS__)
 

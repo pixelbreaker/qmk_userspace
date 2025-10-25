@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 #include "pixelbreaker.h"
+#include "deferred_exec.h"
 
 #ifdef CONSOLE_ENABLE
 #  include "print.h"
@@ -184,7 +185,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
 #  ifdef KEYBOARD_buteo_talon
   // if (mouse_report.buttons != 0) {
   // uprintf("Buttons: %u, btn_7: %d\n", mouse_report.buttons, MOUSE_BTN7);
- 
+
   // if (mouse_report.buttons & MOUSE_BTN4) {
   //   char *message = "Swipe left";
   //   mouse_report.buttons &= ~MOUSE_BTN4;
@@ -228,7 +229,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   // to double click with small movement of trackball
   bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
   // #  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_charybdis)
-#ifdef TRACKBALL_ENABLE 
+#ifdef TRACKBALL_ENABLE
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : sniping ? DPI_POINTER_SNIPE : DPI_POINTER);
 # else
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : DPI_POINTER);
@@ -459,7 +460,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     #endif
       return true;
-      
+
     case THM_1:
       if (appkeys_active) {
         unregister_code(KC_LGUI);
@@ -480,7 +481,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       // #  endif
       #endif
       return true;
-      
+
       case THM_2:
       #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
@@ -496,7 +497,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // Pause mouse report updates for short time after clicking to make it easier
     // to double click with small movement of trackball
-    case KC_BTN1 ... KC_BTN3:
+    case MS_BTN1 ... MS_BTN3:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         mouse_is_down    = true;

@@ -109,7 +109,7 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
 #  define HOLD C_HOLD
 #  define SUBS UNUSED
 #  define ACTN UNUSED
-bool get_combo_must_hold(uint16_t combo_index, bool pressed) {
+bool get_combo_must_hold(uint16_t combo_index, combo_t *combo) {
   switch (combo_index) {
 #  include COMBOS_DEF
   }

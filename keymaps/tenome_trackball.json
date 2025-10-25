@@ -1,13 +1,13 @@
 {
-	"keyboard": "pixelbreaker/tenome/trackball",
-	"keymap": "pixelbreaker",
-	"layout": "LAYOUT_tenome_w",
-	"layers": [
-		[ "TENOME(HRM(_BASE))" ],
-		[ "TENOME(_SYMB)" ],
-		[ "TENOME(_NAV)" ],
-		[ "TENOME(_NUMB)" ],
-		[ "TENOME(_FUNC)" ],
-		[ "TENOME(_MOUSE)" ]
-	]
+  "keyboard": "pixelbreaker/tenome/trackball",
+  "keymap": "pixelbreaker",
+  "layout": "LAYOUT_tenome_w",
+  "layers": [
+    ["TENOME(HRM(_BASE))"],
+    ["TENOME(_SYMB)"],
+    ["TENOME(_NAV)"],
+    ["TENOME(_NUMB)"],
+    ["TENOME(_FUNC)"],
+    ["TENOME(_MOUSE)"]
+  ]
 }

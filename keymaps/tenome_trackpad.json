@@ -1,14 +1,14 @@
 {
-	"keyboard": "pixelbreaker/tenome/trackpad",
-	"keymap": "pixelbreaker",
-	"layout": "LAYOUT_tenome_w",
-	"layers": [
-		[ "TENOME(HRM2332(_BASE))" ],
-		[ "TENOME(_SYMB)" ],
-		[ "TENOME(_NAV)" ],
-		[ "TENOME(_NUMB)" ],
-		[ "TENOME(_FUNC)" ],
-		[ "TENOME(_MOUSE)" ],
-		[ "TENOME(HRM(_EXTRA))" ]
-	]
+  "keyboard": "pixelbreaker/tenome/trackpad",
+  "keymap": "pixelbreaker",
+  "layout": "LAYOUT_tenome_w",
+  "layers": [
+    ["TENOME(HRM(_BASE))"],
+    ["TENOME(_SYMB)"],
+    ["TENOME(_NAV)"],
+    ["TENOME(_NUMB)"],
+    ["TENOME(_FUNC)"],
+    ["TENOME(_MOUSE)"],
+    ["TENOME(HRM(_EXTRA))"]
+  ]
 }
