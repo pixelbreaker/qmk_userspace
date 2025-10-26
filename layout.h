@@ -201,11 +201,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 
 // Layout aliases for json keymap
 #define LAYOUT_ferris(...) LAYOUT_split_3x5_2(__VA_ARGS__)
-#define LAYOUT_sphynx_w(...) LAYOUT_split_3x5_4(__VA_ARGS__)
-#define LAYOUT_tenome_w(...) LAYOUT_split_3x5_3(__VA_ARGS__)
-#define LAYOUT_charybdis_w(...) LAYOUT(__VA_ARGS__)
-#define LAYOUT_hummingbird_w(...) LAYOUT_23332x2(__VA_ARGS__)
-#define LAYOUT_buteo_w(...) LAYOUT_23332x2_enc(__VA_ARGS__)
+#define LAYOUT_w(...) LAYOUT(__VA_ARGS__)
 
 
 // Convert 3x5_2 to Charybdis Nano 3x5_3+2

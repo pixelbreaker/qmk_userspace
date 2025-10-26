@@ -1,7 +1,7 @@
 {
   "keyboard": "pixelbreaker/tenome/trackpad",
   "keymap": "pixelbreaker",
-  "layout": "LAYOUT_tenome_w",
+  "layout": "LAYOUT_w",
   "layers": [
     ["TENOME(HRM(_BASE))"],
     ["TENOME(_SYMB)"],

@@ -11,11 +11,8 @@ CAPS_WORD_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 AUTOCORRECT_ENABLE = yes
 EXTRAKEY_ENABLE = yes
-MOUSEKEY_ENABLE = yes
 BOOTMAGIC_ENABLE = yes
 REPEAT_KEY_ENABLE = no
-RGBLIGHT_ENABLE = no
-RGB_MATRIX_ENABLE = no
 
 VPATH += $(USER_PATH)/features
 INTROSPECTION_KEYMAP_C = pixelbreaker.c
@@ -45,7 +42,6 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/tenome/trackball 
   OPT_DEFS += -DKEYBOARD_tenome
   OPT_DEFS += -DENCODER_ENABLE
 	SRC += scrollspam.c
-	RGB_MATRIX_ENABLE = yes
 	DEFERRED_EXEC_ENABLE = yes
 endif
 
@@ -62,7 +58,6 @@ endif
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/hummingbird))
   OPT_DEFS += -DKEYBOARD_hummingbird
   OPT_DEFS += -DLAYOUT_23332
-  RGBLIGHT_ENABLE = yes
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), ferris/sweep))

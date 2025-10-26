@@ -1,13 +1,13 @@
 {
-	"keyboard": "pixelbreaker/sphynx",
-	"keymap": "pixelbreaker",
-	"layout": "LAYOUT_sphynx_w",
-	"layers": [
-		[ "SPHYNX(HRM(_BASE))" ],
-		[ "SPHYNX(_SYMB)" ],
-		[ "SPHYNX(_NAV)" ],
-		[ "SPHYNX(_NUMB)" ],
-		[ "SPHYNX(_FUNC)" ],
-		[ "SPHYNX(_MOUSE)" ]
-	]
+  "keyboard": "pixelbreaker/sphynx",
+  "keymap": "pixelbreaker",
+  "layout": "LAYOUT_w",
+  "layers": [
+    ["SPHYNX(HRM(_BASE))"],
+    ["SPHYNX(_SYMB)"],
+    ["SPHYNX(_NAV)"],
+    ["SPHYNX(_NUMB)"],
+    ["SPHYNX(_FUNC)"],
+    ["SPHYNX(_MOUSE)"]
+  ]
 }

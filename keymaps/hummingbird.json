@@ -1,13 +1,13 @@
 {
-	"keyboard": "pixelbreaker/hummingbird",
-	"keymap": "pixelbreaker",
-	"layout": "LAYOUT_hummingbird_w",
-	"layers": [
-		[ "HUMMINGBIRD(HRM2332(_BASE))" ],
-		[ "HUMMINGBIRD(_SYMB)" ],
-		[ "HUMMINGBIRD(_NAV)" ],
-		[ "HUMMINGBIRD(_NUMB)" ],
-		[ "HUMMINGBIRD(_FUNC)" ],
-		[ "HUMMINGBIRD(_MOUSE)" ]
-	]
+  "keyboard": "pixelbreaker/hummingbird",
+  "keymap": "pixelbreaker",
+  "layout": "LAYOUT_w",
+  "layers": [
+    ["HUMMINGBIRD(HRM2332(_BASE))"],
+    ["HUMMINGBIRD(_SYMB)"],
+    ["HUMMINGBIRD(_NAV)"],
+    ["HUMMINGBIRD(_NUMB)"],
+    ["HUMMINGBIRD(_FUNC)"],
+    ["HUMMINGBIRD(_MOUSE)"]
+  ]
 }

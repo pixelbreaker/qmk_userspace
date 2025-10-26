@@ -1,14 +1,14 @@
 {
-	"keyboard": "bastardkb/charybdis/3x5/elitec",
-	"keymap": "pixelbreaker",
-	"layout": "LAYOUT_charybdis_w",
-	"layers": [
-		[ "CHARYBDIS(HRM(_BASE))" ],
-		[ "CHARYBDIS(_SYMB)" ],
-		[ "CHARYBDIS(_NAV)" ],
-		[ "CHARYBDIS(_NUMB)" ],
-		[ "CHARYBDIS(_FUNC)" ],
-		[ "CHARYBDIS(_MOUSE)" ],
-		[ "CHARYBDIS(HRM(_EXTRA))" ]
-	]
+  "keyboard": "bastardkb/charybdis/3x5/elitec",
+  "keymap": "pixelbreaker",
+  "layout": "LAYOUT_w",
+  "layers": [
+    ["CHARYBDIS(HRM(_BASE))"],
+    ["CHARYBDIS(_SYMB)"],
+    ["CHARYBDIS(_NAV)"],
+    ["CHARYBDIS(_NUMB)"],
+    ["CHARYBDIS(_FUNC)"],
+    ["CHARYBDIS(_MOUSE)"],
+    ["CHARYBDIS(HRM(_EXTRA))"]
+  ]
 }

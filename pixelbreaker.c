@@ -17,8 +17,6 @@
 #  define SCROLL_BUFFER_SIZE 50
 #endif
 
-// #define TYPING_TERM (TAPPING_TERM * 2)
-
 #if defined(PERMISSIVE_HOLD_PER_KEY) || defined(HOLD_ON_OTHER_KEY_PRESS_PER_KEY)
 static uint16_t        next_keycode;
 static keyrecord_t     next_record;
