@@ -172,46 +172,14 @@ uint32_t activate_scroll_mode(uint32_t trigger_time, void *cb_arg) {
   track_mode = SCROLL;
   return 0;
 }
-
-#  define SCROLL_DIVISOR_H 32.0
-#  define SCROLL_DIVISOR_V 32.0
+#  define SCROLL_DIVISOR_H 24.0
+#  define SCROLL_DIVISOR_V 24.0
 
 float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
 #  ifdef KEYBOARD_buteo_talon
-  // if (mouse_report.buttons != 0) {
-  // uprintf("Buttons: %u, btn_7: %d\n", mouse_report.buttons, MOUSE_BTN7);
-
-  // if (mouse_report.buttons & MOUSE_BTN4) {
-  //   char *message = "Swipe left";
-  //   mouse_report.buttons &= ~MOUSE_BTN4;
-  //   tap_code16(G(KC_LEFT));
-  //   uprintf("%s\n", message);
-  // }
-  // if (mouse_report.buttons & MOUSE_BTN5) {
-  //   char *message = "Swipe right";
-  //   mouse_report.buttons &= ~MOUSE_BTN5;
-  //   tap_code16(G(KC_RIGHT));
-  //   uprintf("%s\n", message);
-  // }
-  // if (mouse_report.buttons & MOUSE_BTN7) {
-  //   // char *message = "Zoom in";
-  //   mouse_report.buttons &= ~MOUSE_BTN7;
-  //   // tap_code16(A(S(KC_VOLD)));
-  //   tap_code16(G(KC_LEFT));
-  //   // uprintf("%s\n", message);
-  // }
-  // if (mouse_report.buttons & MOUSE_BTN8) {
-  //   // char *message = "Zoom out";
-  //   mouse_report.buttons &= ~MOUSE_BTN8;
-  //   // tap_code16(A(S(KC_VOLU)));
-  //   tap_code16(G(KC_RIGHT));
-  //   // uprintf("%s\n", message);
-  // }
-  // }
-
   scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
   scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR_V;
 
@@ -241,6 +209,8 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     // Assign integer parts of accumulated scroll values to the mouse report
     mouse_report.h = (int8_t)scroll_accumulated_h;
     mouse_report.v = (int8_t)scroll_accumulated_v;
+    // mouse_report.h = (int8_t)mouse_report.x;
+    // mouse_report.v = -(int8_t)mouse_report.y;
 
     // Update accumulated scroll values by subtracting the integer parts
     scroll_accumulated_h -= (int8_t)scroll_accumulated_h;

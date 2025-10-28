@@ -153,7 +153,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
 	                				   _______, _______,     _______, _______
 
 #define _NUMB \
-	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     _______, Z_GBP,   Z_EUR,   TH_DLR,  _______,    \
+	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     KC_PERC, Z_GBP,   Z_EUR,   TH_DLR,  _______,    \
 	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     KC_EQL, __________HOME_ROW_CAGS_R__________,    \
 	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     ___________________________________________,    \
 	                           KC_0,    KC_DOT,      _______, _______
@@ -200,9 +200,7 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
 
 
 // Layout aliases for json keymap
-#define LAYOUT_ferris(...) LAYOUT_split_3x5_2(__VA_ARGS__)
 #define LAYOUT_w(...) LAYOUT(__VA_ARGS__)
-
 
 // Convert 3x5_2 to Charybdis Nano 3x5_3+2
 #define CHARYBDIS(k) CONV_CHARYBDIS(k)

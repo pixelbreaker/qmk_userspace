@@ -60,11 +60,11 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/hummingbird))
   OPT_DEFS += -DLAYOUT_23332
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), ferris/sweep))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/ferris/sweep))
   OPT_DEFS += -DKEYBOARD_ferris
   AUTOCORRECT_ENABLE = no
   # fix flashing for elite-c
-  BOOTLOADER = atmel-dfu
+  # BOOTLOADER = atmel-dfu
 endif
 
 ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/buteo/cirque pixelbreaker/buteo/talon))

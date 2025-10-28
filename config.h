@@ -106,9 +106,7 @@
 #  define AZOTEQ_IQS5XX_ZOOM_INITIAL_DISTANCE 450
 #endif
 
-#ifdef KEYBOARD_ferris
-#  define EE_HANDS
-#endif
+
 
 #ifdef COMBO_ENABLE
 #  ifdef COMBO_TERM
@@ -132,6 +130,14 @@
 #  define MOUSEKEY_WHEEL_INTERVAL 30
 #  define MOUSEKEY_WHEEL_MAX_SPEED 3
 #  define MOUSEKEY_WHEEL_TIME_TO_MAX 95
+#endif
+
+// Add hires scroll support
+#ifdef TRACKBALL_ENABLE
+# define POINTING_DEVICE_HIRES_SCROLL_ENABLE
+# define POINTING_DEVICE_HIRES_SCROLL_MULTIPLIER 50
+# define POINTING_DEVICE_HIRES_SCROLL_EXPONENT 100
+# define WHEEL_EXTENDED_REPORT
 #endif
 
 // Layout macros
