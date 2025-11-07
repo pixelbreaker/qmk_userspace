@@ -25,7 +25,7 @@ ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), bastardkb/charybdis/3x5/elitec
   CONVERT_TO = rp2040_ce
 endif
 
-ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/cnano/stock pixelbreaker/cnano/encoder))
+ifeq ($(strip $(KEYBOARD)), $(filter $(KEYBOARD), pixelbreaker/cnano_stock pixelbreaker/cnano_encoder))
   OPT_DEFS += -DKEYBOARD_charybdis
   OPT_DEFS += -DKEYBOARD_cnano
   OPT_DEFS += -DTRACKBALL_ENABLE

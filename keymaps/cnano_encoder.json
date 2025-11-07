@@ -1,5 +1,5 @@
 {
-  "keyboard": "pixelbreaker/cnano/encoder",
+  "keyboard": "pixelbreaker/cnano_encoder",
   "keymap": "pixelbreaker",
   "layout": "LAYOUT_w",
   "layers": [

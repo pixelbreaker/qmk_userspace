@@ -139,14 +139,15 @@ enum trackball_modes {
   MEDIA,
 };
 enum encoder_modes {
-  HUE = 0,
+  NONE = 0,
+  HUE,
   SAT,
   VAL,
   SPD,
   MOD,
 };
 uint8_t track_mode   = CURSOR;
-uint8_t encoder_mode = HUE;
+uint8_t encoder_mode = NONE;
 
 bool     sniping          = false;
 bool     mouse_is_down    = false;
@@ -195,11 +196,11 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   // to double click with small movement of trackball
   bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
   // #  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_charybdis)
-#ifdef TRACKBALL_ENABLE
+#  ifdef TRACKBALL_ENABLE
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : sniping ? DPI_POINTER_SNIPE : DPI_POINTER);
-# else
+#  else
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : DPI_POINTER);
-# endif
+#  endif
   // #  endif
 
   if (track_mode == SCROLL && !appkeys_active) {
@@ -271,6 +272,8 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
           return false;
       }
 #  endif
+    } else if (IS_LAYER_ON(NUM)) {
+      tap_code16(clockwise ? MS_WHLU : MS_WHLD);
     } else if (appswitch_active || tabswitch_active) {
       tap_code16(clockwise ? KC_TAB : S(KC_TAB));
     } else {
@@ -289,7 +292,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 #endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  uprintf("Col: %d Row: %d\n",record->event.key.col, record->event.key.row);
+  uprintf("Col: %d Row: %d\n", record->event.key.col, record->event.key.row);
 
   // set_single_persistent_default_layer(BSE);
 #ifdef TAPPING_TERM_PER_KEY
@@ -417,7 +420,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // set trackball modes...
     case THM_0:
     case THM_4:
-    #ifdef POINTING_DEVICE_ENABLE
+#ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_media_mode, NULL);
@@ -426,7 +429,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
-    #endif
+#endif
       return true;
 
     case THM_1:
@@ -434,10 +437,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         unregister_code(KC_LGUI);
         appkeys_active = false;
       }
-      #ifdef POINTING_DEVICE_ENABLE
-      // #  ifdef KEYBOARD_charybdis
-      //       charybdis_set_pointer_dragscroll_enabled(record->event.pressed);
-      // #  else
+#ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(CARRET_TIMEOUT_MS, activate_carret_mode, NULL);
@@ -446,12 +446,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
-      // #  endif
-      #endif
+// #  endif
+#endif
       return true;
 
-      case THM_2:
-      #ifdef POINTING_DEVICE_ENABLE
+    case THM_2:
+#ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
           activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_scroll_mode, NULL);
@@ -460,7 +460,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
-      #endif
+#endif
       return true;
 
     // Pause mouse report updates for short time after clicking to make it easier
@@ -558,27 +558,47 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     case E_HUE:
 #if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
-      encoder_mode = HUE;
+      if (record->event.pressed) {
+        encoder_mode = HUE;
+      } else {
+        encoder_mode = NONE;
+      }
 #endif
       return false;
     case E_SAT:
 #if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
-      encoder_mode = SAT;
+      if (record->event.pressed) {
+        encoder_mode = SAT;
+      } else {
+        encoder_mode = NONE;
+      }
 #endif
       return false;
     case E_VAL:
 #if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
-      encoder_mode = VAL;
+      if (record->event.pressed) {
+        encoder_mode = VAL;
+      } else {
+        encoder_mode = NONE;
+      }
 #endif
       return false;
     case E_SPD:
 #if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
-      encoder_mode = SPD;
+      if (record->event.pressed) {
+        encoder_mode = SPD;
+      } else {
+        encoder_mode = NONE;
+      }
 #endif
       return false;
     case E_MOD:
 #if defined(RGB_MATRIX_ENABLE) && defined(ENCODER_ENABLE)
-      encoder_mode = MOD;
+      if (record->event.pressed) {
+        encoder_mode = MOD;
+      } else {
+        encoder_mode = NONE;
+      }
 #endif
       return false;
 
@@ -586,6 +606,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return true;
   }
 }
+
+#ifdef RGB_MATRIX_ENABLE
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+  hsv_t hsv = {0, 255, 255};
+
+  if (get_highest_layer(layer_state | default_layer_state) == 0) return false;
+
+  uint8_t hue = (((float)get_highest_layer(layer_state | default_layer_state) + 1) / 6) * 255;
+  hsv.h       = hue;
+  hsv.v       = rgb_matrix_get_val();
+  rgb_t rgb   = hsv_to_rgb(hsv);
+
+  for (uint8_t i = led_min; i < led_max; i++) {
+    if (HAS_FLAGS(g_led_config.flags[i], 0x02)) { // Underglow
+      rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+    }
+  }
+  return false;
+}
+#endif
 
 void housekeeping_task_user(void) {
   // Restore state after 3 minutes

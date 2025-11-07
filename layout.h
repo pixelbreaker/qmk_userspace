@@ -98,6 +98,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 // #define ______________HOME_ROW_CAGS_L______________ OSM_LCTL, OSM_LALT, OSM_LGUI, OSM_LSFT, KC_DEL
 // #define ______________HOME_ROW_CAGS_R______________ ___N___, OSM_LSFT, OSM_LGUI, OSM_LALT, OSM_LCTL
 // #define ______________HOME_ROW_CAGS_L______________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, KC_DEL
+#define _______HOME_ROW_OSM_CAGS_L_________ OSM_LCTL, OSM_LALT, OSM_LGUI, OSM_LSFT
 #define __________HOME_ROW_CAGS_L__________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT
 #define __________HOME_ROW_CAGS_R__________ KC_LSFT, KC_LGUI, KC_LALT, KC_LCTL
 #define __________________APP_NAV__________________ C(S(KC_TAB)), C(KC_TAB), C(G(S(KC_TAB))), C(G(KC_TAB)), ___N___
@@ -128,7 +129,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
 
 #define _NAV \
   KC_TAB,  APP_L,  A(KC_TAB),APP_R,    TH_SCR,     KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_GRV,     \
-	__________HOME_ROW_CAGS_L__________, TH_DEL,     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_COLN,    \
+	_______HOME_ROW_OSM_CAGS_L_________, TH_DEL,     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_COLN,    \
 	_________________FILE_NAV__________________,     ___N___, KC_ESC,  DELLINE, KC_SLSH, ___N___,    \
 	                           _______, _______,     KC_BSPC, KC_DEL
 
@@ -141,26 +142,26 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
 */
 
 #define _SYMB \
-	___N___, KC_AT,   KC_LCBR, KC_RCBR, KC_CIRC,     TH_DLR,  KC_PERC, Z_HASH,  KC_ASTR, KC_SCLN,   \
+	___N___, KC_AT,   KC_LCBR, KC_RCBR, KC_CIRC,     KC_PERC, KC_ASTR, Z_HASH,  TH_DLR,  KC_SCLN,   \
 	KC_TILDE,KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PLUS, KC_AMPR, KC_EXLM, KC_PIPE, KC_COLN,   \
 	___N___, KC_SPC,  KC_LBRC, KC_RBRC, ___N___,     ___N___, KC_BSLS, TH_EQL,  KC_SLSH, ___N___,   \
 	                           _______, _______,     KC_UNDS, KC_MINS
 
 #define _FUNC \
-  QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, Z_VSML,  TGL_BASE,   \
+  QK_BOOT, KC_F7,   KC_F8,   KC_F9,   KC_F12,      KC_MSTP, KC_MPLY, KC_VOLU, _______, _______,   \
   KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RM_TOGG,    \
   ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
 	                				   _______, _______,     _______, _______
 
 #define _NUMB \
-	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     KC_PERC, Z_GBP,   Z_EUR,   TH_DLR,  _______,    \
-	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     KC_EQL, __________HOME_ROW_CAGS_R__________,    \
-	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     ___________________________________________,    \
+	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     KC_PERC, Z_GBP,   Z_HASH,   TH_DLR, Z_EUR,      \
+	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     KC_EQL, HRMR(KC_A, KC_B, KC_C, KC_SCLN),        \
+	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     _______, KC_D,    KC_E,     KC_F,   _______,    \
 	                           KC_0,    KC_DOT,      _______, _______
 
 #define _MOUSE \
 	___N___, SNIPE,   ___N___, G(KC_BSPC),KC_DEL,    MS_WHLU, MS_WHLL, MS_UP,   MS_WHLR, ___N___,    \
-  __________HOME_ROW_CAGS_L__________, ___N___,    MS_WHLD, MS_LEFT, MS_DOWN, MS_RGHT, ___N___,    \
+  _______HOME_ROW_OSM_CAGS_L_________, ___N___,    MS_WHLD, MS_LEFT, MS_DOWN, MS_RGHT, ___N___,    \
   ___N___, SNIPE,   ___N___, MS_BTN3, ___N___,     ___N___, ___N___, ___N___, ___N___, ___N___,    \
                       		   MS_BTN1, MS_BTN2,     _______, _______
 
@@ -197,7 +198,6 @@ HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
  HRML(l06, l07, l08, l09), l10,   r06, HRMR(r07, r08, r09, r10), \
  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15,  \
 	                 l16, l17,   r16, r17
-
 
 // Layout aliases for json keymap
 #define LAYOUT_w(...) LAYOUT(__VA_ARGS__)

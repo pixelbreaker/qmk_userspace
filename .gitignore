@@ -1,3 +1,6 @@
 secrets.c
 secrets.h
 autocorrect_data.h.bak
+.cache
+compile_commands.json
+qmk_env
