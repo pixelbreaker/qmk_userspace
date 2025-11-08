@@ -3,7 +3,7 @@
   "keymap": "pixelbreaker",
   "layout": "LAYOUT_w",
   "layers": [
-    ["TENOME(HRM(_BASE))"],
+    ["TENOME(_BASE)"],
     ["TENOME(_SYMB)"],
     ["TENOME(_NAV)"],
     ["TENOME(_NUMB)"],

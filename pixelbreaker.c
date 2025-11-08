@@ -61,13 +61,7 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
   bool below_base = get_highest_layer(layer_state) <= BSE;
 
-  switch (index) {
-    case thmb_l:
-    case thmb_r:
-      return below_base && !IS_TYPING();
-  }
-
-  return below_base;
+  return below_base && !IS_TYPING();
 }
 #  endif
 #endif
@@ -223,6 +217,10 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   } else if (track_mode == MEDIA) {
     tap_media();
   } else if (track_mode == CARRET) {
+    // disable the shift key when holding down shift and moving the caret
+    if (IS_LAYER_OFF(get_auto_mouse_layer()) && (abs(mouse_report.x) > 2 || abs(mouse_report.y) > 2)) {
+      unregister_mods(MOD_MASK_SHIFT);
+    }
     tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
   }
   // else if (appswitch_active || tabswitch_active) {
@@ -303,16 +301,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
     prev_event = record->event.type;
 
-    if (keycode == TH_C) // cut, copy, paste
-      return process_tap_hold(Z_CUT, record);
-    else if (keycode == TH_G)
-      return process_tap_hold(Z_CPY, record);
-    else if (keycode == TH_D)
-      return process_tap_hold(Z_PST, record);
-    else if (keycode == TH_QUOT)
-      return process_tap_hold(KC_GRV, record);
-    else if (keycode == TH_O)
-      return process_tap_hold(KC_SCLN, record);
+    // if (keycode == TH_C) // cut, copy, paste
+    //   return process_tap_hold(Z_CUT, record);
+    // else if (keycode == TH_G)
+    //   return process_tap_hold(Z_CPY, record);
+    // else if (keycode == TH_D)
+    //   return process_tap_hold(Z_PST, record);
+    // else if (keycode == TH_QUOT)
+    //   return process_tap_hold(KC_GRV, record);
+    // else if (keycode == TH_O)
+    //   return process_tap_hold(KC_SCLN, record);
     // brackets on sym layer
     // else if (keycode == TH_LBRC) // []
     //   return process_tap_hold(KC_RBRC, record);
@@ -339,15 +337,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     //   }
     //   return false;
     // }
-    else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
-      return process_tap_hold(KC_BSLS, record);
-    else if (keycode == TH_W) // @
-      return process_tap_hold(KC_AT, record);
-    else if (keycode == TH_F) // #
-      return process_tap_hold(Z_HASH, record);
-    else if (keycode == TH_DOT)
-      return process_tap_hold(S(KC_SLSH), record);
-    else if (keycode == TH_QU) {
+    // else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
+    //   return process_tap_hold(KC_BSLS, record);
+    // else if (keycode == TH_W) // @
+    //   return process_tap_hold(KC_AT, record);
+    // else if (keycode == TH_F) // #
+    //   return process_tap_hold(Z_HASH, record);
+    // else if (keycode == TH_DOT)
+    //   return process_tap_hold(S(KC_SLSH), record);
+    // else
+    if (keycode == TH_QU) {
       if (is_caps_word_on()) {
         register_mods(MOD_MASK_SHIFT);
       }
@@ -439,22 +438,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
-        if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
-          activate_track_mode_token = defer_exec(CARRET_TIMEOUT_MS, activate_carret_mode, NULL);
+        if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
+          activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_scroll_mode, NULL);
         }
       } else {
         cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
-// #  endif
 #endif
       return true;
 
     case THM_2:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
-        if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
-          activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_scroll_mode, NULL);
+        if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
+          activate_track_mode_token = defer_exec(CARRET_TIMEOUT_MS, activate_carret_mode, NULL);
         }
       } else {
         cancel_deferred_exec(activate_track_mode_token);

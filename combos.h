@@ -122,16 +122,16 @@ uint16_t get_combo_term(uint16_t index, combo_t *combo) {
   // or with combo index, i.e. its name from enum.
   switch (index) {
     case thmb_l:
-    case thmb_r:
+    // case thmb_r:
       return COMBO_TERM + 100;
 
     case capsword:
-    case capslock:
+    // case capslock:
       return COMBO_TERM + 100;
 
     case esc:
     // case bckspc:
-    case bckspc_word:
+    // case bckspc_word:
       // case del:
       // case ent:
       return COMBO_TERM + 20;

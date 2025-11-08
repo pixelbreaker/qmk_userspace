@@ -2,12 +2,5 @@
   "keyboard": "pixelbreaker/ferris/sweep",
   "keymap": "pixelbreaker",
   "layout": "LAYOUT_w",
-  "layers": [
-    ["HRM(_BASE)"],
-    ["_SYMB"],
-    ["_NAV"],
-    ["_NUMB"],
-    ["_FUNC"],
-    ["_MOUSE"]
-  ]
+  "layers": [["_BASE"], ["_SYMB"], ["_NAV"], ["_NUMB"], ["_FUNC"], ["_MOUSE"]]
 }
