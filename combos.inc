@@ -11,16 +11,16 @@
 COMB(esc, KC_ESC, KC_V, KC_W)
 
 // mouse layer
+#ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 HOLD(mouse_layer, MO(MOU), KC_S, KC_T)
+#endif
 
 // OSM on thumbs
-COMB(thmb_l, OSL(FNC), THM_1, THM_4)
-COMB(capsword, CW_TOGG, THM_2, THM_3)
+HOLD(thmb_l, MO(FNC), THM_1, THM_4)
+COMB(capsword, CW_TOGG, KC_D, KC_M)
 
 // left hand
-// COMB(sft_l, OSM_LSFT, KC_T, KC_H)
 COMB(tab, KC_TAB, KC_R, KC_S)
-// COMB(tab_mse, KC_TAB, MSE(KC_R), KC_S)
 
 // COMB(key_q, KC_Q, KC_W, KC_F)
 COMB(key_qu, TH_QU, KC_W, KC_F)
@@ -31,10 +31,7 @@ COMB(cut, Z_CUT, KC_F, KC_P)
 COMB(copy, Z_CPY, KC_T, KC_H)
 COMB(paste, Z_PST, KC_G, KC_D)
 
-COMB(bckspc, KC_BSPC, KC_M, KC_COMM)
+// right hand
+COMB(key_mins, KC_MINS, KC_U, KC_Y)
+COMB(key_unds, KC_UNDS, KC_L, KC_U)
 COMB(key_slsh, KC_SLSH, KC_COMM, KC_DOT)
-
-// 23332 combos (colemak only)
-#ifdef LAYOUT_23332
-// COMB(osl_extra, OSL(EXT), THM_3, THM_4)
-#endif

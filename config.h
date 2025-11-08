@@ -12,29 +12,24 @@
 //  Tap-hold settings
 #define TAPPING_TERM 250
 #define TAPPING_TERM_PER_KEY
-#define QUICK_TAP_TERM TAPPING_TERM / 2
-#define QUICK_TAP_TERM_PER_KEY
-#define PERMISSIVE_HOLD
-#define PERMISSIVE_HOLD_PER_KEY
-#define HOLD_ON_OTHER_KEY_PRESS
-#define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
 
 #ifdef POINTING_DEVICE_ENABLE
 #  define MEDIA_TAP_THRESHOLD 85
 #  define MEDIA_TAP_TERM 600
+// Auto mouse config
 #  define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #    define AUTO_MOUSE_DEFAULT_LAYER 5
-#    define AUTO_MOUSE_TIME 450
+#    define AUTO_MOUSE_TIME 250
 #    define AUTO_MOUSE_DEBOUNCE 10
-#    define AUTO_MOUSE_DELAY 400
-#    define AUTO_MOUSE_THRESHOLD 15
+// #    define AUTO_MOUSE_DELAY 400
+#    define AUTO_MOUSE_THRESHOLD 10
 #  endif
 #  ifndef CARRET_TIMEOUT_MS
-#    define CARRET_TIMEOUT_MS 250
+#    define CARRET_TIMEOUT_MS 150
 #  endif
 #  ifndef MEDIA_TIMEOUT_MS
-#    define MEDIA_TIMEOUT_MS 150
+#    define MEDIA_TIMEOUT_MS 50
 #  endif
 #endif
 
@@ -104,7 +99,9 @@
 #  define AZOTEQ_IQS5XX_ZOOM_INITIAL_DISTANCE 450
 #endif
 
-
+// Tripple tapping a OSM will lock it until it's pressed again
+#define ONESHOT_TAP_TOGGLE 3
+#define ONESHOT_TIMEOUT 5000
 
 #ifdef COMBO_ENABLE
 #  ifdef COMBO_TERM

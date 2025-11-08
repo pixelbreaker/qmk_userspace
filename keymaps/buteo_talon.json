@@ -8,7 +8,7 @@
     ["BUTEO(_NAV)"],
     ["BUTEO(_NUMB)"],
     ["BUTEO(_FUNC)"],
-    ["BUTEO(_MOUSE)"],
+    ["BUTEO(_MOUSE_DEVICE)"],
     ["BUTEO(_EXTRA)"]
   ]
 }

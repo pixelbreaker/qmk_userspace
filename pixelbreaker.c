@@ -17,92 +17,28 @@
 #  define SCROLL_BUFFER_SIZE 50
 #endif
 
-#if defined(PERMISSIVE_HOLD_PER_KEY) || defined(HOLD_ON_OTHER_KEY_PRESS_PER_KEY)
-static uint16_t        next_keycode;
-static keyrecord_t     next_record;
+// Track typing state
 static keyevent_type_t prev_event;
 static fast_timer_t    tap_timer = 0;
-
-// #  define TAP_INTERVAL_MS 100
-
-bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
-  static uint16_t prev_keycode;
-  static bool     is_pressed[UINT8_MAX];
-
-  // Store previous and next input for tap-hold decisions
-  if (record->event.pressed) {
-    prev_keycode = next_keycode;
-    next_keycode = keycode;
-    next_record  = *record;
-  }
-
-  // Trigger tap for tap-hold keys based on previous input
-  if (IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode)) {
-    uint8_t const tap_keycode = keycode & 0xff;
-    // Press the tap keycode on short input interval when not preceded by layer or combo keys
-    if (record->event.pressed && !IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && !IS_MOD_TAP_CAG(next_keycode) && prev_event != COMBO_EVENT) {
-      // if (record->event.pressed && IS_TYPING() && !IS_LAYER_TAP(prev_keycode) && prev_event != COMBO_EVENT) {
-      record->keycode         = tap_keycode;
-      is_pressed[tap_keycode] = true;
-    }
-    // Release the tap keycode if pressed
-    else if (is_pressed[tap_keycode]) {
-      record->keycode         = tap_keycode;
-      is_pressed[tap_keycode] = false;
-    }
-  }
-
-  return true;
-}
-#endif
 
 #ifdef COMBO_ENABLE
 #  ifdef COMBO_SHOULD_TRIGGER
 bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
   bool below_base = get_highest_layer(layer_state) <= BSE;
 
-  return below_base && !IS_TYPING();
+  switch (index) {
+    case thmb_l:
+    case copy:
+    case tab:
+#    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+    case mouse_layer:
+#    endif
+      return below_base && !IS_TYPING();
+  }
+
+  return below_base;
 }
 #  endif
-#endif
-
-#ifdef TAPPING_TERM_PER_KEY
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case THM_1:
-      return TAPPING_TERM;
-    default:
-      // Increase tapping term for the non-Shift home row mod-tap while typing
-      return IS_HOMEROW(record) && IS_MOD_TAP_CAG(keycode) && IS_TYPING() ? TAPPING_TERM * 2 : TAPPING_TERM;
-  }
-}
-#endif
-
-#ifdef PERMISSIVE_HOLD_PER_KEY
-bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-  // Hold Control and Shift with a nested key tap on the opposite hand
-  return IS_BILATERAL_TAP(record, next_record) && ((!IS_TYPING() && IS_MOD_TAP_CS(keycode)) || IS_MOD_TAP_SHIFT(keycode));
-  // return IS_BILATERAL_TAP(record, next_record) && IS_MOD_TAP_CS(keycode);
-}
-#endif
-
-#ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-  // Activate layer with another key press
-
-  if (IS_LAYER_TAP(keycode) && (!IS_TYPING() && keycode != THM_1 && keycode != THM_2 && keycode != THM_4 && keycode != MSE(KC_V))) return true;
-
-  // Send the tap keycode when the mod-tap key overlaps with
-  // another key on the same hand with no active modifiers
-  if (IS_UNILATERAL_TAP(record, next_record) && IS_MOD_TAP_CAG(next_keycode) && !IS_TYPING() && !get_mods()) {
-    record->keycode = keycode & 0xff;
-    process_record(record);
-    record->event.pressed = false;
-    process_record(record);
-  }
-
-  return false;
-}
 #endif
 
 // Send custom hold keycode
@@ -174,6 +110,13 @@ float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+#  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+  // disable auto mouse if user is typing or track mode isn't default
+  if (!is_auto_mouse_active()) {
+    set_auto_mouse_enable(!(IS_TYPING() || track_mode != CURSOR));
+  }
+#  endif
+
 #  ifdef KEYBOARD_buteo_talon
   scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
   scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR_V;
@@ -189,9 +132,12 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   // Pause mouse report updates for short time after clicking to make it easier
   // to double click with small movement of trackball
   bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
-  // #  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_charybdis)
+  // #  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) ||
+  // defined(KEYBOARD_charybdis)
 #  ifdef TRACKBALL_ENABLE
-  pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : sniping ? DPI_POINTER_SNIPE : DPI_POINTER);
+  pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL
+                          : sniping                               ? DPI_POINTER_SNIPE
+                                                                  : DPI_POINTER);
 #  else
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : DPI_POINTER);
 #  endif
@@ -204,8 +150,6 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     // Assign integer parts of accumulated scroll values to the mouse report
     mouse_report.h = (int8_t)scroll_accumulated_h;
     mouse_report.v = (int8_t)scroll_accumulated_v;
-    // mouse_report.h = (int8_t)mouse_report.x;
-    // mouse_report.v = -(int8_t)mouse_report.y;
 
     // Update accumulated scroll values by subtracting the integer parts
     scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
@@ -217,17 +161,17 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   } else if (track_mode == MEDIA) {
     tap_media();
   } else if (track_mode == CARRET) {
-    // disable the shift key when holding down shift and moving the caret
+// disable the shift key when holding down shift and moving the caret
+#  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     if (IS_LAYER_OFF(get_auto_mouse_layer()) && (abs(mouse_report.x) > 2 || abs(mouse_report.y) > 2)) {
       unregister_mods(MOD_MASK_SHIFT);
     }
     tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
+#  endif
   }
-  // else if (appswitch_active || tabswitch_active) {
-  //   tap_switcher();
-  // }
 
-  if ((track_mode != CURSOR && (track_mode != SCROLL && !appkeys_active)) || mouse_pause) { // appswitch_active || tabswitch_active ||
+  if ((track_mode != CURSOR && (track_mode != SCROLL && !appkeys_active)) ||
+      mouse_pause) { // appswitch_active || tabswitch_active ||
     // Nerf mouse_report as we're doing something else
     tap_report(mouse_report);
     mouse_report.x = 0;
@@ -292,7 +236,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   uprintf("Col: %d Row: %d\n", record->event.key.col, record->event.key.row);
 
-  // set_single_persistent_default_layer(BSE);
+// set_single_persistent_default_layer(BSE);
 #ifdef TAPPING_TERM_PER_KEY
   tap_timer = timer_read_fast();
 #endif
@@ -301,51 +245,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
     prev_event = record->event.type;
 
-    // if (keycode == TH_C) // cut, copy, paste
-    //   return process_tap_hold(Z_CUT, record);
-    // else if (keycode == TH_G)
-    //   return process_tap_hold(Z_CPY, record);
-    // else if (keycode == TH_D)
-    //   return process_tap_hold(Z_PST, record);
-    // else if (keycode == TH_QUOT)
-    //   return process_tap_hold(KC_GRV, record);
-    // else if (keycode == TH_O)
-    //   return process_tap_hold(KC_SCLN, record);
-    // brackets on sym layer
-    // else if (keycode == TH_LBRC) // []
-    //   return process_tap_hold(KC_RBRC, record);
-    // else if (keycode == TH_LPRN) {
-    //   //
-    //   if (record->tap.count) {
-    //     tap_code16(S(KC_9));
-    //   } else {
-    //     tap_code16(S(KC_0));
-    //   }
-    //   return false;
-    // } else if (keycode == TH_LCBR) { // {}
-    //   if (record->tap.count) {
-    //     tap_code16(KC_LCBR);
-    //   } else {
-    //     tap_code16(KC_RCBR);
-    //   }
-    //   return false;
-    // } else if (keycode == TH_LT) {
-    //   if (record->tap.count) {
-    //     tap_code16(S(KC_COMM));
-    //   } else {
-    //     tap_code16(S(KC_DOT));
-    //   }
-    //   return false;
-    // }
-    // else if (keycode == TH_SLSH || keycode == MSE(TH_SLSH))
-    //   return process_tap_hold(KC_BSLS, record);
-    // else if (keycode == TH_W) // @
-    //   return process_tap_hold(KC_AT, record);
-    // else if (keycode == TH_F) // #
-    //   return process_tap_hold(Z_HASH, record);
-    // else if (keycode == TH_DOT)
-    //   return process_tap_hold(S(KC_SLSH), record);
-    // else
     if (keycode == TH_QU) {
       if (is_caps_word_on()) {
         register_mods(MOD_MASK_SHIFT);
@@ -394,31 +293,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // return process_tap_hold(OSM(MOD_HYPR), record);
   }
 
-  // uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %u, time: %5u, int: %u, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
-  // custom keycodes
+  // uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %u, time: %5u, int: %u, count: %u\n",
+  // keycode, record->event.key.col, record->event.key.row, record->event.pressed,
+  // record->event.time, record->tap.interrupted, record->tap.count); custom keycodes
   switch (keycode) {
-    case MSE(V_Q):
-    case V_Q:
-      if (get_mods() & MOD_MASK_GUI) {
-        if (record->event.pressed) {
-          register_code(KC_Q);
-        } else {
-          unregister_code(KC_Q);
-        }
-        // Do not let QMK process the keycode further
-        return false;
-      }
-      // Else, let QMK process the KC_ESC keycode as usual
-      return true;
-
-    case TGL_BASE:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(BSE);
-        return false;
-      }
     // set trackball modes...
     case THM_0:
-    case THM_4:
+    case THM_3:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
@@ -439,7 +320,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
         if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
-          activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_scroll_mode, NULL);
+          activate_track_mode_token = defer_exec(1, activate_scroll_mode, NULL);
         }
       } else {
         cancel_deferred_exec(activate_track_mode_token);
@@ -468,16 +349,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) {
         mouse_is_down    = true;
         last_mouse_press = timer_read();
-
-#  ifdef KEYBOARD_charybdis
-        // charybdis_set_pointer_sniping_enabled(true);
-#  endif
       } else {
         mouse_is_down = false;
-#  ifdef KEYBOARD_charybdis
-        // charybdis_set_pointer_dragscroll_enabled(false);
-        // charybdis_set_spointer_sniping_enabled(false);
-#  endif
       }
 #endif
       return true;
@@ -607,16 +480,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 #ifdef RGB_MATRIX_ENABLE
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-  hsv_t hsv = {0, 255, 255};
+  hsv_t hsv        = {0, 255, 255};
+  uint  curr_layer = get_highest_layer(layer_state | default_layer_state);
 
-  if (get_highest_layer(layer_state | default_layer_state) == 0) return false;
+  if (curr_layer == 0) return false;
 
-  uint8_t hue = (((float)get_highest_layer(layer_state | default_layer_state) + 1) / 6) * 255;
+  uint8_t hue = (((float)curr_layer + 1) / 6) * 255;
   hsv.h       = hue;
   hsv.v       = rgb_matrix_get_val();
   rgb_t rgb   = hsv_to_rgb(hsv);
 
   for (uint8_t i = led_min; i < led_max; i++) {
+    if (curr_layer == MOU && HAS_FLAGS(g_led_config.flags[i], 0x01)) {
+      rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+    }
     if (HAS_FLAGS(g_led_config.flags[i], 0x02)) { // Underglow
       rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
     }
@@ -636,39 +513,11 @@ void housekeeping_task_user(void) {
     }
   }
 }
-// Handle keyrecord before quantum processing
-// bool pre_process_record_quantum_user(keyrecord_t *record) {
-//   uint16_t keycode = get_record_keycode(record, true);
-
-//   // Implement instant-tap of mod-tap keys
-//   if (IS_HOMEROW(record) && IS_QK_MOD_TAP(keycode)) {
-//     keyrecord_t quick_tap_record;
-//     quick_tap_record.keycode = keycode & 0xff;
-
-//     // When a mod-tap key is pressed within QUICK_TAP_TERM of a previous key,
-//     // send its masked base keycode through process_record and skip processing
-//     if (record->event.pressed && (timer_elapsed_fast(tap_timer) < QUICK_TAP_TERM)) {
-//       quick_tap_record.event.pressed = true;
-//       process_record(&quick_tap_record);
-// #if TAP_CODE_DELAY > 0
-//       wait_ms(TAP_CODE_DELAY);
-// #endif
-//       return false; // Skip processing
-//     } else {
-//       // Handle key up record event
-//       quick_tap_record.event.pressed = false;
-//       process_record(&quick_tap_record);
-//     }
-//   }
-
-//   return true; // Continue processing record
-// }
 
 bool caps_word_press_user(uint16_t keycode) {
   switch (keycode) {
     // Keycodes that continue Caps Word, with shift applied.
     case KC_A ... KC_Z:
-    case TH_O:
       add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
       return true;
 
