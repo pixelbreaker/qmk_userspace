@@ -5,6 +5,10 @@
 #include "pixelbreaker.h"
 #include "deferred_exec.h"
 
+#ifdef RGB_MATRIX_ENABLE
+#  include "rgb_matrix.h"
+#endif
+
 #ifdef CONSOLE_ENABLE
 #  include "print.h"
 #endif
@@ -110,12 +114,12 @@ float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-#  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-  // disable auto mouse if user is typing or track mode isn't default
-  if (!is_auto_mouse_active()) {
-    set_auto_mouse_enable(!(IS_TYPING() || track_mode != CURSOR));
-  }
-#  endif
+  // #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+  //   // disable auto mouse if user is typing or track mode isn't default
+  //   if (!is_auto_mouse_active()) {
+  //     set_auto_mouse_enable(!(IS_TYPING() || track_mode != CURSOR));
+  //   }
+  // #  endif
 
 #  ifdef KEYBOARD_buteo_talon
   scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
@@ -319,11 +323,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
-        if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
-          activate_track_mode_token = defer_exec(1, activate_scroll_mode, NULL);
-        }
+        // tap_reset();
+        track_mode = SCROLL;
+        // if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
+        //   activate_track_mode_token = defer_exec(1, activate_scroll_mode, NULL);
+        // }
       } else {
-        cancel_deferred_exec(activate_track_mode_token);
+        // cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
 #endif
@@ -491,10 +497,10 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   rgb_t rgb   = hsv_to_rgb(hsv);
 
   for (uint8_t i = led_min; i < led_max; i++) {
-    if (curr_layer == MOU && HAS_FLAGS(g_led_config.flags[i], 0x01)) {
-      rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-    }
-    if (HAS_FLAGS(g_led_config.flags[i], 0x02)) { // Underglow
+    // if (curr_layer == MOU && HAS_FLAGS(g_led_config.flags[i], 0x01)) {
+    //   rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+    // }
+    if (HAS_FLAGS(g_led_config.flags[i], 0x02) || HAS_FLAGS(g_led_config.flags[i], 0x01)) { // Underglow
       rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
     }
   }
@@ -536,7 +542,7 @@ bool caps_word_press_user(uint16_t keycode) {
 
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case KC_SPC:
+    case THM_1:
       return 0;
     case KC_BSPC:
       return QUICK_TAP_TERM * 3;
@@ -565,6 +571,22 @@ void keyboard_post_init_user(void) {
   set_auto_mouse_enable(true);
 #endif
 }
+
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+layer_state_t layer_state_set_user(layer_state_t state) {
+  switch (get_highest_layer(remove_auto_mouse_layer(state, true))) {
+    case SYM ... FNC:
+      // remove_auto_mouse_target must be called to adjust state *before* setting enable
+      state = remove_auto_mouse_layer(state, false);
+      set_auto_mouse_enable(false);
+      break;
+    default:
+      set_auto_mouse_enable(true);
+      break;
+  }
+  return state;
+}
+#endif
 
 #ifdef RGBLIGHT_ENABLE
 layer_state_t default_layer_state_set_user(layer_state_t state) {

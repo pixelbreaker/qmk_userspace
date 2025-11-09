@@ -32,6 +32,6 @@ COMB(copy, Z_CPY, KC_T, KC_H)
 COMB(paste, Z_PST, KC_G, KC_D)
 
 // right hand
-COMB(key_mins, KC_MINS, KC_U, KC_Y)
-COMB(key_unds, KC_UNDS, KC_L, KC_U)
+COMB(key_unds, KC_UNDS, KC_U, KC_Y)
+COMB(key_mins, KC_MINS, KC_L, KC_U)
 COMB(key_slsh, KC_SLSH, KC_COMM, KC_DOT)
