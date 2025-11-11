@@ -26,34 +26,6 @@
 static keyevent_type_t prev_event;
 static fast_timer_t    tap_timer = 0;
 
-#ifdef COMBO_ENABLE
-#  ifdef COMBO_SHOULD_TRIGGER
-bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-  bool below_base = get_highest_layer(layer_state) <= BSE;
-
-  switch (index) {
-    case thmb_r:
-    case key_ent:
-    // case copy:
-    case tab:
-#    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-    case mouse_layer:
-#    endif
-      return below_base && !IS_TYPING();
-  }
-
-  return below_base;
-}
-#  endif
-#endif
-
-// Send custom hold keycode
-static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
-  if (record->tap.count) return true;
-  tap_code16(keycode);
-  return false;
-}
-
 /*
   APP/TAB switchers
 */
@@ -65,7 +37,7 @@ bool tabswitch_active = false;
 bool appkeys_active = false;
 
 /*
-POINTING device related
+POINTING DEVICE
 */
 #ifdef POINTING_DEVICE_ENABLE
 enum trackball_modes {
@@ -74,16 +46,7 @@ enum trackball_modes {
   CARRET,
   MEDIA,
 };
-enum encoder_modes {
-  NONE = 0,
-  HUE,
-  SAT,
-  VAL,
-  SPD,
-  MOD,
-};
 uint8_t track_mode   = CURSOR;
-uint8_t encoder_mode = NONE;
 
 bool     sniping          = false;
 bool     mouse_is_down    = false;
@@ -95,7 +58,14 @@ uint16_t last_mouse_press = 0; // for click tracking pause
 float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
 
+#  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_cnano)
+void pointing_device_init_kb() {
+  pointing_device_set_cpi(DPI_POINTER);
+}
+#  endif
+
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+  // two finger scrolling on Azoteq
 #  ifdef KEYBOARD_buteo_talon
   scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
   scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR_V;
@@ -105,14 +75,28 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   mouse_report.v = (int8_t)scroll_accumulated_v;
 
   // Update accumulated scroll values by subtracting the integer parts
-  scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
-  scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+    scroll_accumulated_h -= mouse_report.h;
+    scroll_accumulated_v -= mouse_report.v;
 #  endif
   // Pause mouse report updates for short time after clicking to make it easier
   // to double click with small movement of trackball
   bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
-  // #  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) ||
-  // defined(KEYBOARD_charybdis)
+
+#  ifdef TRACKBALL_ENABLE
+  pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL
+                          : sniping                               ? DPI_POINTER_SNIPE
+                                                                  : DPI_POINTER);
+  mouse_report.h = (int8_t)scroll_accumulated_h;
+  mouse_report.v = (int8_t)scroll_accumulated_v;
+
+  // Update accumulated scroll values by subtracting the integer parts
+    scroll_accumulated_h -= mouse_report.h;
+    scroll_accumulated_v -= mouse_report.v;
+#  endif
+  // Pause mouse report updates for short time after clicking to make it easier
+  // to double click with small movement of trackball
+  bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
+
 #  ifdef TRACKBALL_ENABLE
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL
                           : sniping                               ? DPI_POINTER_SNIPE
@@ -131,8 +115,8 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     mouse_report.v = (int8_t)scroll_accumulated_v;
 
     // Update accumulated scroll values by subtracting the integer parts
-    scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
-    scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+    scroll_accumulated_h -= mouse_report.h;
+    scroll_accumulated_v -= mouse_report.v;
 
     // Clear the X and Y values of the mouse report
     mouse_report.x = 0;
@@ -159,7 +143,20 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
 
   return mouse_report;
 }
-#endif // POINTING_DEVICE_ENABLE
+#endif
+
+/*
+ ENCODER
+ */
+enum encoder_modes {
+  NONE = 0,
+  HUE,
+  SAT,
+  VAL,
+  SPD,
+  MOD,
+};
+uint8_t encoder_mode = NONE;
 
 #ifdef ENCODER_ENABLE
 bool encoder_down  = false;
@@ -212,6 +209,9 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif
 
+/*
+ Main Processing
+ */
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   uprintf("Col: %d Row: %d\n", record->event.key.col, record->event.key.row);
 
@@ -299,9 +299,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
   }
 
-  // uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %u, time: %5u, int: %u, count: %u\n",
-  // keycode, record->event.key.col, record->event.key.row, record->event.pressed,
-  // record->event.time, record->tap.interrupted, record->tap.count); custom keycodes
+  // Other keycodes
   switch (keycode) {
     // set trackball modes...
     case THM_0:
@@ -485,6 +483,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 }
 
+/*
+ RGB Matrix handling
+ */
 #ifdef RGB_MATRIX_ENABLE
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   hsv_t hsv        = {0, 255, 255};
@@ -492,11 +493,13 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
   if (curr_layer == 0) return false;
 
+  // generate a hue for the current layer 0-255
   uint8_t hue = (((float)curr_layer + 1) / 6) * 255;
   hsv.h       = hue;
   hsv.v       = rgb_matrix_get_val();
   rgb_t rgb   = hsv_to_rgb(hsv);
 
+  // set the rgb of all underglow and modifier flagged RGB LEDs
   for (uint8_t i = led_min; i < led_max; i++) {
     if (HAS_ANY_FLAGS(g_led_config.flags[i], (0x01 | 0x02))) { // Encoder and Thumbs
       rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
@@ -505,6 +508,30 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   return false;
 }
 #endif
+
+/*
+ MISC
+ */
+ #ifdef COMBO_ENABLE
+ #  ifdef COMBO_SHOULD_TRIGGER
+ bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+   bool below_base = get_highest_layer(layer_state) <= BSE;
+
+   switch (index) {
+     case thmb_r:
+     case key_ent:
+     // case copy:
+     case tab:
+ #    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+     case mouse_layer:
+ #    endif
+       return below_base && !IS_TYPING();
+   }
+
+   return below_base;
+ }
+ #  endif
+ #endif
 
 void housekeeping_task_user(void) {
   // Restore state after 3 minutes
@@ -549,9 +576,11 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
   }
 }
 
+/*
+ Keyboard init
+ */
 void keyboard_post_init_user(void) {
   set_single_persistent_default_layer(BSE);
-  // eeconfig_init();
 // Customise these values to desired behaviour
 #ifdef CONSOLE_ENABLE
   debug_enable = true;
@@ -560,7 +589,6 @@ void keyboard_post_init_user(void) {
 #endif
 
 #ifdef RGBLIGHT_ENABLE
-  // rgblight_set_effect_range(0, 1);
   rgblight_sethsv_at(HSV_WHITE, 0);
 #endif
 
@@ -569,8 +597,11 @@ void keyboard_post_init_user(void) {
 #endif
 }
 
-#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+/*
+ Layer state
+ */
 layer_state_t layer_state_set_user(layer_state_t state) {
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
   switch (get_highest_layer(remove_auto_mouse_layer(state, true))) {
     case SYM ... FNC:
       // remove_auto_mouse_target must be called to adjust state *before* setting enable
@@ -581,17 +612,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
       set_auto_mouse_enable(true);
       break;
   }
-  return state;
-}
 #endif
 
 #ifdef RGBLIGHT_ENABLE
-layer_state_t default_layer_state_set_user(layer_state_t state) {
-  rgblight_sethsv_at(HSV_WHITE, 0);
-  return state;
-}
-
-layer_state_t layer_state_set_user(layer_state_t state) {
   switch (get_highest_layer(state)) {
     case NAV:
       rgblight_sethsv_at(HSV_SPRINGGREEN, 0);
@@ -609,6 +632,13 @@ layer_state_t layer_state_set_user(layer_state_t state) {
       rgblight_sethsv_at(HSV_WHITE, 0);
       break;
   }
+#endif
+  return state;
+}
+
+#ifdef RGBLIGHT_ENABLE
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+  rgblight_sethsv_at(HSV_WHITE, 0);
   return state;
 }
 #endif
@@ -618,11 +648,5 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 void suspend_wakeup_init_user(void) {
   keyboard_post_init_kb();
   keyboard_post_init_user();
-}
-#endif
-
-#if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_cnano)
-void pointing_device_init_kb() {
-  pointing_device_set_cpi(DPI_POINTER);
 }
 #endif
