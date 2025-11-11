@@ -108,7 +108,6 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   } else if (track_mode == MEDIA) {
     tap_media();
   } else if (track_mode == CARRET) {
-// disable the shift key when holding down shift and moving the caret
 #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
 #  endif
