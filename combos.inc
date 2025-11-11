@@ -15,8 +15,9 @@ COMB(esc, KC_ESC, KC_V, KC_W)
 HOLD(mouse_layer, MO(MOU), KC_S, KC_T)
 #endif
 
-// OSM on thumbs
-HOLD(thmb_l, MO(FNC), THM_1, THM_4)
+// thumbs
+HOLD(caret_nav, THM_1_2, THM_1, THM_2)
+HOLD(thmb_r, MO(FNC), THM_3, THM_4)
 COMB(capsword, CW_TOGG, KC_D, KC_M)
 
 // left hand
@@ -27,11 +28,12 @@ COMB(key_qu, TH_QU, KC_W, KC_F)
 COMB(key_z, KC_Z, KC_C, KC_G)
 
 // cut copy paste
-COMB(cut, Z_CUT, KC_F, KC_P)
-COMB(copy, Z_CPY, KC_T, KC_H)
-COMB(paste, Z_PST, KC_G, KC_D)
+// COMB(cut, Z_CUT, KC_F, KC_P)
+// COMB(copy, Z_CPY, KC_T, KC_H)
+// COMB(paste, Z_PST, KC_G, KC_D)
 
 // right hand
 COMB(key_unds, KC_UNDS, KC_U, KC_Y)
 COMB(key_mins, KC_MINS, KC_L, KC_U)
 COMB(key_slsh, KC_SLSH, KC_COMM, KC_DOT)
+COMB(key_ent, KC_ENT, KC_I, KC_O)

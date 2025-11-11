@@ -8,7 +8,7 @@
     ["TENOME(_NAV)"],
     ["TENOME(_NUMB)"],
     ["TENOME(_FUNC)"],
-    ["TENOME(_MOUSE)"],
-    ["TENOME(_EXTRA)"]
+    ["TENOME(_MOUSE_DEV)"],
+    ["TENOME(_MOUSE_DEV_2)"]
   ]
 }

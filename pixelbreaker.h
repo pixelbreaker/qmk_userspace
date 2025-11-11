@@ -14,7 +14,7 @@ extern bool process_autocorrect(uint16_t keycode, keyrecord_t *record);
 
 #ifdef TRACKBALL_ENABLE
   #define DPI_POINTER 800
-  #define DPI_POINTER_SNIPE 500
+  #define DPI_POINTER_SNIPE 400
   #define DPI_SCROLL 350
 #else
   #define DPI_POINTER 400

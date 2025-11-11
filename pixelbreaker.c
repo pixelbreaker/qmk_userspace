@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 #include "pixelbreaker.h"
-#include "deferred_exec.h"
+#include "layout.h"
+#include "quantum_keycodes.h"
 
 #ifdef RGB_MATRIX_ENABLE
 #  include "rgb_matrix.h"
@@ -31,8 +32,9 @@ bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyr
   bool below_base = get_highest_layer(layer_state) <= BSE;
 
   switch (index) {
-    case thmb_l:
-    case copy:
+    case thmb_r:
+    case key_ent:
+    // case copy:
     case tab:
 #    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     case mouse_layer:
@@ -63,7 +65,7 @@ bool tabswitch_active = false;
 bool appkeys_active = false;
 
 /*
-        POINTING device related
+POINTING device related
 */
 #ifdef POINTING_DEVICE_ENABLE
 enum trackball_modes {
@@ -87,26 +89,6 @@ bool     sniping          = false;
 bool     mouse_is_down    = false;
 uint16_t last_mouse_press = 0; // for click tracking pause
 
-// carret layer delay timers
-static deferred_token activate_track_mode_token = INVALID_DEFERRED_TOKEN;
-
-uint32_t activate_media_mode(uint32_t trigger_time, void *cb_arg) {
-  tap_reset();
-  track_mode = MEDIA;
-  return 0;
-}
-
-uint32_t activate_carret_mode(uint32_t trigger_time, void *cb_arg) {
-  tap_reset();
-  track_mode = CARRET;
-  return 0;
-}
-
-uint32_t activate_scroll_mode(uint32_t trigger_time, void *cb_arg) {
-  tap_reset();
-  track_mode = SCROLL;
-  return 0;
-}
 #  define SCROLL_DIVISOR_H 24.0
 #  define SCROLL_DIVISOR_V 24.0
 
@@ -114,13 +96,6 @@ float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-  // #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-  //   // disable auto mouse if user is typing or track mode isn't default
-  //   if (!is_auto_mouse_active()) {
-  //     set_auto_mouse_enable(!(IS_TYPING() || track_mode != CURSOR));
-  //   }
-  // #  endif
-
 #  ifdef KEYBOARD_buteo_talon
   scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
   scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR_V;
@@ -167,9 +142,9 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   } else if (track_mode == CARRET) {
 // disable the shift key when holding down shift and moving the caret
 #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-    if (IS_LAYER_OFF(get_auto_mouse_layer()) && (abs(mouse_report.x) > 2 || abs(mouse_report.y) > 2)) {
-      unregister_mods(MOD_MASK_SHIFT);
-    }
+    // if (IS_LAYER_OFF(get_auto_mouse_layer()) && (abs(mouse_report.x) > 2 || abs(mouse_report.y) > 2)) {
+    //   unregister_mods(MOD_MASK_SHIFT);
+    // }
     tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
 #  endif
   }
@@ -249,52 +224,79 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
     prev_event = record->event.type;
 
-    if (keycode == TH_QU) {
-      if (is_caps_word_on()) {
-        register_mods(MOD_MASK_SHIFT);
-      }
-      if (record->tap.count) {
-        tap_code(KC_Q);
-        bool shifted = !is_caps_word_on() && get_mods() & MOD_MASK_SHIFT;
-        if (shifted) {
+    switch (keycode) {
+      case TH_QU:
+        if (is_caps_word_on()) {
+          register_mods(MOD_MASK_SHIFT);
+        }
+        if (record->tap.count) {
+          tap_code(KC_Q);
+          bool shifted = !is_caps_word_on() && get_mods() & MOD_MASK_SHIFT;
+          if (shifted) {
+            unregister_mods(MOD_MASK_SHIFT);
+          }
+          tap_code(KC_U);
+        } else {
+          tap_code16(KC_Q);
+        }
+        if (is_caps_word_on()) {
           unregister_mods(MOD_MASK_SHIFT);
         }
-        tap_code(KC_U);
-      } else {
-        tap_code16(KC_Q);
-      }
-      if (is_caps_word_on()) {
-        unregister_mods(MOD_MASK_SHIFT);
-      }
-      return false;
-    } else if (keycode == TH_DLR) {
-      if (record->tap.count) {
-        tap_code16(S(KC_4));
-      } else {
-        SEND_STRING("${}" SS_TAP(X_LEFT));
-      }
-      return false;
-    } else if (keycode == TH_EQL) {
-      if (record->tap.count) return true;
-      SEND_STRING("=>");
-      return false;
-    } else if (keycode == TH_DEL) {
-      if (record->tap.count) {
-        tap_code16(KC_DEL);
-      } else {
-        tap_code16(G(KC_BSPC));
-      }
-      return false;
-    } else if (keycode == TH_SCR) {
-      if (record->tap.count) {
-        tap_code16(Z_SSHT);
-      } else {
-        tap_code16(Z_SRCD);
-      }
-      return false;
-    }
+        return false;
 
-    // return process_tap_hold(OSM(MOD_HYPR), record);
+      case TH_DLR:
+        if (record->tap.count) {
+          tap_code16(S(KC_4));
+        } else {
+          SEND_STRING("${}" SS_TAP(X_LEFT));
+        }
+        return false;
+
+      case TH_EQL:
+        if (record->tap.count) return true;
+        SEND_STRING("=>");
+        return false;
+
+      case TH_DEL:
+        if (record->tap.count) {
+          tap_code16(KC_DEL);
+        } else {
+          tap_code16(G(KC_BSPC));
+        }
+        return false;
+
+      case TH_SCR:
+        if (record->tap.count) {
+          tap_code16(Z_SSHT);
+        } else {
+          tap_code16(Z_SRCD);
+        }
+        return false;
+
+      case TH_CT_UN:
+        if (record->tap.count) {
+          tap_code16(Z_UND);
+        } else {
+          tap_code16(Z_CUT);
+        }
+        return false;
+
+      case TH_CP_SV:
+        if (record->tap.count) {
+          tap_code16(Z_SAVE);
+        } else {
+          tap_code16(Z_CPY);
+        }
+        return false;
+
+      case TH_PS_RE:
+        if (record->tap.count) {
+          tap_code16(Z_RDO);
+        } else {
+          tap_code16(Z_PST);
+        }
+        return false;
+    }
   }
 
   // uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %u, time: %5u, int: %u, count: %u\n",
@@ -306,11 +308,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case THM_3:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
-        if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
-          activate_track_mode_token = defer_exec(MEDIA_TIMEOUT_MS, activate_media_mode, NULL);
-        }
+        tap_reset();
+        track_mode = MEDIA;
       } else {
-        cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
 #endif
@@ -323,26 +323,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
-        // tap_reset();
+        tap_reset();
         track_mode = SCROLL;
-        // if (!extend_deferred_exec(activate_track_mode_token, MEDIA_TIMEOUT_MS)) {
-        //   activate_track_mode_token = defer_exec(1, activate_scroll_mode, NULL);
-        // }
       } else {
-        // cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
 #endif
       return true;
 
-    case THM_2:
+    case THM_1_2:
 #ifdef POINTING_DEVICE_ENABLE
       if (record->event.pressed) {
-        if (!extend_deferred_exec(activate_track_mode_token, CARRET_TIMEOUT_MS)) {
-          activate_track_mode_token = defer_exec(CARRET_TIMEOUT_MS, activate_carret_mode, NULL);
-        }
+        tap_reset();
+        track_mode = CARRET;
       } else {
-        cancel_deferred_exec(activate_track_mode_token);
         track_mode = CURSOR;
       }
 #endif
@@ -479,6 +473,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif
       return false;
 
+    // if on mouse layer an hitting blocking keys, turn off the mouse layer
+    case KC_NO:
+      if (IS_LAYER_ON(get_auto_mouse_layer())) {
+        layer_off(get_auto_mouse_layer());
+      }
+      return true;
+
     default:
       return true;
   }
@@ -497,10 +498,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   rgb_t rgb   = hsv_to_rgb(hsv);
 
   for (uint8_t i = led_min; i < led_max; i++) {
-    // if (curr_layer == MOU && HAS_FLAGS(g_led_config.flags[i], 0x01)) {
-    //   rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-    // }
-    if (HAS_FLAGS(g_led_config.flags[i], 0x02) || HAS_FLAGS(g_led_config.flags[i], 0x01)) { // Underglow
+    if (HAS_ANY_FLAGS(g_led_config.flags[i], (0x01 | 0x02))) { // Encoder and Thumbs
       rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
     }
   }
@@ -567,7 +565,6 @@ void keyboard_post_init_user(void) {
 #endif
 
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-  // set_auto_mouse_layer(6);
   set_auto_mouse_enable(true);
 #endif
 }

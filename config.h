@@ -20,10 +20,10 @@
 // Auto mouse config
 #  define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#    define AUTO_MOUSE_DEFAULT_LAYER 5
-#    define AUTO_MOUSE_TIME 150
-#    define AUTO_MOUSE_DEBOUNCE 10
-// #    define AUTO_MOUSE_DELAY 400
+#    define AUTO_MOUSE_DEFAULT_LAYER MOU
+#    define AUTO_MOUSE_TIME 600
+#    define AUTO_MOUSE_DEBOUNCE 50
+// #    define AUTO_MOUSE_DELAY 1000
 #    define AUTO_MOUSE_THRESHOLD 10
 #  endif
 #  ifndef CARRET_TIMEOUT_MS
@@ -40,7 +40,7 @@
 #    undef ROTATIONAL_TRANSFORM_ANGLE
 #  endif
 
-#  define ROTATIONAL_TRANSFORM_ANGLE -28
+#  define ROTATIONAL_TRANSFORM_ANGLE -32
 #endif
 
 #ifdef KEYBOARD_tenome

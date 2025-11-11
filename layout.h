@@ -29,6 +29,12 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define Z_EUR A(KC_2)
 #define Z_GBP S(KC_3)
 
+#ifdef POINTING_DEVICE_ENABLE
+#define Z_TAB KC_TAB
+#else
+#define Z_TAB LT(MOU, KC_TAB)
+#endif
+
 #define Z_AT S(KC_2)
 
 #define DELLINE MEH(KC_DEL)
@@ -44,6 +50,11 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define TH_DEL LT(0, KC_DEL)
 #define TH_DLR LT(0, KC_DLR)
 #define TH_EQL LT(0, KC_EQL)
+// tap holds for undo/cut save/copy redo/paste
+#define TH_CT_UN LT(0, KC_C)
+#define TH_CP_SV LT(0, KC_G)
+#define TH_PS_RE LT(0, KC_D)
+#define OSS_SYM LT(0, KC_NO)
 
 // clang-format off
 // #define __________HOME_ROW_CAGS_L_________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT
@@ -53,20 +64,22 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define _________HOME_ROW_OS_SGAC_________ OS_RSFT, OS_RGUI, OS_LALT, OS_RCTL
 #define ___________________________________________ ___N___, ___N___, ___N___, ___N___, ___N___
 #define __________________APP_NAV__________________ C(S(KC_TAB)), C(KC_TAB), C(G(S(KC_TAB))), C(G(KC_TAB)), ___N___
-#define _________________FILE_NAV__________________ ___N___, Z_UND,   Z_SAVE,  Z_RDO,   ___N___
+// #define _________________FILE_NAV__________________ ___N___, Z_UND,   Z_SAVE,  Z_RDO,   ___N___
+#define _________________FILE_NAV__________________ ___N___, TH_CT_UN, TH_CP_SV, TH_PS_RE, ___N___
 // clang-format on
 
 // Layers
-enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
+enum layers { BSE, SYM, NAV, NUM, FNC, MOU, MOU2 };
 
 // #define ESC_MED LT(MED, KC_ESC)
 #define THM_0 LT(FNC, KC_ESC)
 
 #define THM_1 LT(NAV, KC_SPC)
-#define THM_2 LT(SYM, KC_ENT)
+#define THM_2 LT(SYM, KC_ENT) //OSS_SYM // OS_LSFT
+#define THM_1_2 MO(NAV)
 
 #define THM_3 LT(NUM, KC_BSPC)
-#define THM_4 KC_E
+#define THM_4 KC_E //LT(NUM, KC_E)
 
 // clang-format off
 
@@ -78,48 +91,48 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, EXT };
 	                           THM_1,   THM_2,       THM_3,   THM_4
 
 #define _NAV \
-  KC_TAB,  A(KC_TAB),APP_L,  APP_R,   TH_SCR,      KC_PGUP, QK_REP,  KC_UP,   AS_TOGG, KC_GRV,     \
+  Z_TAB,   A(KC_TAB),APP_L,  APP_R,   TH_SCR,      KC_PGUP, QK_REP,  KC_UP,   AS_TOGG, KC_GRV,     \
 	_________HOME_ROW_OS_CAGS_________, TH_DEL,      KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_SCLN,    \
 	_________________FILE_NAV__________________,     ___N___, OS_HYPR, DELLINE, OS_MEH,  ___N___,    \
 	                           _______, _______,     KC_BSPC, KC_DEL
 
 #define _SYMB \
-	KC_ESC,  KC_AT,   KC_LCBR, KC_RCBR, KC_PLUS,     KC_PERC, KC_AMPR, KC_EXLM, KC_PIPE, KC_SCLN,   \
-	KC_TILDE,KC_CIRC, KC_LPRN, KC_RPRN, KC_MINS,     TH_DLR,  _________HOME_ROW_OS_SGAC_________,   \
-	___N___, KC_UNDS, KC_LBRC, KC_RBRC, ___N___,     ___N___, KC_BSLS, TH_EQL,  KC_SLSH, ___N___,   \
+	KC_ESC,  KC_AT,   KC_LCBR, KC_RCBR, KC_CIRC,     KC_PERC, KC_ASTR, Z_HASH,  TH_DLR,  KC_TILDE,   \
+	___N___, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PLUS, KC_AMPR, KC_EXLM, KC_PIPE, KC_COLN,    \
+	___N___, KC_SPC,  KC_LBRC, KC_RBRC, ___N___,     ___N___, KC_BSLS, TH_EQL,  KC_SLSH, ___N___,    \
 	                           _______, _______,     KC_UNDS, KC_MINS
 
 #define _NUMB \
-	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     KC_PERC, Z_GBP,   Z_HASH,   TH_DLR, Z_EUR,     \
-	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     KC_EQL,  _________HOME_ROW_OS_SGAC_________,   \
-	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     _______, KC_D,    KC_E,     KC_F,   _______,   \
+	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     KC_PERC, Z_GBP,   Z_HASH,   TH_DLR, Z_EUR,      \
+	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     KC_EQL,  _________HOME_ROW_OS_SGAC_________,    \
+	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     _______, KC_D,    KC_E,     KC_F,   _______,    \
 	                           KC_0,    KC_DOT,      _______, _______
 
 #define _FUNC \
-  Z_SLEEP, KC_F7,   KC_F8,   KC_F9,   KC_F12,      CW_TOGG, KC_MPLY, KC_VOLU, _______, QK_BOOT,   \
-  KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RM_TOGG,   \
-  ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,     \
+  Z_SLEEP, KC_F7,   KC_F8,   KC_F9,   KC_F12,      CW_TOGG, KC_MPLY, KC_VOLU, _______, QK_BOOT,    \
+  KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RM_TOGG,    \
+  ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
 	                				   _______, _______,     _______, _______
 
 // For keyboards that don't have a physical pointing device
 #define _MOUSE \
-	_______, _______, _______, _______, _______,     MS_WHLU, MS_WHLL,  MS_UP,   MS_WHLR,_______,   \
-  _________HOME_ROW_OS_CAGS_________, _______,     MS_WHLD, MS_LEFT,  MS_DOWN, MS_RGHT,_______,   \
-  _______, _______, _______, MS_BTN3, _______,     _______, _______, _______, _______, _______,   \
+	___________________________________________,     MS_WHLU, MS_WHLL,  MS_UP,   MS_WHLR,_______,    \
+  _________HOME_ROW_OS_CAGS_________, _______,     MS_WHLD, MS_LEFT,  MS_DOWN, MS_RGHT,_______,    \
+  _______, _______, _______, MS_BTN3, _______,     ___________________________________________,    \
                       		   MS_BTN1, MS_BTN2,     _______, _______
 
-// For keyboards that have a pointing device (and possibly auto mouse layer)
-#define _MOUSE_DEVICE \
-	_______, _______, _______, _______, _______,     _______, _______, _______, _______, _______,   \
-  _________HOME_ROW_OS_CAGS_________, _______,     _______, _______, _______, _______, _______,   \
-  MO(MOU), SNIPE,   _______, MS_BTN3, _______,     _______, _______, _______, _______, _______,   \
-                     		     MS_BTN1, MS_BTN2,     _______, _______
+// For keyboards that have a pointing device and auto mouse layer
+#define _MOUSE_DEV \
+	MO(MOU2),_______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
+	_______, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
+	MO(MOU2),_______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
+                     		     _______, _______,     _______, _______
 
-#define _EXTRA \
-	___________________________________________,     ___________________________________________,   \
-  ___N___, KC_Z,    ___N___, KC_V,    ___N___,     ___N___, KC_K,    ___N___, KC_SLSH, KC_BSLS,   \
-  ___________________________________________,     ___________________________________________,   \
-                      		   _______, _______,     _______, _______
+#define _MOUSE_DEV_2 \
+  _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
+  _________HOME_ROW_OS_CAGS_________, _______,     _______, _______, _______, _______, _______,    \
+  _______, SNIPE,   _______, MS_BTN3, _______,     _______, _______, _______, _______, _______,    \
+                     		     MS_BTN1, MS_BTN2,     _______, _______
 
 // Layout aliases for json keymap
 #define LAYOUT_w(...) LAYOUT(__VA_ARGS__)
