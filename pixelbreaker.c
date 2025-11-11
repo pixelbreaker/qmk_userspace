@@ -110,9 +110,6 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   } else if (track_mode == CARRET) {
 // disable the shift key when holding down shift and moving the caret
 #  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-    // if (IS_LAYER_OFF(get_auto_mouse_layer()) && (abs(mouse_report.x) > 2 || abs(mouse_report.y) > 2)) {
-    //   unregister_mods(MOD_MASK_SHIFT);
-    // }
     tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
 #  endif
   }
