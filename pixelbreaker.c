@@ -85,21 +85,6 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL
                           : sniping                               ? DPI_POINTER_SNIPE
                                                                   : DPI_POINTER);
-  mouse_report.h = (int8_t)scroll_accumulated_h;
-  mouse_report.v = (int8_t)scroll_accumulated_v;
-
-  // Update accumulated scroll values by subtracting the integer parts
-    scroll_accumulated_h -= mouse_report.h;
-    scroll_accumulated_v -= mouse_report.v;
-#  endif
-  // Pause mouse report updates for short time after clicking to make it easier
-  // to double click with small movement of trackball
-  bool mouse_pause = mouse_is_down && timer_elapsed(last_mouse_press) < 150;
-
-#  ifdef TRACKBALL_ENABLE
-  pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL
-                          : sniping                               ? DPI_POINTER_SNIPE
-                                                                  : DPI_POINTER);
 #  else
   pointing_device_set_cpi(track_mode == SCROLL && !appkeys_active ? DPI_SCROLL : DPI_POINTER);
 #  endif
