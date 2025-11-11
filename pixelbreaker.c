@@ -52,8 +52,7 @@ bool     sniping          = false;
 bool     mouse_is_down    = false;
 uint16_t last_mouse_press = 0; // for click tracking pause
 
-#  define SCROLL_DIVISOR_H 24.0
-#  define SCROLL_DIVISOR_V 24.0
+#  define SCROLL_DIVISOR 24.0
 
 float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
@@ -67,16 +66,16 @@ void pointing_device_init_kb() {
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   // two finger scrolling on Azoteq
 #  ifdef KEYBOARD_buteo_talon
-  scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR_H;
-  scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR_V;
+  scroll_accumulated_h += (float)mouse_report.h / SCROLL_DIVISOR;
+  scroll_accumulated_v -= (float)mouse_report.v / SCROLL_DIVISOR;
 
   // Assign integer parts of accumulated scroll values to the mouse report
   mouse_report.h = (int8_t)scroll_accumulated_h;
   mouse_report.v = (int8_t)scroll_accumulated_v;
 
   // Update accumulated scroll values by subtracting the integer parts
-    scroll_accumulated_h -= mouse_report.h;
-    scroll_accumulated_v -= mouse_report.v;
+  scroll_accumulated_h -= mouse_report.h;
+  scroll_accumulated_v -= mouse_report.v;
 #  endif
   // Pause mouse report updates for short time after clicking to make it easier
   // to double click with small movement of trackball
@@ -107,8 +106,8 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   // #  endif
 
   if (track_mode == SCROLL && !appkeys_active) {
-    scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR_H;
-    scroll_accumulated_v -= (float)mouse_report.y / SCROLL_DIVISOR_V;
+    scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR;
+    scroll_accumulated_v -= (float)mouse_report.y / SCROLL_DIVISOR;
 
     // Assign integer parts of accumulated scroll values to the mouse report
     mouse_report.h = (int8_t)scroll_accumulated_h;
