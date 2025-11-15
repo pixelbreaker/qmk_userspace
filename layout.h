@@ -48,12 +48,13 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 
 #define TH_SCR LT(0, KC_PWR)
 #define TH_DEL LT(0, KC_DEL)
+#define TH_DELLINE LT(0, KC_F20)
 #define TH_DLR LT(0, KC_DLR)
 #define TH_EQL LT(0, KC_EQL)
 // tap holds for undo/cut save/copy redo/paste
-#define TH_CT_UN LT(0, KC_C)
-#define TH_CP_SV LT(0, KC_G)
-#define TH_PS_RE LT(0, KC_D)
+// #define TH_CT_UN LT(0, KC_C)
+// #define TH_CP_SV LT(0, KC_G)
+// #define TH_PS_RE LT(0, KC_D)
 #define OSS_SYM LT(0, KC_NO)
 
 // clang-format off
@@ -64,8 +65,8 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define _________HOME_ROW_OS_SGAC_________ OS_RSFT, OS_RGUI, OS_LALT, OS_RCTL
 #define ___________________________________________ ___N___, ___N___, ___N___, ___N___, ___N___
 #define __________________APP_NAV__________________ C(S(KC_TAB)), C(KC_TAB), C(G(S(KC_TAB))), C(G(KC_TAB)), ___N___
-// #define _________________FILE_NAV__________________ ___N___, Z_UND,   Z_SAVE,  Z_RDO,   ___N___
-#define _________________FILE_NAV__________________ ___N___, TH_CT_UN, TH_CP_SV, TH_PS_RE, ___N___
+#define _________________FILE_NAV__________________ ___N___, Z_UND,   Z_SAVE,  Z_RDO,   ___N___
+#define ________________COPY_PASTA_________________ ___N___, Z_CUT,   Z_CPY,   Z_PST,   ___N___
 // clang-format on
 
 // Layers
@@ -87,19 +88,19 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, MOU2 };
 #define _BASE \
 	KC_V,    KC_W,    KC_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
 	KC_R,    KC_S,    KC_T,    KC_H,    KC_K,        KC_X,    KC_N,    KC_A,    KC_I,    KC_O,       \
-	KC_Z,    KC_C,    KC_G,    KC_D,    KC_Q,        KC_GRV,  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
+	KC_Z,    KC_C,    KC_G,    KC_D,    KC_Q,        QK_REP,  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
 	                           THM_1,   THM_2,       THM_3,   THM_4
 
 #define _NAV \
-  Z_TAB,   A(KC_TAB),APP_L,  APP_R,   TH_SCR,      KC_PGUP, QK_REP,  KC_UP,   AS_TOGG, KC_GRV,     \
-	_________HOME_ROW_OS_CAGS_________, TH_DEL,      KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_SCLN,    \
-	_________________FILE_NAV__________________,     ___N___, OS_HYPR, DELLINE, OS_MEH,  ___N___,    \
-	                           _______, _______,     KC_BSPC, KC_DEL
+  Z_TAB,   A(KC_TAB),APP_L,  APP_R,   TH_SCR,      OS_MEH,  QK_REP,  KC_UP,   AS_TOGG, KC_GRV,     \
+	_________HOME_ROW_OS_CAGS_________, TH_DEL,      OS_HYPR, KC_LEFT, KC_DOWN, KC_RGHT, KC_COLN,    \
+	________________COPY_PASTA_________________,     _________________FILE_NAV__________________,    \
+	                           _______, _______,     KC_BSPC, TH_DELLINE
 
 #define _SYMB \
 	KC_ESC,  KC_AT,   KC_LCBR, KC_RCBR, KC_CIRC,     KC_PERC, KC_ASTR, Z_HASH,  TH_DLR,  KC_TILDE,   \
-	___N___, KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PLUS, KC_AMPR, KC_EXLM, KC_PIPE, KC_COLN,    \
-	___N___, KC_SPC,  KC_LBRC, KC_RBRC, ___N___,     ___N___, KC_BSLS, TH_EQL,  KC_SLSH, ___N___,    \
+	KC_SPC,  KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PLUS, KC_AMPR, KC_EXLM, KC_PIPE, KC_SCLN,    \
+	___N___, KC_BSLS, KC_LBRC, KC_RBRC, ___N___,     ___N___, KC_QUES, TH_EQL,  KC_SLSH, ___N___,    \
 	                           _______, _______,     KC_UNDS, KC_MINS
 
 #define _NUMB \
@@ -167,7 +168,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, MOU2 };
 #define CONV_SPHYNX( \
 	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 	     l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
-	     l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
+	     l11, l12, l13j, l14, l15,   r11, r12, r13, r14, r15, \
 	                    l16, l17,   r16, r17                 \
 ) \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \

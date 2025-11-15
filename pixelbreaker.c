@@ -245,6 +245,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
 
+      case TH_DELLINE:
+        if (record->tap.count) {
+          tap_code16(KC_DEL);
+        } else {
+          tap_code16(DELLINE);
+        }
+        return false;
+
       case TH_SCR:
         if (record->tap.count) {
           tap_code16(Z_SSHT);
@@ -253,29 +261,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
 
-      case TH_CT_UN:
-        if (record->tap.count) {
-          tap_code16(Z_UND);
-        } else {
-          tap_code16(Z_CUT);
-        }
-        return false;
-
-      case TH_CP_SV:
-        if (record->tap.count) {
-          tap_code16(Z_SAVE);
-        } else {
-          tap_code16(Z_CPY);
-        }
-        return false;
-
-      case TH_PS_RE:
-        if (record->tap.count) {
-          tap_code16(Z_RDO);
-        } else {
-          tap_code16(Z_PST);
-        }
-        return false;
     }
   }
 
@@ -495,7 +480,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
  #ifdef COMBO_ENABLE
  #  ifdef COMBO_SHOULD_TRIGGER
  bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-   bool below_base = get_highest_layer(layer_state) <= BSE;
+   // bool below_base = get_highest_layer(layer_state) <= BSE;
 
    switch (index) {
      case thmb_r:
@@ -505,10 +490,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
  #    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
      case mouse_layer:
  #    endif
-       return below_base && !IS_TYPING();
+       return !IS_TYPING();
+       // return below_base && !IS_TYPING();
    }
 
-   return below_base;
+   return true;
+   // return below_base;
  }
  #  endif
  #endif
