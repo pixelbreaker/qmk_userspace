@@ -12,6 +12,7 @@
 //  Tap-hold settings
 #define TAPPING_TERM 250
 #define TAPPING_TERM_PER_KEY
+#define QUICK_TAP_TERM 120
 #define QUICK_TAP_TERM_PER_KEY
 
 #ifdef POINTING_DEVICE_ENABLE
@@ -100,7 +101,7 @@
 #  ifdef COMBO_TERM
 #    undef COMBO_TERM
 #  endif
-#  define COMBO_TERM 50
+#  define COMBO_TERM 100
 #  define COMBO_MUST_HOLD_PER_COMBO
 #  define COMBO_MUST_TAP_PER_COMBO
 #  define COMBO_TERM_PER_COMBO

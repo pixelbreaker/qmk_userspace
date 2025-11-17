@@ -7,6 +7,7 @@
 #include "quantum_keycodes.h"
 
 #ifdef RGB_MATRIX_ENABLE
+#  include "rgb_matrix_types.h"
 #  include "rgb_matrix.h"
 #endif
 
@@ -46,7 +47,7 @@ enum trackball_modes {
   CARRET,
   MEDIA,
 };
-uint8_t track_mode   = CURSOR;
+uint8_t track_mode = CURSOR;
 
 bool     sniping          = false;
 bool     mouse_is_down    = false;
@@ -193,7 +194,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
  Main Processing
  */
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  uprintf("Col: %d Row: %d\n", record->event.key.col, record->event.key.row);
+  // uprintf("Col: %d Row: %d\n", record->event.key.col, record->event.key.row);
 
 // set_single_persistent_default_layer(BSE);
 #ifdef TAPPING_TERM_PER_KEY
@@ -260,7 +261,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           tap_code16(Z_SRCD);
         }
         return false;
-
     }
   }
 
@@ -453,20 +453,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
  */
 #ifdef RGB_MATRIX_ENABLE
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-  hsv_t hsv        = {0, 255, 255};
-  uint  curr_layer = get_highest_layer(layer_state | default_layer_state);
+  uint curr_layer = get_highest_layer(layer_state | default_layer_state);
 
   if (curr_layer == 0) return false;
 
+  hsv_t hsv = {0, 255, rgb_matrix_get_val()};
   // generate a hue for the current layer 0-255
   uint8_t hue = (((float)curr_layer + 1) / 6) * 255;
   hsv.h       = hue;
-  hsv.v       = rgb_matrix_get_val();
   rgb_t rgb   = hsv_to_rgb(hsv);
 
   // set the rgb of all underglow and modifier flagged RGB LEDs
   for (uint8_t i = led_min; i < led_max; i++) {
-    if (HAS_ANY_FLAGS(g_led_config.flags[i], (0x01 | 0x02))) { // Encoder and Thumbs
+    if (HAS_ANY_FLAGS(g_led_config.flags[i], (LED_FLAG_MODIFIER | LED_FLAG_UNDERGLOW))) { // Encoder and Thumbs
       rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
     }
   }
@@ -477,28 +476,28 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 /*
  MISC
  */
- #ifdef COMBO_ENABLE
- #  ifdef COMBO_SHOULD_TRIGGER
- bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-   // bool below_base = get_highest_layer(layer_state) <= BSE;
+#ifdef COMBO_ENABLE
+#  ifdef COMBO_SHOULD_TRIGGER
+bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+  // bool below_base = get_highest_layer(layer_state) <= BSE;
 
-   switch (index) {
-     case thmb_r:
-     case key_ent:
-     // case copy:
-     case tab:
- #    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-     case mouse_layer:
- #    endif
-       return !IS_TYPING();
-       // return below_base && !IS_TYPING();
-   }
+  switch (index) {
+    case thmb_r:
+    case key_ent:
+    // case copy:
+    case tab:
+#    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+    case mouse_layer:
+#    endif
+      return !IS_TYPING();
+      // return below_base && !IS_TYPING();
+  }
 
-   return true;
-   // return below_base;
- }
- #  endif
- #endif
+  return true;
+  // return below_base;
+}
+#  endif
+#endif
 
 void housekeeping_task_user(void) {
   // Restore state after 3 minutes
