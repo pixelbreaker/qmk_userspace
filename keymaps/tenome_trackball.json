@@ -3,12 +3,11 @@
   "keymap": "pixelbreaker",
   "layout": "LAYOUT_w",
   "layers": [
-    ["TENOME(_BASE)"],
+    ["TENOME(HRM(_BASE))"],
     ["TENOME(_SYMB)"],
     ["TENOME(_NAV)"],
     ["TENOME(_NUMB)"],
     ["TENOME(_FUNC)"],
-    ["TENOME(_MOUSE_DEV)"],
-    ["TENOME(_MOUSE_DEV_2)"]
+    ["TENOME(_MOUSE)"]
   ]
 }

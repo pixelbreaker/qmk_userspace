@@ -190,6 +190,13 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif
 
+// Send custom hold keycode
+static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
+  if (record->tap.count) return true;
+  tap_code16(keycode);
+  return false;
+}
+
 /*
  Main Processing
  */
@@ -206,6 +213,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     prev_event = record->event.type;
 
     switch (keycode) {
+      case TH_C: // cut, copy, paste
+        return process_tap_hold(Z_CUT, record);
+      case TH_G:
+        return process_tap_hold(Z_CPY, record);
+      case TH_D:
+        return process_tap_hold(Z_PST, record);
       case TH_QU:
         if (is_caps_word_on()) {
           register_mods(MOD_MASK_SHIFT);
@@ -243,14 +256,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           tap_code16(KC_DEL);
         } else {
           tap_code16(G(KC_BSPC));
-        }
-        return false;
-
-      case TH_DELLINE:
-        if (record->tap.count) {
-          tap_code16(KC_DEL);
-        } else {
-          tap_code16(DELLINE);
         }
         return false;
 
@@ -438,9 +443,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // if on mouse layer an hitting blocking keys, turn off the mouse layer
     case KC_NO:
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
       if (IS_LAYER_ON(get_auto_mouse_layer())) {
         layer_off(get_auto_mouse_layer());
       }
+#endif
       return true;
 
     default:
@@ -479,22 +486,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 #ifdef COMBO_ENABLE
 #  ifdef COMBO_SHOULD_TRIGGER
 bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-  // bool below_base = get_highest_layer(layer_state) <= BSE;
-
-  switch (index) {
-    case thmb_r:
-    case key_ent:
-    // case copy:
-    case tab:
-#    ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-    case mouse_layer:
-#    endif
-      return !IS_TYPING();
-      // return below_base && !IS_TYPING();
-  }
-
-  return true;
-  // return below_base;
+  return !within_flow_tap_term(keycode, record);
 }
 #  endif
 #endif
@@ -530,7 +522,7 @@ bool caps_word_press_user(uint16_t keycode) {
       return false; // Deactivate Caps Word.
   }
 }
-
+// Tap hold decisions
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case THM_1:
@@ -539,6 +531,52 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
       return QUICK_TAP_TERM * 3;
     default:
       return QUICK_TAP_TERM;
+  }
+}
+
+uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
+  if (is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode)) {
+    switch (keycode) {
+      case HM_H:
+      case HM_N:
+        return 25; // Short timeout on these keys.
+
+      default:
+        return FLOW_TAP_TERM; // Longer timeout otherwise.
+    }
+  }
+  return 0; // Disable Flow Tap.
+}
+
+char chordal_hold_handedness(keypos_t key) {
+  char hand = key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
+  return hand;
+}
+
+bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode,
+                      keyrecord_t *other_record) {
+  // Exceptionally allow some one-handed chords for hotkeys.
+  switch (tap_hold_keycode) {
+    case THM_1:
+    case THM_2:
+    case THM_3:
+    case THM_4:
+      return true;
+
+      break;
+  }
+  // Otherwise defer to the opposite hands rule.
+  return get_chordal_hold_default(tap_hold_record, other_record);
+}
+
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case THM_1:
+      // Immediately select the hold action when another key is pressed.
+      return true;
+    default:
+      // Do not select the hold action when another key is pressed.
+      return false;
   }
 }
 

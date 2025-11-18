@@ -12,6 +12,21 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 // #  define MSE(k) k
 // #endif
 
+// Mod tap macros
+#define HM_R LCTL_T(KC_R)
+#define HM_S LALT_T(KC_S)
+#define HM_T LGUI_T(KC_T)
+#define HM_H LSFT_T(KC_H)
+#define HM_K MEH_T(KC_K)
+
+#define HM_X HYPR_T(KC_K)
+#define HM_N RSFT_T(KC_N)
+#define HM_A RGUI_T(KC_A)
+#define HM_I LALT_T(KC_I)
+#define HM_O RCTL_T(KC_O)
+#define HRML(k1, k2, k3, k4, k5) LCTL_T(k1), LALT_T(k2), LGUI_T(k3), LSFT_T(k4), MEH_T(k5)
+#define HRMR(k1, k2, k3, k4, k5) HYPR_T(k1), RSFT_T(k2), RGUI_T(k3), LALT_T(k4), RCTL_T(k5)
+
 // macOS shortcuts
 #define Z_UND G(KC_Z)
 #define Z_CUT G(KC_X)
@@ -45,10 +60,12 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 
 // Tap hold macros
 #define TH_QU LT(0, KC_Q)
+#define TH_C LT(0, KC_C)
+#define TH_G LT(0, KC_G)
+#define TH_D LT(0, KC_D)
 
 #define TH_SCR LT(0, KC_PWR)
 #define TH_DEL LT(0, KC_DEL)
-#define TH_DELLINE LT(0, KC_F20)
 #define TH_DLR LT(0, KC_DLR)
 #define TH_EQL LT(0, KC_EQL)
 // tap holds for undo/cut save/copy redo/paste
@@ -70,7 +87,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 // clang-format on
 
 // Layers
-enum layers { BSE, SYM, NAV, NUM, FNC, MOU, MOU2 };
+enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 
 // #define ESC_MED LT(MED, KC_ESC)
 #define THM_0 LT(FNC, KC_ESC)
@@ -79,8 +96,8 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, MOU2 };
 #define THM_2 LT(SYM, KC_ENT) //OSS_SYM // OS_LSFT
 #define THM_1_2 MO(NAV)
 
-#define THM_3 LT(NUM, KC_BSPC)
-#define THM_4 KC_E //LT(NUM, KC_E)
+#define THM_3 LT(FNC, KC_BSPC)
+#define THM_4 LT(NUM, KC_E)
 
 // clang-format off
 
@@ -88,14 +105,14 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, MOU2 };
 #define _BASE \
 	KC_V,    KC_W,    KC_F,    KC_P,    KC_B,        KC_J,    KC_L,    KC_U,    KC_Y,    KC_QUOT,    \
 	KC_R,    KC_S,    KC_T,    KC_H,    KC_K,        KC_X,    KC_N,    KC_A,    KC_I,    KC_O,       \
-	KC_Z,    KC_C,    KC_G,    KC_D,    KC_Q,        QK_REP,  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
+	KC_Z,    TH_C,    TH_G,    TH_D,    KC_Q,        QK_REP,  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,    \
 	                           THM_1,   THM_2,       THM_3,   THM_4
 
 #define _NAV \
-  Z_TAB,   A(KC_TAB),APP_L,  APP_R,   TH_SCR,      OS_MEH,  QK_REP,  KC_UP,   AS_TOGG, KC_GRV,     \
-	_________HOME_ROW_OS_CAGS_________, TH_DEL,      OS_HYPR, KC_LEFT, KC_DOWN, KC_RGHT, KC_COLN,    \
-	________________COPY_PASTA_________________,     _________________FILE_NAV__________________,    \
-	                           _______, _______,     KC_BSPC, TH_DELLINE
+  Z_TAB,   A(KC_TAB),APP_L,  APP_R,   TH_SCR,      KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_GRV,     \
+	_________HOME_ROW_OS_CAGS_________, TH_DEL,      KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_COLN,    \
+	_________________FILE_NAV__________________,     _______, QK_REP,  DELLINE, _______, _______,    \
+	                           _______, _______,     KC_BSPC, KC_DEL
 
 #define _SYMB \
 	KC_ESC,  KC_AT,   KC_LCBR, KC_RCBR, KC_CIRC,     KC_PERC, KC_ASTR, Z_HASH,  TH_DLR,  KC_TILDE,   \
@@ -119,21 +136,37 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU, MOU2 };
 #define _MOUSE \
 	___________________________________________,     MS_WHLU, MS_WHLL,  MS_UP,   MS_WHLR,_______,    \
   _________HOME_ROW_OS_CAGS_________, _______,     MS_WHLD, MS_LEFT,  MS_DOWN, MS_RGHT,_______,    \
-  _______, _______, _______, MS_BTN3, _______,     ___________________________________________,    \
+  _______, SNIPE,   _______, MS_BTN3, _______,     ___________________________________________,    \
                       		   MS_BTN1, MS_BTN2,     _______, _______
 
-// For keyboards that have a pointing device and auto mouse layer
-#define _MOUSE_DEV \
-	MO(MOU2),_______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
-	_______, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
-	MO(MOU2),_______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
-                     		     _______, _______,     _______, _______
 
-#define _MOUSE_DEV_2 \
-  _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______,    \
-  _________HOME_ROW_OS_CAGS_________, _______,     _______, _______, _______, _______, _______,    \
-  _______, SNIPE,   _______, MS_BTN3, _______,     _______, _______, _______, _______, _______,    \
-                     		     MS_BTN1, MS_BTN2,     _______, _______
+// Mod-tap wrapper
+#define HRM(k) HR_MODTAP(k)
+
+#define HR_MODTAP( \
+	  l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
+	  l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+	  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
+	                 l16, l17,   r16, r17                 \
+) \
+	  l01, l02, l03, l04, l05,         r01, r02, r03, r04, r05,       \
+    HRML(l06, l07, l08, l09, l10),   HRMR(r06, r07, r08, r09, r10), \
+    MSE(l11), l12, l13, l14, l15,    r11, r12, r13, r14, MSE(r15),  \
+	                      l16, l17,    r16, r17
+
+
+#define HRM23332(k) HR23332_MODTAP(k)
+
+#define HR23332_MODTAP( \
+	  l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
+	  l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
+	  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
+	                 l16, l17,   r16, r17                 \
+) \
+	  MSE(l01), l02, l03, l04, l05,    r01, r02, r03, r04, r05,       \
+    HRML(l06, l07, l08, l09, l10),   HRMR(r06, r07, r08, r09, r10), \
+     l11, l12, l13, l14, l15,        r11, r12, r13, r14, r15,       \
+	                      l16, l17,    r16, r17                       \
 
 // Layout aliases for json keymap
 #define LAYOUT_w(...) LAYOUT(__VA_ARGS__)

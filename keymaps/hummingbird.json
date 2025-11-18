@@ -3,7 +3,7 @@
   "keymap": "pixelbreaker",
   "layout": "LAYOUT_w",
   "layers": [
-    ["HUMMINGBIRD(_BASE)"],
+    ["HUMMINGBIRD(HRM23332(_BASE))"],
     ["HUMMINGBIRD(_SYMB)"],
     ["HUMMINGBIRD(_NAV)"],
     ["HUMMINGBIRD(_NUMB)"],

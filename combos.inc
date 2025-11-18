@@ -9,6 +9,7 @@
 // general
 // COMB(capsword, CW_TOGG, KC_D, KC_M)
 COMB(esc, KC_ESC, KC_V, KC_W)
+COMB(esc_mse, KC_ESC, MSE(KC_V), KC_W)
 
 // mouse layer
 #ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE
@@ -17,17 +18,18 @@ HOLD(mouse_layer, MO(MOU), KC_S, KC_T)
 
 // both hands
 HOLD(caret_nav, THM_1_2, THM_1, THM_2)
-HOLD(thmb_r, MO(FNC), THM_3, THM_4)
+// HOLD(thmb_r, MO(FNC), THM_3, THM_4)
 
-COMB(capsword, CW_TOGG, KC_D, KC_M)
+COMB(capsword, CW_TOGG, TH_D, KC_M)
 
 // left hand
-COMB(tab, KC_TAB, KC_R, KC_S)
-COMB(key_q, KC_Q, KC_G, KC_D)
-COMB(key_z, KC_Z, KC_C, KC_G)
+// COMB(tab, KC_TAB, KC_R, KC_S)
+COMB(tab, KC_TAB, HM_R, HM_S)
+COMB(key_q, KC_Q, TH_G, TH_D)
+COMB(key_z, KC_Z, TH_C, TH_G)
 
 // right hand
-COMB(key_unds, KC_UNDS, KC_U, KC_Y)
+COMB(key_unds, KC_UNDS, KC_M, KC_COMM)
 COMB(key_mins, KC_MINS, KC_L, KC_U)
 COMB(key_slsh, KC_SLSH, KC_COMM, KC_DOT)
 COMB(key_ent, KC_ENT, KC_I, KC_O)

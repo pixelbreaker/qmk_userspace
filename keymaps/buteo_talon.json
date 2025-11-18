@@ -3,12 +3,11 @@
   "keymap": "pixelbreaker",
   "layout": "LAYOUT_w",
   "layers": [
-    ["BUTEO(_BASE)"],
+    ["BUTEO(HRM23332(_BASE))"],
     ["BUTEO(_SYMB)"],
     ["BUTEO(_NAV)"],
     ["BUTEO(_NUMB)"],
     ["BUTEO(_FUNC)"],
-    ["BUTEO(_MOUSE_DEV)"],
-    ["BUTEO(_MOUSE_DEV_2)"]
+    ["BUTEO(_MOUSE)"]
   ]
 }

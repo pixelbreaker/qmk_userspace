@@ -3,12 +3,11 @@
   "keymap": "pixelbreaker",
   "layout": "LAYOUT_w",
   "layers": [
-    ["CHARYBDIS(_BASE)"],
+    ["CHARYBDIS(HRM(_BASE))"],
     ["CHARYBDIS(_SYMB)"],
     ["CHARYBDIS(_NAV)"],
     ["CHARYBDIS(_NUMB)"],
     ["CHARYBDIS(_FUNC)"],
-    ["CHARYBDIS_ENC(_MOUSE_DEV)"],
-    ["CHARYBDIS_ENC(_MOUSE_DEV_2)"]
+    ["CHARYBDIS(_MOUSE)"]
   ]
 }
