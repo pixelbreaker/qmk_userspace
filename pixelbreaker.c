@@ -580,9 +580,10 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
   if (is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode)) {
     switch (keycode) {
+      case THM_1:
       case HM_H:
       case HM_N:
-        return FLOW_TAP_TERM - 25; // Short timeout on these keys.
+        return 25; // Short timeout on these keys.
 
       default:
         return FLOW_TAP_TERM; // Longer timeout otherwise.
@@ -591,21 +592,32 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
   return 0; // Disable Flow Tap.
 }
 
+// Hummingbird has a crazy matrix, so handedness it defined in its keyboard.json
+#ifndef KEYBOARD_hummingbird
 char chordal_hold_handedness(keypos_t key) {
-  char hand = key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
+  char hand = key.row == 3 || key.row == 7 ? '*' : key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
   return hand;
 }
+#endif
 
 bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode,
                       keyrecord_t *other_record) {
   // Exceptionally allow some one-handed chords for hotkeys.
   switch (tap_hold_keycode) {
-    case THM_1:
+    // Shift keys
+    case HM_H:
+    case HM_N:
       switch (get_tap_keycode(other_keycode)) {
         case KC_A ... KC_Z:
+        case KC_DOT:
+        case KC_COMM:
+        case KC_SCLN:
+        case KC_SLSH:
           return true;
       }
 
+    // Thumb keys
+    case THM_1:
     case THM_2:
     case THM_3:
     case THM_4:

@@ -207,7 +207,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 #define CONV_SPHYNX( \
 	     l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 	     l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
-	     l11, l12, l13j, l14, l15,   r11, r12, r13, r14, r15, \
+	     l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 	                    l16, l17,   r16, r17                 \
 ) \
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
