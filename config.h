@@ -12,7 +12,7 @@
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 1000U
 
 //  Tap-hold settings
-#define FLOW_TAP_TERM 100
+#define FLOW_TAP_TERM 180
 #define TAPPING_TERM 250
 #define TAPPING_TERM_PER_KEY
 #define QUICK_TAP_TERM 120
@@ -21,6 +21,18 @@
 #define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
 #define CHORDAL_HOLD
 
+// Combos
+#ifdef COMBO_ENABLE
+#  ifdef COMBO_TERM
+#    undef COMBO_TERM
+#  endif
+#  define COMBO_TERM 100
+#  define COMBO_MUST_HOLD_PER_COMBO
+#  define COMBO_MUST_TAP_PER_COMBO
+#  define COMBO_TERM_PER_COMBO
+#  define COMBO_SHOULD_TRIGGER
+// #  define COMBO_ONLY_FROM_LAYER 0
+#endif
 
 #ifdef POINTING_DEVICE_ENABLE
 #  define MEDIA_TAP_THRESHOLD 85
@@ -104,18 +116,6 @@
 #define ONESHOT_TAP_TOGGLE 3
 #define ONESHOT_TIMEOUT 5000
 
-#ifdef COMBO_ENABLE
-#  ifdef COMBO_TERM
-#    undef COMBO_TERM
-#  endif
-#  define COMBO_TERM 100
-#  define COMBO_MUST_HOLD_PER_COMBO
-#  define COMBO_MUST_TAP_PER_COMBO
-#  define COMBO_TERM_PER_COMBO
-#  define COMBO_SHOULD_TRIGGER
-// #  define COMBO_ONLY_FROM_LAYER 0
-#endif
-
 #ifdef MOUSEKEY_ENABLE
 #  define MOUSEKEY_DELAY 0      // Delay between pressing a key and cursor movement
 #  define MOUSEKEY_INTERVAL 15  // Time between cursor movements in milliseconds
@@ -130,10 +130,10 @@
 
 // Add hires scroll support
 #ifdef TRACKBALL_ENABLE
-# define POINTING_DEVICE_HIRES_SCROLL_ENABLE
-# define POINTING_DEVICE_HIRES_SCROLL_MULTIPLIER 50
-# define POINTING_DEVICE_HIRES_SCROLL_EXPONENT 100
-# define WHEEL_EXTENDED_REPORT
+#  define POINTING_DEVICE_HIRES_SCROLL_ENABLE
+#  define POINTING_DEVICE_HIRES_SCROLL_MULTIPLIER 50
+#  define POINTING_DEVICE_HIRES_SCROLL_EXPONENT 100
+#  define WHEEL_EXTENDED_REPORT
 #endif
 
 // Layout macros

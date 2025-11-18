@@ -68,6 +68,12 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define TH_DEL LT(0, KC_DEL)
 #define TH_DLR LT(0, KC_DLR)
 #define TH_EQL LT(0, KC_EQL)
+
+#define TH_LCBR LT(0, KC_LCBR)
+#define TH_RCBR LT(0, KC_RCBR)
+#define TH_LBRC LT(0, KC_F16)
+#define TH_LT LT(0, KC_LT)
+
 // tap holds for undo/cut save/copy redo/paste
 // #define TH_CT_UN LT(0, KC_C)
 // #define TH_CP_SV LT(0, KC_G)
@@ -111,13 +117,13 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 #define _NAV \
   Z_TAB,   A(KC_TAB),APP_L,  APP_R,   TH_SCR,      KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_GRV,     \
 	_________HOME_ROW_OS_CAGS_________, TH_DEL,      KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_COLN,    \
-	_________________FILE_NAV__________________,     _______, QK_REP,  DELLINE, _______, _______,    \
+	_________________FILE_NAV__________________,     _______, QK_REP,  DELLINE, KC_QUES, _______,    \
 	                           _______, _______,     KC_BSPC, KC_DEL
 
 #define _SYMB \
-	KC_ESC,  KC_AT,   KC_LCBR, KC_RCBR, KC_CIRC,     KC_PERC, KC_ASTR, Z_HASH,  TH_DLR,  KC_TILDE,   \
-	KC_SPC,  KC_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PLUS, KC_AMPR, KC_EXLM, KC_PIPE, KC_SCLN,    \
-	___N___, KC_BSLS, KC_LBRC, KC_RBRC, ___N___,     ___N___, KC_QUES, TH_EQL,  KC_SLSH, ___N___,    \
+	KC_ESC,  KC_AT,   TH_LCBR, TH_RCBR, KC_CIRC,     KC_PERC, KC_ASTR, Z_HASH,  TH_DLR,  KC_TILDE,   \
+	KC_SPC,  TH_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PLUS, KC_AMPR, KC_EXLM, KC_PIPE, KC_SCLN,    \
+	___N___, KC_BSLS, TH_LBRC, KC_RBRC, ___N___,     ___N___, KC_QUES, TH_EQL,  KC_SLSH, ___N___,    \
 	                           _______, _______,     KC_UNDS, KC_MINS
 
 #define _NUMB \

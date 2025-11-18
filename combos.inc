@@ -8,6 +8,7 @@
 
 // general
 // COMB(capsword, CW_TOGG, KC_D, KC_M)
+#include "keycodes.h"
 COMB(esc, KC_ESC, KC_V, KC_W)
 COMB(esc_mse, KC_ESC, MSE(KC_V), KC_W)
 
@@ -31,5 +32,5 @@ COMB(key_z, KC_Z, TH_C, TH_G)
 // right hand
 COMB(key_unds, KC_UNDS, KC_M, KC_COMM)
 COMB(key_mins, KC_MINS, KC_L, KC_U)
+COMB(key_grv, KC_GRV, KC_U, KC_Y)
 COMB(key_slsh, KC_SLSH, KC_COMM, KC_DOT)
-COMB(key_ent, KC_ENT, KC_I, KC_O)

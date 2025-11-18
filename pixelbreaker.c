@@ -4,6 +4,7 @@
 
 #include "pixelbreaker.h"
 #include "layout.h"
+#include "quantum.h"
 #include "quantum_keycodes.h"
 
 #ifdef RGB_MATRIX_ENABLE
@@ -251,6 +252,38 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         SEND_STRING("=>");
         return false;
 
+      case TH_LCBR:
+        if (record->tap.count) {
+          tap_code16(KC_LCBR);
+        } else {
+          SEND_STRING("() => {}" SS_TAP(X_LEFT));
+        };
+        return false;
+
+      case TH_LBRC:
+        if (record->tap.count) {
+          tap_code16(KC_LBRC);
+        } else {
+          SEND_STRING("[]()" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
+        };
+        return false;
+
+      case TH_RCBR:
+        if (record->tap.count) {
+          tap_code16(KC_RCBR);
+        } else {
+          SEND_STRING("() => {}, []" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
+        };
+        return false;
+
+      case TH_LT:
+        if (record->tap.count) {
+          tap_code16(KC_LT);
+        } else {
+          SEND_STRING("<></>" SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
+        };
+        return false;
+
       case TH_DEL:
         if (record->tap.count) {
           tap_code16(KC_DEL);
@@ -486,6 +519,16 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 #ifdef COMBO_ENABLE
 #  ifdef COMBO_SHOULD_TRIGGER
 bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+  switch (index) {
+    case key_unds:
+    case key_mins:
+    case key_grv:
+    case key_slsh:
+      if (layer_state_is(BSE)) {
+        return true;
+      }
+  }
+
   return !within_flow_tap_term(keycode, record);
 }
 #  endif
@@ -539,7 +582,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
     switch (keycode) {
       case HM_H:
       case HM_N:
-        return 25; // Short timeout on these keys.
+        return FLOW_TAP_TERM - 25; // Short timeout on these keys.
 
       default:
         return FLOW_TAP_TERM; // Longer timeout otherwise.
@@ -558,6 +601,11 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, u
   // Exceptionally allow some one-handed chords for hotkeys.
   switch (tap_hold_keycode) {
     case THM_1:
+      switch (get_tap_keycode(other_keycode)) {
+        case KC_A ... KC_Z:
+          return true;
+      }
+
     case THM_2:
     case THM_3:
     case THM_4:

@@ -124,12 +124,16 @@ uint16_t get_combo_term(uint16_t index, combo_t *combo) {
     // case thmb_r:
     //   return COMBO_TERM + 100;
 
-    case key_ent:
-      return COMBO_TERM + 180;
+    // case key_ent:
+    //   return COMBO_TERM + 180;
 
     case capsword:
       return COMBO_TERM + 100;
 
+    // case key_mins:
+    // case key_unds:
+    // case key_grv:
+    // case key_slsh:
     case esc:
       return COMBO_TERM + 20;
   }
