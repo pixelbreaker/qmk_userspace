@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 #include "pixelbreaker.h"
+#include "action.h"
+#include "action_tapping.h"
+#include "keycodes.h"
 #include "layout.h"
 #include "quantum.h"
 #include "quantum_keycodes.h"
@@ -110,9 +113,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
   } else if (track_mode == MEDIA) {
     tap_media();
   } else if (track_mode == CARRET) {
-#  ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
-#  endif
   }
 
   if ((track_mode != CURSOR && (track_mode != SCROLL && !appkeys_active)) ||
@@ -220,6 +221,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return process_tap_hold(Z_CPY, record);
       case TH_D:
         return process_tap_hold(Z_PST, record);
+      case TH_ESC:
+        return process_tap_hold(G(A(KC_ESC)), record);
       case TH_QU:
         if (is_caps_word_on()) {
           register_mods(MOD_MASK_SHIFT);
@@ -519,32 +522,20 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 #ifdef COMBO_ENABLE
 #  ifdef COMBO_SHOULD_TRIGGER
 bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-  switch (index) {
-    case key_unds:
-    case key_mins:
-    case key_grv:
-    case key_slsh:
-      if (layer_state_is(BSE)) {
-        return true;
-      }
-  }
+  // switch (index) {
+  //   case key_unds:
+  //   case key_mins:
+  //   case key_grv:
+  //   case key_slsh:
+  //     if (layer_state_is(BSE)) {
+  //       return true;
+  //     }
+  // }
 
   return !within_flow_tap_term(keycode, record);
 }
 #  endif
 #endif
-
-void housekeeping_task_user(void) {
-  // Restore state after 3 minutes
-  if (last_input_activity_elapsed() > TAPPING_TERM * 1000U) {
-    if (host_keyboard_led_state().caps_lock) {
-      tap_code(KC_CAPS);
-    }
-    if (get_highest_layer(layer_state | default_layer_state) > 0) {
-      layer_off(get_highest_layer(layer_state | default_layer_state));
-    }
-  }
-}
 
 bool caps_word_press_user(uint16_t keycode) {
   switch (keycode) {
@@ -577,20 +568,50 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
   }
 }
 
+#ifdef FLOW_TAP_TERM
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
   if (is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode)) {
     switch (keycode) {
-      case THM_1:
+      // reduce accidental home row mod triggers
+      case HM_R:
+      case HM_S:
+      case HM_T:
+      case HM_A:
+      case HM_I:
+      case HM_O:
+        return FLOW_TAP_TERM * 2;
+
+      // case THM_1:
       case HM_H:
       case HM_N:
         return 25; // Short timeout on these keys.
+
+      case THM_4:
+        return get_tap_keycode(prev_keycode) == KC_SPC ? 0 : FLOW_TAP_TERM;
 
       default:
         return FLOW_TAP_TERM; // Longer timeout otherwise.
     }
   }
-  return 0; // Disable Flow Tap.
+  return 0;
 }
+#endif
+
+#ifdef TAPPING_TERM_PER_KEY
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+      case HM_R:
+      case HM_S:
+      case HM_T:
+      case HM_A:
+      case HM_I:
+      case HM_O:
+            return TAPPING_TERM + 100;
+        default:
+            return TAPPING_TERM;
+    }
+}
+#endif
 
 // Hummingbird has a crazy matrix, so handedness it defined in its keyboard.json
 #ifndef KEYBOARD_hummingbird
@@ -604,45 +625,49 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, u
                       keyrecord_t *other_record) {
   // Exceptionally allow some one-handed chords for hotkeys.
   switch (tap_hold_keycode) {
-    // Shift keys
-    case HM_H:
-    case HM_N:
-      switch (get_tap_keycode(other_keycode)) {
-        case KC_A ... KC_Z:
-        case KC_DOT:
-        case KC_COMM:
-        case KC_SCLN:
-        case KC_SLSH:
+    case THM_2:
+      return true;
+    case THM_4:
+      switch (other_keycode) {
+        case KC_1 ... KC_0:
           return true;
       }
-
-    // Thumb keys
-    case THM_1:
-    case THM_2:
-    case THM_3:
-    case THM_4:
-      return true;
-
       break;
   }
-  // Otherwise defer to the opposite hands rule.
+
   return get_chordal_hold_default(tap_hold_record, other_record);
 }
 
+#if defined(HOLD_ON_OTHER_KEY_PRESS) || defined(PERMISSIVE_HOLD)
+#  ifdef HOLD_ON_OTHER_KEY_PRESS
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+#  else
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+#  endif
   switch (keycode) {
     case THM_1:
       // Immediately select the hold action when another key is pressed.
       return true;
-    default:
-      // Do not select the hold action when another key is pressed.
-      return false;
+  }
+  return false;
+}
+#endif
+
+/*
+ Keyboard lifecycle
+ */
+void housekeeping_task_user(void) {
+  // Restore state after 3 minutes
+  if (last_input_activity_elapsed() > TAPPING_TERM * 1000U) {
+    if (host_keyboard_led_state().caps_lock) {
+      tap_code(KC_CAPS);
+    }
+    if (get_highest_layer(layer_state | default_layer_state) > 0) {
+      layer_off(get_highest_layer(layer_state | default_layer_state));
+    }
   }
 }
 
-/*
- Keyboard init
- */
 void keyboard_post_init_user(void) {
   set_single_persistent_default_layer(BSE);
 // Customise these values to desired behaviour

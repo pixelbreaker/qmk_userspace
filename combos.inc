@@ -9,8 +9,8 @@
 // general
 // COMB(capsword, CW_TOGG, KC_D, KC_M)
 #include "keycodes.h"
-COMB(esc, KC_ESC, KC_V, KC_W)
-COMB(esc_mse, KC_ESC, MSE(KC_V), KC_W)
+COMB(esc, TH_ESC, KC_V, KC_W)
+COMB(esc_mse, TH_ESC, MSE(KC_V), KC_W)
 
 // mouse layer
 #ifndef POINTING_DEVICE_AUTO_MOUSE_ENABLE

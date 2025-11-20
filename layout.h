@@ -24,7 +24,8 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define HM_A RGUI_T(KC_A)
 #define HM_I LALT_T(KC_I)
 #define HM_O RCTL_T(KC_O)
-#define HRML(k1, k2, k3, k4, k5) LCTL_T(k1), LALT_T(k2), LGUI_T(k3), LSFT_T(k4), MEH_T(k5)
+#define HRMEH(k1) MEH_T(k1)
+#define HRML(k1, k2, k3, k4, k5) LCTL_T(k1), LALT_T(k2), LGUI_T(k3), LSFT_T(k4), HYPR_T(k5)
 #define HRMR(k1, k2, k3, k4, k5) HYPR_T(k1), RSFT_T(k2), RGUI_T(k3), LALT_T(k4), RCTL_T(k5)
 
 // macOS shortcuts
@@ -60,6 +61,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 
 // Tap hold macros
 #define TH_QU LT(0, KC_Q)
+#define TH_ESC LT(0, KC_ESC)
 #define TH_C LT(0, KC_C)
 #define TH_G LT(0, KC_G)
 #define TH_D LT(0, KC_D)
@@ -155,7 +157,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 	  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 	                 l16, l17,   r16, r17                 \
 ) \
-	  l01, l02, l03, l04, l05,         r01, r02, r03, r04, r05,       \
+	  l01, l02, l03, l04, HRMEH(l05),  HRMEH(r01), r02, r03, r04, r05,\
     HRML(l06, l07, l08, l09, l10),   HRMR(r06, r07, r08, r09, r10), \
     MSE(l11), l12, l13, l14, l15,    r11, r12, r13, r14, MSE(r15),  \
 	                      l16, l17,    r16, r17
@@ -169,7 +171,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 	  l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
 	                 l16, l17,   r16, r17                 \
 ) \
-	  MSE(l01), l02, l03, l04, l05,    r01, r02, r03, r04, r05,       \
+	  MSE(l01), l02, l03, l04, HRMEH(l05),HRMEH(r01), r02, r03, r04, r05,       \
     HRML(l06, l07, l08, l09, l10),   HRMR(r06, r07, r08, r09, r10), \
      l11, l12, l13, l14, l15,        r11, r12, r13, r14, r15,       \
 	                      l16, l17,    r16, r17                       \
@@ -226,7 +228,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 		l01, l02, l03, l04, l05,   r01, r02, r03, r04, r05, \
 		l06, l07, l08, l09, l10,   r06, r07, r08, r09, r10, \
 		l11, l12, l13, l14, l15,   r11, r12, r13, r14, r15, \
-		      ENC_DOWN,l16, l17,   r16, r17, KC_NO
+		     ENC_DOWN, l16, l17,   r16, r17, KC_NO
 
 // Convert 3x5_2 to to 23332_2 split
 #define HUMMINGBIRD(k) CONV_HUMMINGBIRD(k)

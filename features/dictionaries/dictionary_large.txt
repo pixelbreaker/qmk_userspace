@@ -17,6 +17,7 @@
 :halp:         -> help
 :hapen         -> happen
 :hting         -> thing
+:i:            -> I
 :layed         -> laid
 :leage         -> league
 :leran         -> learn
