@@ -62,6 +62,8 @@ uint16_t last_mouse_press = 0; // for click tracking pause
 
 float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
+float move_accumulated_h   = 0;
+float move_accumulated_v   = 0;
 
 #  if defined(KEYBOARD_tenome) || defined(KEYBOARD_buteo) || defined(KEYBOARD_buteo_talon) || defined(KEYBOARD_cnano)
 void pointing_device_init_kb() {
@@ -148,14 +150,10 @@ bool encoder_moved = false;
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
   if (index == 0) { /* First encoder */
-    bool fnc_on;
+    bool fnc_on = false;
 #  ifdef RGB_MATRIX_ENABLE
     fnc_on = IS_LAYER_ON(FNC);
-#  else
-    fnc_on = false;
-#  endif
     if (fnc_on) {
-#  ifdef RGB_MATRIX_ENABLE
       switch (encoder_mode) {
         case HUE:
           clockwise ? rgb_matrix_increase_hue() : rgb_matrix_decrease_hue();
@@ -173,12 +171,13 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
           clockwise ? rgb_matrix_step() : rgb_matrix_step_reverse();
           return false;
       }
+    }
 #  endif
-    } else if (IS_LAYER_ON(NUM)) {
+    if (IS_LAYER_ON(NUM)) {
       tap_code16(clockwise ? MS_WHLU : MS_WHLD);
     } else if (appswitch_active || tabswitch_active) {
       tap_code16(clockwise ? KC_TAB : S(KC_TAB));
-    } else {
+    } else if (!fnc_on) {
       if (encoder_down) {
         tap_code_delay(clockwise ? KC_MNXT : KC_MPRV, 10);
       } else {
@@ -193,12 +192,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif
 
-// Send custom hold keycode
-static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
-  if (record->tap.count) return true;
-  tap_code16(keycode);
-  return false;
-}
+#define PROCESS_SHORTCUT(k, r) ((r)->tap.count ? true : (tap_code16((k)), false))
 
 /*
  Main Processing
@@ -214,13 +208,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
       case TH_C: // cut, copy, paste
-        return process_tap_hold(Z_CUT, record);
+        return PROCESS_SHORTCUT(Z_CUT, record);
       case TH_G:
-        return process_tap_hold(Z_CPY, record);
+        return PROCESS_SHORTCUT(Z_CPY, record);
       case TH_D:
-        return process_tap_hold(Z_PST, record);
+        return PROCESS_SHORTCUT(Z_PST, record);
       case TH_ESC:
-        return process_tap_hold(G(A(KC_ESC)), record);
+        return PROCESS_SHORTCUT(G(A(KC_ESC)), record);
+      case TH_PLUS:
+        return PROCESS_SHORTCUT(KC_EQL, record);
       case TH_QU:
         if (is_caps_word_on()) {
           register_mods(MOD_MASK_SHIFT);
@@ -249,7 +245,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
 
       case TH_EQL:
-        if (record->tap.count) return true;
+        if (record->tap.count) {
+          tap_code(KC_EQL);
+        } else {
+          return true;
+        }
         SEND_STRING("=>");
         return false;
 
@@ -494,11 +494,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
  */
 #ifdef RGB_MATRIX_ENABLE
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-  uint curr_layer = get_highest_layer(layer_state | default_layer_state);
+  uint  curr_layer = get_highest_layer(layer_state | default_layer_state);
+  hsv_t hsv        = {0, 255, rgb_matrix_get_val()};
+
+  // show inidicator for capsword and capslock
+  if (is_caps_word_on()) {
+    rgb_matrix_set_color(g_led_config.matrix_co[4][4], hsv.v, hsv.v, hsv.v);
+  }
+  if (host_keyboard_led_state().caps_lock) {
+    rgb_matrix_set_color(g_led_config.matrix_co[5][4], hsv.v, hsv.v, hsv.v);
+  }
 
   if (curr_layer == 0) return false;
 
-  hsv_t hsv = {0, 255, rgb_matrix_get_val()};
   // generate a hue for the current layer 0-255
   uint8_t hue = (((float)curr_layer + 1) / 6) * 255;
   hsv.h       = hue;
@@ -506,10 +514,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
   // set the rgb of all underglow and modifier flagged RGB LEDs
   for (uint8_t i = led_min; i < led_max; i++) {
-    if (HAS_ANY_FLAGS(g_led_config.flags[i], (LED_FLAG_MODIFIER | LED_FLAG_UNDERGLOW))) { // Encoder and Thumbs
-      rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-    }
+    if (g_led_config.matrix_co[i])
+      if (HAS_ANY_FLAGS(g_led_config.flags[i], (LED_FLAG_MODIFIER | LED_FLAG_UNDERGLOW))) { // Encoder and Thumbs
+        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+      }
   }
+
   return false;
 }
 #endif
@@ -577,7 +587,7 @@ bool is_flow_tap_key(uint16_t keycode) {
     return false; // Disable Flow Tap on hotkeys.
   }
   switch (get_tap_keycode(keycode)) {
-    // case KC_SPC: // space was causing issues as it's a layer tap
+    case KC_SPC: // space was causing issues as it's a layer tap
     case KC_A ... KC_Z:
     case KC_DOT:
     case KC_COMM:
@@ -601,7 +611,13 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
       case HM_A:
       case HM_I:
       case HM_O:
-        return FLOW_TAP_TERM + 20;
+        return FLOW_TAP_TERM + 40;
+
+      case THM_1:
+      case THM_4:
+      case HM_H:
+      case HM_N:
+        return 40;
 
       default:
         return FLOW_TAP_TERM;
@@ -618,13 +634,20 @@ bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 #  endif
   switch (keycode) {
-    // case THM_1:
+    case THM_1:
     case THM_2:
     case THM_3:
       return true;
 
-    // Immediately select the hold action when another key is pressed if not typing
     case THM_4:
+    case HM_R:
+    case HM_S:
+    case HM_T:
+    case HM_K:
+    case HM_X:
+    case HM_A:
+    case HM_I:
+    case HM_O:
       return !IS_TYPING();
   }
   return false;
@@ -673,6 +696,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     case HM_R:
     case HM_S:
     case HM_T:
+    case HM_K:
+    case HM_X:
     case HM_A:
     case HM_I:
     case HM_O:

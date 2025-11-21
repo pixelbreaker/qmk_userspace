@@ -69,12 +69,14 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define TH_SCR LT(0, KC_PWR)
 #define TH_DEL LT(0, KC_DEL)
 #define TH_DLR LT(0, KC_DLR)
-#define TH_EQL LT(0, KC_EQL)
+#define TH_EQL LT(0, KC_F17)
 
 #define TH_LCBR LT(0, KC_LCBR)
 #define TH_RCBR LT(0, KC_RCBR)
 #define TH_LBRC LT(0, KC_F16)
 #define TH_LT LT(0, KC_LT)
+#define TH_PLUS LT(0, KC_PLUS)
+
 
 // tap holds for undo/cut save/copy redo/paste
 // #define TH_CT_UN LT(0, KC_C)
@@ -129,10 +131,10 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 	                           _______, _______,     KC_UNDS, KC_MINS
 
 #define _NUMB \
-	KC_ASTR, KC_7,    KC_8,    KC_9,    KC_PLUS,     KC_PERC, Z_GBP,   Z_HASH,   TH_DLR, Z_EUR,      \
-	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     KC_EQL,  _________HOME_ROW_OS_SGAC_________,    \
-	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     _______, KC_D,    KC_E,     KC_F,   _______,    \
-	                           KC_0,    KC_DOT,      _______, _______
+	KC_ASTR, KC_7,    KC_8,    KC_9,    TH_PLUS,     KC_PERC, Z_GBP,   Z_HASH,  TH_DLR,  Z_EUR,      \
+	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     _______, _________HOME_ROW_OS_SGAC_________,    \
+	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     _______, _______, _______, _______, _______,    \
+	                           _______, KC_0,        _______, _______
 
 #define _FUNC \
   Z_SLEEP, KC_F7,   KC_F8,   KC_F9,   KC_F12,      CW_TOGG, KC_MPLY, KC_VOLU, _______, QK_BOOT,    \
