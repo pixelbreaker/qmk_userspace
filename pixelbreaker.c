@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 #include "pixelbreaker.h"
+#include <stdbool.h>
 #include "action.h"
 #include "action_tapping.h"
 #include "keycodes.h"
@@ -205,10 +206,7 @@ static inline bool process_tap_hold(uint16_t keycode, keyrecord_t *record) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // uprintf("Col: %d Row: %d\n", record->event.key.col, record->event.key.row);
 
-// set_single_persistent_default_layer(BSE);
-#ifdef TAPPING_TERM_PER_KEY
   tap_timer = timer_read_fast();
-#endif
 
   // TAP holds
   if (record->event.pressed) {
@@ -519,22 +517,16 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 /*
  MISC
  */
-#ifdef COMBO_ENABLE
-#  ifdef COMBO_SHOULD_TRIGGER
+#ifdef COMBO_SHOULD_TRIGGER
 bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-  // switch (index) {
-  //   case key_unds:
-  //   case key_mins:
-  //   case key_grv:
-  //   case key_slsh:
-  //     if (layer_state_is(BSE)) {
-  //       return true;
-  //     }
-  // }
-
+  switch (index) {
+    case key_z:
+    case key_q:
+    case key_quot:
+      return true;
+  }
   return !within_flow_tap_term(keycode, record);
 }
-#  endif
 #endif
 
 bool caps_word_press_user(uint16_t keycode) {
@@ -556,87 +548,68 @@ bool caps_word_press_user(uint16_t keycode) {
       return false; // Deactivate Caps Word.
   }
 }
+
 // Tap hold decisions
+#ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case THM_1:
-      return 0;
+    // case THM_1:
+    //   return 0;
     case KC_BSPC:
       return QUICK_TAP_TERM * 3;
     default:
       return QUICK_TAP_TERM;
   }
 }
+#endif
 
+// Tap hold decisions in order of precedence
+/*
+- Flow Tap (fast typing → force tap)
+- Other-key pressed → hold
+- Chord behaviour → hold
+- Tapping term exceeded → hold
+- Otherwise → tap
+*/
 #ifdef FLOW_TAP_TERM
+bool is_flow_tap_key(uint16_t keycode) {
+  if ((get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) != 0) {
+    return false; // Disable Flow Tap on hotkeys.
+  }
+  switch (get_tap_keycode(keycode)) {
+    // case KC_SPC: // space was causing issues as it's a layer tap
+    case KC_A ... KC_Z:
+    case KC_DOT:
+    case KC_COMM:
+    case KC_GRV:
+    case KC_SCLN:
+    case KC_SLSH:
+      return true;
+  }
+  return false;
+}
+
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
   if (is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode)) {
     switch (keycode) {
-      // reduce accidental home row mod triggers
+      // reduce accidental home row mod (non-shift) triggers
       case HM_R:
       case HM_S:
       case HM_T:
+      case HM_K:
+      case HM_X:
       case HM_A:
       case HM_I:
       case HM_O:
-        return FLOW_TAP_TERM * 2;
-
-      // case THM_1:
-      case HM_H:
-      case HM_N:
-        return 25; // Short timeout on these keys.
-
-      case THM_4:
-        return get_tap_keycode(prev_keycode) == KC_SPC ? 0 : FLOW_TAP_TERM;
+        return FLOW_TAP_TERM + 20;
 
       default:
-        return FLOW_TAP_TERM; // Longer timeout otherwise.
+        return FLOW_TAP_TERM;
     }
   }
   return 0;
 }
 #endif
-
-#ifdef TAPPING_TERM_PER_KEY
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-      case HM_R:
-      case HM_S:
-      case HM_T:
-      case HM_A:
-      case HM_I:
-      case HM_O:
-            return TAPPING_TERM + 100;
-        default:
-            return TAPPING_TERM;
-    }
-}
-#endif
-
-// Hummingbird has a crazy matrix, so handedness it defined in its keyboard.json
-#ifndef KEYBOARD_hummingbird
-char chordal_hold_handedness(keypos_t key) {
-  char hand = key.row == 3 || key.row == 7 ? '*' : key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
-  return hand;
-}
-#endif
-
-bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode,
-                      keyrecord_t *other_record) {
-  // Exceptionally allow some one-handed chords for hotkeys.
-  switch (tap_hold_keycode) {
-    case THM_2:
-      return true;
-    case THM_4:
-      switch (other_keycode) {
-        case KC_1 ... KC_0:
-          return true;
-      }
-      break;
-  }
-
-  return get_chordal_hold_default(tap_hold_record, other_record);
-}
 
 #if defined(HOLD_ON_OTHER_KEY_PRESS) || defined(PERMISSIVE_HOLD)
 #  ifdef HOLD_ON_OTHER_KEY_PRESS
@@ -645,11 +618,73 @@ bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 #  endif
   switch (keycode) {
-    case THM_1:
-      // Immediately select the hold action when another key is pressed.
+    // case THM_1:
+    case THM_2:
+    case THM_3:
       return true;
+
+    // Immediately select the hold action when another key is pressed if not typing
+    case THM_4:
+      return !IS_TYPING();
   }
   return false;
+}
+#endif
+
+// Hummingbird has a crazy matrix, so handedness it defined in its keyboard.json
+#ifndef KEYBOARD_hummingbird
+char chordal_hold_handedness(keypos_t key) {
+  // char hand = key.row == 3 || key.row == 7 ? '*' : key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
+  char hand = key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
+  return hand;
+}
+#endif
+
+bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode,
+                      keyrecord_t *other_record) {
+  // Exceptionally allow some one-handed chords for hotkeys.
+  switch (tap_hold_keycode) {
+    case HM_T:
+      if (other_keycode == KC_W || other_keycode == KC_Q || other_keycode == KC_R) {
+        return true;
+      }
+      break;
+
+    case THM_1:
+    case THM_4:
+      return !IS_TYPING();
+
+    case THM_2:
+    case THM_3:
+      return true;
+  }
+
+  return get_chordal_hold_default(tap_hold_record, other_record);
+}
+
+#ifdef TAPPING_TERM_PER_KEY
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+  uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(keycode));
+  if (mod & (MOD_LSFT != 0) || mod & (MOD_RSFT != 0)) {
+    return TAPPING_TERM - 50;
+  }
+
+  switch (keycode) {
+    case HM_R:
+    case HM_S:
+    case HM_T:
+    case HM_A:
+    case HM_I:
+    case HM_O:
+      return TAPPING_TERM + 100;
+
+    case THM_2:
+    case THM_3:
+      // case THM_4:
+      return TAPPING_TERM - 80;
+    default:
+      return TAPPING_TERM;
+  }
 }
 #endif
 

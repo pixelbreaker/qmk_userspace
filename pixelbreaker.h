@@ -10,7 +10,7 @@ extern bool process_autocorrect(uint16_t keycode, keyrecord_t *record);
 #define GET_MT_MOD_BITS(kc) ((kc & 0x1000) ? ((kc >> 8) & 0x0f) << 4 : (kc >> 8) & 0x0f)
 
 // Tap-hold decision helper macros
-#define IS_TYPING() (timer_elapsed_fast(tap_timer) < TAPPING_TERM * 2)
+#define IS_TYPING() (timer_elapsed_fast(tap_timer) < FLOW_TAP_TERM * 2)
 
 #ifdef TRACKBALL_ENABLE
   #define DPI_POINTER 800

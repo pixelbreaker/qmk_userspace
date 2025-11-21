@@ -28,6 +28,7 @@ COMB(capsword, CW_TOGG, TH_D, KC_M)
 COMB(tab, KC_TAB, HM_R, HM_S)
 COMB(key_q, KC_Q, TH_G, TH_D)
 COMB(key_z, KC_Z, TH_C, TH_G)
+COMB(key_quot, S(KC_QUOT), KC_W, KC_F)
 
 // right hand
 COMB(key_unds, KC_UNDS, KC_M, KC_COMM)
