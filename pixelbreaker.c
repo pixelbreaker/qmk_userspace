@@ -150,10 +150,10 @@ bool encoder_moved = false;
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
   if (index == 0) { /* First encoder */
-    bool fnc_on = false;
+    bool sys_on = false;
 #  ifdef RGB_MATRIX_ENABLE
-    fnc_on = IS_LAYER_ON(FNC);
-    if (fnc_on) {
+    sys_on = IS_LAYER_ON(SYS);
+    if (sys_on) {
       switch (encoder_mode) {
         case HUE:
           clockwise ? rgb_matrix_increase_hue() : rgb_matrix_decrease_hue();
@@ -177,7 +177,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
       tap_code16(clockwise ? MS_WHLU : MS_WHLD);
     } else if (appswitch_active || tabswitch_active) {
       tap_code16(clockwise ? KC_TAB : S(KC_TAB));
-    } else if (!fnc_on) {
+    } else if (!sys_on) {
       if (encoder_down) {
         tap_code_delay(clockwise ? KC_MNXT : KC_MPRV, 10);
       } else {
@@ -216,7 +216,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       case TH_ESC:
         return PROCESS_SHORTCUT(G(A(KC_ESC)), record);
       case TH_PLUS:
-        return PROCESS_SHORTCUT(KC_EQL, record);
+        if (record->tap.count) {
+          tap_code16(KC_EQL);
+        } else {
+          tap_code16(KC_PLUS);
+        }
+        return false;
       case TH_QU:
         if (is_caps_word_on()) {
           register_mods(MOD_MASK_SHIFT);
@@ -248,9 +253,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (record->tap.count) {
           tap_code(KC_EQL);
         } else {
-          return true;
+          SEND_STRING("=>");
         }
-        SEND_STRING("=>");
         return false;
 
       case TH_LCBR:
@@ -498,11 +502,17 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   hsv_t hsv        = {0, 255, rgb_matrix_get_val()};
 
   // show inidicator for capsword and capslock
+  #ifdef KEYBOARD_tenome
+    uint ind_col = 0;
+  #else
+    uint ind_col = 4;
+  #endif
+
   if (is_caps_word_on()) {
-    rgb_matrix_set_color(g_led_config.matrix_co[4][4], hsv.v, hsv.v, hsv.v);
+    rgb_matrix_set_color(g_led_config.matrix_co[4][ind_col], hsv.v, hsv.v, hsv.v);
   }
   if (host_keyboard_led_state().caps_lock) {
-    rgb_matrix_set_color(g_led_config.matrix_co[5][4], hsv.v, hsv.v, hsv.v);
+    rgb_matrix_set_color(g_led_config.matrix_co[5][ind_col], hsv.v, hsv.v, hsv.v);
   }
 
   if (curr_layer == 0) return false;
@@ -533,9 +543,14 @@ bool combo_should_trigger(uint16_t index, combo_t *combo, uint16_t keycode, keyr
     case key_z:
     case key_q:
     case key_quot:
+    case key_unds:
       return true;
   }
+#  ifdef FLOW_TAP_TERM
   return !within_flow_tap_term(keycode, record);
+#  else
+  return !IS_TYPING();
+#  endif
 }
 #endif
 
@@ -563,8 +578,8 @@ bool caps_word_press_user(uint16_t keycode) {
 #ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    // case THM_1:
-    //   return 0;
+    case THM_1:
+      return 0;
     case KC_BSPC:
       return QUICK_TAP_TERM * 3;
     default:
@@ -586,6 +601,7 @@ bool is_flow_tap_key(uint16_t keycode) {
   if ((get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) != 0) {
     return false; // Disable Flow Tap on hotkeys.
   }
+
   switch (get_tap_keycode(keycode)) {
     case KC_SPC: // space was causing issues as it's a layer tap
     case KC_A ... KC_Z:
@@ -617,7 +633,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
       case THM_4:
       case HM_H:
       case HM_N:
-        return 40;
+        return 30;
 
       default:
         return FLOW_TAP_TERM;
@@ -634,20 +650,11 @@ bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 #  endif
   switch (keycode) {
-    case THM_1:
     case THM_2:
-    case THM_3:
       return true;
 
+    case THM_1:
     case THM_4:
-    case HM_R:
-    case HM_S:
-    case HM_T:
-    case HM_K:
-    case HM_X:
-    case HM_A:
-    case HM_I:
-    case HM_O:
       return !IS_TYPING();
   }
   return false;
@@ -674,11 +681,9 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, u
       break;
 
     case THM_1:
-    case THM_4:
-      return !IS_TYPING();
-
     case THM_2:
     case THM_3:
+    case THM_4:
       return true;
   }
 

@@ -75,14 +75,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 #define TH_RCBR LT(0, KC_RCBR)
 #define TH_LBRC LT(0, KC_F16)
 #define TH_LT LT(0, KC_LT)
-#define TH_PLUS LT(0, KC_PLUS)
-
-
-// tap holds for undo/cut save/copy redo/paste
-// #define TH_CT_UN LT(0, KC_C)
-// #define TH_CP_SV LT(0, KC_G)
-// #define TH_PS_RE LT(0, KC_D)
-#define OSS_SYM LT(0, KC_NO)
+#define TH_PLUS LT(0, KC_EQL)
 
 // clang-format off
 // #define __________HOME_ROW_CAGS_L_________ KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT
@@ -97,7 +90,7 @@ enum custom_keycode { APPSWITCH = QK_USER, TABSWITCH, APP_L, APP_R, ENC_DOWN, TG
 // clang-format on
 
 // Layers
-enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
+enum layers { BSE, SYM, NAV, NUM, FNC, SYS, MOU };
 
 // #define ESC_MED LT(MED, KC_ESC)
 #define THM_0 LT(FNC, KC_ESC)
@@ -106,6 +99,7 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 #define THM_2 LT(SYM, KC_ENT) //OSS_SYM // OS_LSFT
 #define THM_1_2 MO(NAV)
 
+#define THM_3_4 MO(SYS)
 #define THM_3 LT(FNC, KC_BSPC)
 #define THM_4 LT(NUM, KC_E)
 
@@ -127,27 +121,32 @@ enum layers { BSE, SYM, NAV, NUM, FNC, MOU };
 #define _SYMB \
 	KC_ESC,  KC_AT,   TH_LCBR, TH_RCBR, KC_CIRC,     KC_PERC, KC_ASTR, Z_HASH,  TH_DLR,  KC_TILDE,   \
 	KC_SPC,  TH_LT,   KC_LPRN, KC_RPRN, KC_GT,       KC_PLUS, KC_AMPR, KC_EXLM, KC_PIPE, KC_SCLN,    \
-	___N___, KC_BSLS, TH_LBRC, KC_RBRC, ___N___,     ___N___, KC_QUES, TH_EQL,  KC_SLSH, ___N___,    \
+	_______, KC_BSLS, TH_LBRC, KC_RBRC, _______,     _______, KC_QUES, TH_EQL,  KC_SLSH, _______,    \
 	                           _______, _______,     KC_UNDS, KC_MINS
 
 #define _NUMB \
 	KC_ASTR, KC_7,    KC_8,    KC_9,    TH_PLUS,     KC_PERC, Z_GBP,   Z_HASH,  TH_DLR,  Z_EUR,      \
 	KC_SLSH, KC_4,    KC_5,    KC_6,    KC_MINS,     _______, _________HOME_ROW_OS_SGAC_________,    \
-	KC_0,    KC_1,    KC_2,    KC_3,    ___N___,     _______, _______, _______, _______, _______,    \
+	KC_0,    KC_1,    KC_2,    KC_3,    _______,     _______, _______, _______, _______, _______,    \
 	                           _______, KC_0,        _______, _______
 
 #define _FUNC \
-  Z_SLEEP, KC_F7,   KC_F8,   KC_F9,   KC_F12,      CW_TOGG, KC_MPLY, KC_VOLU, _______, QK_BOOT,    \
-  KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, RM_TOGG,    \
-  ___N___, KC_F1,   KC_F2,   KC_F3,   ___N___,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
+  _______, KC_F7,   KC_F8,   KC_F9,   KC_F12,      CW_TOGG, KC_MPLY, KC_VOLU, _______, _______,    \
+  KC_F10,  KC_F4,   KC_F5,   KC_F6,   KC_F11,      KC_CAPS, KC_MPRV, KC_VOLD, KC_MNXT, _______,    \
+  _______, KC_F1,   KC_F2,   KC_F3,   _______,     ___________________________________________,    \
 	                				   _______, _______,     _______, _______
 
-// For keyboards that don't have a physical pointing device
 #define _MOUSE \
 	___________________________________________,     MS_WHLU, MS_WHLL,  MS_UP,   MS_WHLR,_______,    \
   _________HOME_ROW_OS_CAGS_________, _______,     MS_WHLD, MS_LEFT,  MS_DOWN, MS_RGHT,_______,    \
   _______, SNIPE,   _______, MS_BTN3, _______,     ___________________________________________,    \
                       		   MS_BTN1, MS_BTN2,     _______, _______
+
+#define _SYS \
+  Z_SLEEP, ___N___, ___N___, ___N___, ___N___,     ___N___, ___N___, RM_TOGG, ___N___, QK_BOOT,    \
+  ___________________________________________,     E_HUE,   E_SAT,   E_VAL,   E_SPD,   E_MOD,      \
+  ___________________________________________,     ___________________________________________,    \
+	                				   _______, _______,     _______, _______
 
 
 // Mod-tap wrapper

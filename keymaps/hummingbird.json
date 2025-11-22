@@ -8,6 +8,7 @@
     ["HUMMINGBIRD(_NAV)"],
     ["HUMMINGBIRD(_NUMB)"],
     ["HUMMINGBIRD(_FUNC)"],
+    ["HUMMINGBIRD(_SYS)"],
     ["HUMMINGBIRD(_MOUSE)"]
   ]
 }

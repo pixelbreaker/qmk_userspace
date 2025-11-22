@@ -19,7 +19,7 @@ HOLD(mouse_layer, MO(MOU), KC_S, KC_T)
 
 // both hands
 HOLD(caret_nav, THM_1_2, THM_1, THM_2)
-// HOLD(thmb_r, MO(FNC), THM_3, THM_4)
+HOLD(sys, THM_3_4, THM_3, THM_4)
 
 COMB(capsword, CW_TOGG, TH_D, KC_M)
 

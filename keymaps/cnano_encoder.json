@@ -8,6 +8,7 @@
     ["CHARYBDIS_ENC(_NAV)"],
     ["CHARYBDIS_ENC(_NUMB)"],
     ["CHARYBDIS_ENC(_FUNC)"],
+    ["CHARYBDIS_ENC(_SYS)"],
     ["CHARYBDIS_ENC(_MOUSE)"]
   ]
 }

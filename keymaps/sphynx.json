@@ -8,6 +8,7 @@
     ["SPHYNX(_NAV)"],
     ["SPHYNX(_NUMB)"],
     ["SPHYNX(_FUNC)"],
+    ["SPHYNX(_SYS)"],
     ["SPHYNX(_MOUSE)"]
   ]
 }
